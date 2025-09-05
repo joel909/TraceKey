@@ -1,6 +1,6 @@
 "use client";
 
-import { use,useState} from "react"
+import { useState} from "react"
 import InputField from "@/components/form/InputField";
 import UserIcon from "@/components/icons/UserIcon";
 import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
@@ -15,8 +15,8 @@ export const metadata = {
 
 export default function SignupForm() {
     const [FormData,setFormData] = useState({username:"",email:"",password:"",confirmPassword:""})
-    
-    const handleFormDataChange = (e:any) => {
+
+    const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
     }

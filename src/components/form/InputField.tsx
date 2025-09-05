@@ -9,7 +9,7 @@ interface InputFieldProps {
     value: string;
     onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     IconComponent: React.ComponentType<React.SVGProps<SVGSVGElement>>;
-    errorMessage: any;
+    errorMessage: string | null;
 }
 export default function InputField({ label, name, placeholder, value, onChange, IconComponent, errorMessage, type }: InputFieldProps) {
   return (

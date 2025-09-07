@@ -7,8 +7,8 @@ import FormContainer from "@/components/form/FormContainer";
 import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
 import validateAuthInput from "@/lib/auth/validateAuthInput";
-import cleanInput from "@/lib/auth/cleanInput";
-import { set } from "zod/v4-mini";
+import {cleanInput} from "@/lib/auth/cleanInput";
+import requestAccountCreation from "@/lib/auth/accountCreationRequest";
 export const metadata = {
   title: "Sign Up - TraceKey",
   description: "Create your TraceKey account to track and manage your website visitors",
@@ -22,11 +22,11 @@ export default function SignupForm() {
 
     const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        setFormData((prevData) => ({ ...prevData, [name]: value }));
+        setFormData((prevData) => ({...prevData, [name]: value }));
     }
 
-    const handleSubmit = () => {
-        console.log("submitted")
+    const handleSubmit = async () => {
+        console.log("submitting")
         let { password, username, email } = FormData;
         password = cleanInput(password)
         username = cleanInput(username)
@@ -51,6 +51,21 @@ export default function SignupForm() {
         }
         else {
             console.log("All input fields are valid");
+            try{
+                const result = await requestAccountCreation(email,username,password);
+                if (!result.ok) {
+                    if (result.error && result.field === "email") {
+                    console.log("Email error from server:", result.error);
+                    setEmailError(result.error);
+                    }
+                    throw new Error(`API Error: ${result.status} ${result.statusText}`);
+                }
+                console.log("Account creation request successful:", result);
+                
+            }catch(error){
+                console.error("Error during account creation request:", error);
+                
+            }
         }
 
         

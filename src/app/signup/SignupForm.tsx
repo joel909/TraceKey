@@ -1,5 +1,4 @@
 "use client";
-
 import { useState} from "react"
 import InputField from "@/components/form/InputField";
 import UserIcon from "@/components/icons/UserIcon";
@@ -7,7 +6,9 @@ import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import FormContainer from "@/components/form/FormContainer";
 import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
-
+import validateAuthInput from "@/lib/auth/validateAuthInput";
+import cleanInput from "@/lib/auth/cleanInput";
+import { set } from "zod/v4-mini";
 export const metadata = {
   title: "Sign Up - TraceKey",
   description: "Create your TraceKey account to track and manage your website visitors",
@@ -15,6 +16,9 @@ export const metadata = {
 
 export default function SignupForm() {
     const [FormData,setFormData] = useState({username:"",email:"",password:"",confirmPassword:""})
+    const [emailError,setEmailError] = useState<string | null>(null);
+    const [usernameError,setUsernameError] = useState<string | null>(null);
+    const [passwordError,setPasswordError] = useState<string | null>(null);
 
     const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -23,7 +27,33 @@ export default function SignupForm() {
 
     const handleSubmit = () => {
         console.log("submitted")
-        console.log(FormData)
+        let { password, username, email } = FormData;
+        password = cleanInput(password)
+        username = cleanInput(username)
+        email = cleanInput(email)
+        //console.log(password, username, email)
+        //console.log("Validating input fields...")
+        setEmailError(null);
+        setUsernameError(null);
+        setPasswordError(null);
+        const [isValid, fields,reason] = validateAuthInput(email,password,username);
+        if(!isValid) {
+            console.log("Invalid input fields detected on",fields,"because : ",reason);
+            if (fields === "username") {
+                setUsernameError(reason);
+            }
+            else if (fields === "email") {
+                setEmailError(reason);
+            }
+            else if (fields === "password") {
+                setPasswordError(reason);
+            }
+        }
+        else {
+            console.log("All input fields are valid");
+        }
+
+        
     }
     return(
         <FormContainer title="Create your account" description="Sign up to get a TraceKey!">
@@ -35,7 +65,7 @@ export default function SignupForm() {
                         value={FormData.username}
                         onChange={handleFormDataChange}
                         IconComponent={() => (<UserIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={null}
+                        errorMessage={usernameError}
                     />
                      <InputField
                         label="Email"
@@ -44,7 +74,7 @@ export default function SignupForm() {
                         value={FormData.email}
                         onChange={handleFormDataChange}
                         IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={null}
+                        errorMessage={emailError}
                     />
                     <InputField
                         label="Password"
@@ -54,7 +84,7 @@ export default function SignupForm() {
                         value={FormData.password}
                         onChange={handleFormDataChange}
                         IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={null}
+                        errorMessage={passwordError}
                     />
 
                 </form>

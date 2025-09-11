@@ -19,9 +19,11 @@ export async function query(purpose:string,text: string, params?: any[]) {
     if(purpose === "CREATE USER" && err.code === '23505' && err.constraint === 'users_email_key') {
         throw new ValidationError('A user with this email or username already exists.', 'email');
     }
-    if(err instanceof AuthenticationError)
+    if(err instanceof AuthenticationError){
     throw new AuthenticationError(`ERROR : Failed to execute query at db.ts,query: \n\t${err}`);
   }
-  throw new Error(`ERROR : Failed to execute query at db.ts,query: \n\tUnknown error`);
+    throw new Error(`ERROR : Failed to execute query at db.ts,query: \n\t${err}`);
+}
+  
 }
 

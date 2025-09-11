@@ -2,7 +2,7 @@
 import UserHandler from "@/lib/database/user/UserHandler";
 import gen_auth_key from "@/lib/utils/auth_key";
 import { cleanInputForServer } from "@/lib/auth/api-functions/cleanInputs";
-import validateAuthInput from "@/lib/auth/frontend-functions/validateAuthInput";
+import validateAuthInput from "@/lib/auth/frontend-functions/user-functions/validateAuthInput";
 import { setCookie } from "@/lib/cookies/setCookie";
 import { ValidationError } from "@/lib/errors/ValidationError";
 

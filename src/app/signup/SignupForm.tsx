@@ -7,9 +7,9 @@ import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import FormContainer from "@/components/form/FormContainer";
 import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
-import validateAuthInput from "@/lib/auth/frontend-functions/validateAuthInput";
-import {cleanInput} from "@/lib/auth/frontend-functions/cleanInput";
-import requestAccountCreation from "@/lib/auth/frontend-functions/accountCreationRequest";
+import validateAuthInput from "@/lib/auth/frontend-functions/user-functions/validateAuthInput";
+import {cleanInput} from "@/lib/auth/frontend-functions/user-functions/cleanInput";
+import requestAccountCreation from "@/lib/auth/frontend-functions/user-functions/accountCreationRequest";
 export const metadata = {
   title: "Sign Up - TraceKey",
   description: "Create your TraceKey account to track and manage your website visitors",

@@ -1,4 +1,4 @@
-import validateAuthInput from '../frontend-functions/validateAuthInput';
+import validateAuthInput from '../frontend-functions/user-functions/validateAuthInput';
 import { ValidationError } from '@/lib/errors/ValidationError';
 import { cleanInputForServer } from './cleanInputs';
 export default function cleanAndValidateInputs(email: string, password: string, username: string): string {

@@ -1,20 +1,23 @@
 "use client";
 import { useState} from "react"
+import { useRouter } from "next/navigation";
 import InputField from "@/components/form/InputField";
 import UserIcon from "@/components/icons/UserIcon";
 import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import FormContainer from "@/components/form/FormContainer";
 import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
-import validateAuthInput from "@/lib/auth/validateAuthInput";
-import {cleanInput} from "@/lib/auth/cleanInput";
-import requestAccountCreation from "@/lib/auth/accountCreationRequest";
+import validateAuthInput from "@/lib/auth/frontend-functions/validateAuthInput";
+import {cleanInput} from "@/lib/auth/frontend-functions/cleanInput";
+import requestAccountCreation from "@/lib/auth/frontend-functions/accountCreationRequest";
 export const metadata = {
   title: "Sign Up - TraceKey",
   description: "Create your TraceKey account to track and manage your website visitors",
 };
 
 export default function SignupForm() {
+    const router = useRouter();
+    const [isLoading,setIsLoading] = useState(false);
     const [FormData,setFormData] = useState({username:"",email:"",password:"",confirmPassword:""})
     const [emailError,setEmailError] = useState<string | null>(null);
     const [usernameError,setUsernameError] = useState<string | null>(null);
@@ -22,10 +25,12 @@ export default function SignupForm() {
 
     const handleFormDataChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
+        console.log("Changing",name,"to",value)
         setFormData((prevData) => ({...prevData, [name]: value }));
     }
 
     const handleSubmit = async () => {
+        setIsLoading(true);
         console.log("submitting")
         let { password, username, email } = FormData;
         password = cleanInput(password)
@@ -48,21 +53,26 @@ export default function SignupForm() {
             else if (fields === "password") {
                 setPasswordError(reason);
             }
+            setIsLoading(false);
         }
         else {
             console.log("All input fields are valid");
             try{
-                const result = await requestAccountCreation(email,username,password);
-                if (!result.ok) {
+                const [result,response] = await requestAccountCreation(email,username,password);
+                if (!response.ok) {
                     if (result.error && result.field === "email") {
                     console.log("Email error from server:", result.error);
                     setEmailError(result.error);
                     }
                     throw new Error(`API Error: ${result.status} ${result.statusText}`);
                 }
+                setIsLoading(false);
+                router.push("/dashboard");
                 console.log("Account creation request successful:", result);
                 
             }catch(error){
+                setIsLoading(false);
+
                 console.error("Error during account creation request:", error);
                 
             }
@@ -108,7 +118,7 @@ export default function SignupForm() {
                     redirectText="Log in" 
                     redirectLink="/login" 
                 />
-                <FormSubmitButton text="Sign Up" handleSubmit={handleSubmit} />
+                <FormSubmitButton text="Sign Up" handleSubmit={handleSubmit} isLoading={isLoading} />
         </FormContainer>
    )
 }

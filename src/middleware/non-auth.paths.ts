@@ -1,0 +1,1 @@
+export const auth_routes = ["/dashboard", "/settings", "/project"];

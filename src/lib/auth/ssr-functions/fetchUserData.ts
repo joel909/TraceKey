@@ -1,0 +1,28 @@
+import { AuthenticationError } from "@/lib/errors/AuthenticationError";
+import requestUserData from "./requestUserData";
+import { cookies } from 'next/headers'
+import { ValidationError } from "@/lib/errors/ValidationError";
+
+
+// pages/dashboard.tsx
+export async function withAuth() {
+        const auth_key = (await cookies()).get('auth_key')?.value
+        console.log("the Auth key is ",auth_key)
+    try{
+        if(auth_key){
+            const userData = await requestUserData(auth_key)
+            return userData
+        }
+        else{
+            throw new ValidationError('No authentication key provided.', 'auth_key');
+        }
+        
+    }
+    catch(e){
+        
+        throw e;
+    }
+  
+
+  
+}

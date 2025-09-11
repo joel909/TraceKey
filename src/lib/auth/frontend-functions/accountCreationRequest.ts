@@ -7,6 +7,6 @@ export default async function requestAccountCreation(email: string, username: st
 
     const result = await response.json();
     console.log(result);
-    return result
+    return [result,response];
 
 }

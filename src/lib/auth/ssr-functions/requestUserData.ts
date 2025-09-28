@@ -1,5 +1,4 @@
 import { AuthenticationError } from "@/lib/errors/AuthenticationError";
-
 export default async function requestUserData(auth_key : string) {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
     const request = await fetch(`${baseUrl}/api/internal/fetchUser?auth_key=${auth_key}`);

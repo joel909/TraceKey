@@ -1,3 +1,21 @@
-export default function fetchProjects(){
-    
+import { stringify } from "querystring";
+import { query } from "../../config/db";
+import { fetchUserAssociatedProjects } from "../../config/queries";
+import  Project  from "./project_interface";
+
+export default async function fetchProjects(uuid: string) {
+    const userProjects = await query("FETCH USER ASSOCIATED PROJECTS",fetchUserAssociatedProjects, [uuid]);
+    const project_set : Project[] = [];
+    for (const project_item of userProjects) {
+        const project: Project = {
+            id: project_item.project_id,
+            name: project_item.project_name || "Unnamed Project",
+            description: project_item.project_description || "No description",
+            site_link: project_item.project_site_link || "No link provided",
+            visits: project_item.project_visits || "NaN",
+            users: project_item.project_users || "NaN"
+        }
+        project_set.push(project);
+    }
+    return project_set;
 }

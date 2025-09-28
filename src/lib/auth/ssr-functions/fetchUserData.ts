@@ -2,7 +2,7 @@ import { AuthenticationError } from "@/lib/errors/AuthenticationError";
 import requestUserData from "./requestUserData";
 import { cookies } from 'next/headers'
 import { ValidationError } from "@/lib/errors/ValidationError";
-
+import fetchUserInfo from "@/lib/database/user/user/fetchUserInfo";
 
 // pages/dashboard.tsx
 export async function withAuth() {
@@ -10,7 +10,7 @@ export async function withAuth() {
         console.log("the Auth key is ",auth_key)
     try{
         if(auth_key){
-            const userData = await requestUserData(auth_key)
+            const userData = await fetchUserInfo(auth_key)
             return userData
         }
         else{
@@ -18,8 +18,7 @@ export async function withAuth() {
         }
         
     }
-    catch(e){
-        
+    catch(e){  
         throw e;
     }
   

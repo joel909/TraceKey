@@ -46,3 +46,7 @@ export async function createAccountService({ username, email, password }: { user
     data: user,
   };
 }
+export  async function fetchUserAssociatedProjectsService(uuid: string) {
+    const userHandler = new UserHandler();
+    return await userHandler.fetchUserAssociatedProjects(uuid);
+}

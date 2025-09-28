@@ -21,7 +21,7 @@ export default async  function DashboardPage() {
     }
   }
   const userName = userData.name || "Unknown User";
-      const email = userData.email || "Unknown Email";
+  const email = userData.email || "Unknown Email";
   return dashboard({userName,email});
   
   

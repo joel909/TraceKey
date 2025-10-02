@@ -10,12 +10,18 @@ export default function UserProjectCardHeader({ project }: UserProjectCardContai
                         {project.name}
                     </CardTitle>
                     <p className="text-sm text-[#647FBC]/70 mb-2">{project.description}</p>
-                    <div className="flex items-center gap-2 text-[#647FBC]/60">
-                        <ExternalLink className="h-4 w-4" />
-                            <a href={project.site_link} target="_blank" rel="noopener noreferrer" className="text-sm hover:text-[#647FBC] hover:underline transition-colors">
-                                {project.site_link}
-                            </a>
+                    <div className="flex items-center gap-2 text-[#647FBC]/60 max-w-[250px]"> {/* adjust max-w as needed */}
+                    <ExternalLink className="h-4 w-4 flex-shrink-0" />
+                    <a
+                        href={project.site_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm hover:text-[#647FBC] hover:underline transition-colors truncate overflow-hidden"
+                    >
+                        {project.site_link}
+                    </a>
                     </div>
+
                 </div>
             </div>
         </CardHeader>

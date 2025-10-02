@@ -1,7 +1,6 @@
 import NavBar from "@/components/navbars/dashboard_navbar";
 import SidebarNavBar from "@/components/navbars/sidebar_navbar";
-import { Button } from "@/components/ui/button";
-import {FolderKanban} from "lucide-react";
+import NewProjectButton from "@/components/buttons/NewProjectButton";
 import ProjectsCard from "@/components/cards/project-card/CardContainer";
 import  Project  from "@/lib/database/user/projects/project_interface";
 
@@ -63,10 +62,8 @@ export default function ProjectsPage({userName,email,projects}: {userName: strin
             <h2 className="text-3xl font-bold tracking-tight text-[#647FBC]">
                 Projects
             </h2>
-            <Button className="bg-[#647FBC] hover:bg-[#5a6fb0] text-white font-medium">
-                <FolderKanban className="mr-2 h-4 w-4" />
-                New Project
-            </Button>
+            <NewProjectButton />
+            
             </div>
 
             {/* --- Projects Grid --- */}

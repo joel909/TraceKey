@@ -5,8 +5,11 @@ import { ValidationError } from '../../errors/ValidationError';
 
 
 dotenv.config();
-
+console.log("Database URL:", process.env.POSTGRES_URL);
 export const pool = new Pool({
+    ssl: {
+      rejectUnauthorized: false, // required for most cloud DBs
+    },
     connectionString: process.env.POSTGRES_URL,
 });
 

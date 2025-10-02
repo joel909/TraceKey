@@ -29,5 +29,5 @@ export const AddUserToProjectQuery = `
 //  SELECT '
 export const fetchUserAssociatedProjects = 
 `
-    SELECT user_projects.uuid,user_projects.project_id,projects.project_name FROM user_projects,projects WHERE user_projects.project_id = projects.project_id AND uuid = $1
+    SELECT user_projects.uuid,user_projects.project_id,projects.project_name,projects.description,projects.site_url FROM user_projects,projects WHERE user_projects.project_id = projects.project_id AND uuid = $1
 `

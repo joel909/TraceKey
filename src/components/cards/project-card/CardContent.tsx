@@ -21,7 +21,7 @@ export default function UserProjectCardContent({ project }: UserProjectCardConta
                 </div>
             </div>
             <Button 
-            className="w-full bg-[#647FBC] hover:bg-[#5a6fb0] text-white font-medium"
+            className="w-full cursor-pointer bg-[#647FBC] hover:bg-[#5a6fb0] text-white font-medium"
             onClick={onclick}
             >
                 <BarChart3 className="mr-2 h-4 w-4" />

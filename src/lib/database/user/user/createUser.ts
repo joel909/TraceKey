@@ -10,7 +10,7 @@ export default async function createUser(email: string, name: string, hashedPass
         const baseURL = process.env.PROJECT_URL || process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
         const creationRequest = await query("CREATE USER", createUserQuery, [email, name, hashedPassword, authKey]);
         const api_key = gen_auth_key();
-        const defaultProjectCreationRequest = createUserProject(creationRequest[0].uuid, "Sample Project", api_key, "default123", "This is your default project.", `https://tracekey.joeljoby.com/sample-project?project_api_key=${api_key}`);
+        const defaultProjectCreationRequest = await createUserProject(creationRequest[0].uuid, "Sample Project", api_key, "default123", "This is your default project.", `https://tracekey.joeljoby.com/sample-project?project_api_key=${api_key}`);
         //console.log("User created with ID:", defaultProjectCreationRequest);
         return creationRequest;
     }catch (error) {

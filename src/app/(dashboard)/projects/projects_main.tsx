@@ -41,29 +41,15 @@ import  Project  from "@/lib/database/user/projects/project_interface";
 // ];
 
 // --- Main Projects Page ---
-export default function ProjectsPage({userName,email,projects}: {userName: string, email: string,projects :Project[]}) {
-    
-    
+export default function ProjectsPage({projects}: {projects :Project[]}) {
+    console.log("Rendering Projects Page with projects:", projects);
     return (
-    <div className="flex min-h-screen w-full flex-col" style={{ backgroundColor: '#FAFDD6' }}>
-        {/* ===== Subtle Header Bar ===== */}
-        <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b border-gray-300/50 bg-white/40 backdrop-blur-md px-6 z-50 shadow-sm">
-        <h1 className="text-2xl font-bold text-[#647FBC]">TraceKey</h1>
-        <NavBar userName={userName} userEmail={email} />
-        </header>
-
-        <div className="flex flex-1">
-        {/* ===== Subtle Sidebar Navigation ===== */}
-        <SidebarNavBar active_tab="projects" />
-
-        {/* ===== Main Content Area ===== */}
         <main className="flex-1 p-6">
             <div className="flex items-center justify-between mb-6">
-            <h2 className="text-3xl font-bold tracking-tight text-[#647FBC]">
-                Projects
-            </h2>
-            <NewProjectButton />
-            
+                <h2 className="text-3xl font-bold tracking-tight text-[#647FBC]">
+                    Projects
+                </h2>
+                <NewProjectButton />
             </div>
 
             {/* --- Projects Grid --- */}
@@ -73,7 +59,5 @@ export default function ProjectsPage({userName,email,projects}: {userName: strin
             ))}
             </div>
         </main>
-        </div>
-    </div>
     );
 }

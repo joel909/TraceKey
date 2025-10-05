@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, LogOut } from "lucide-react";
 
+
 interface NavBarProps {
     userName: string;
     userEmail: string;
@@ -25,7 +26,7 @@ export default function NavBar({ userName, userEmail }: NavBarProps){
                     <span className="font-medium">{userName}</span>
                         <Avatar className="h-8 w-8">
                             <AvatarImage src="/avatars/01.png" alt="@shadcn" />
-                            <AvatarFallback className="bg-gray-200 text-[#647FBC] font-bold">{userName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                            <AvatarFallback className="bg-gray-200 text-[#647FBC] font-bold">{(userName ?? "").substring(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                     </Button>
                 </DropdownMenuTrigger>

@@ -18,3 +18,11 @@ export interface ActivityItem {
   device: 'Desktop' | 'Mobile' | 'Tablet';
   region: string;
 }
+
+export interface recentActivity{
+  ip: string;
+  time: string;
+  visits: number;
+  device: 'Desktop' | 'Mobile' | 'Tablet';
+  region: string;
+}

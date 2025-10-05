@@ -5,7 +5,9 @@ import { BarChart3 } from "lucide-react";
 import { UserProjectCardContainerProps } from "./project_interface";
     
 export default function UserProjectCardContent({ project }: UserProjectCardContainerProps) {
-    const onclick =() => {console.log(`Managing project ${project.id}`)}
+    const onclick =() => {
+        window.location.href = `projects/manage/${project.id}`;
+    }
     return(
         <CardContent className="pt-0">
             <div className="flex items-center justify-between mb-4">

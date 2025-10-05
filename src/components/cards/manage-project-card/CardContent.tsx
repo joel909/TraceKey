@@ -1,5 +1,5 @@
 'use client'
-import { ProjectData } from "@/app/manage/manage_project_interfaces";
+import { ProjectData } from "@/app/(dashboard)/projects/manage/manage_project_interfaces";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import { Copy, ExternalLink, Settings } from "lucide-react";

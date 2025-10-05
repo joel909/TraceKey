@@ -31,3 +31,7 @@ export const fetchUserAssociatedProjects =
 `
     SELECT user_projects.uuid,user_projects.project_id,projects.project_name,projects.description,projects.site_url FROM user_projects,projects WHERE user_projects.project_id = projects.project_id AND uuid = $1
 `
+export const fetchSingleProjectDataByIDQuery = 
+`
+SELECT project_name,api_key,description,site_url FROM projects WHERE project_id = $1
+`

@@ -7,7 +7,7 @@ import fetchUserInfo from "@/lib/database/user/user/fetchUserInfo";
 // pages/dashboard.tsx
 export async function withAuth() {
         const auth_key = (await cookies()).get('auth_key')?.value
-        console.log("the Auth key is ",auth_key)
+        // console.log("the Auth key is ",auth_key)
     try{
         if(auth_key){
             const userData = await fetchUserInfo(auth_key)

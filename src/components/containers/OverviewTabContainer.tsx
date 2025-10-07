@@ -1,3 +1,4 @@
+"use client"
 import { Globe, Users, Waypoints } from "lucide-react";
 import StatcardContainer from "../cards/stat-card/StatCardContainer";
 import StatCardDashboard from "../cards/stat-card/StatCardDashboard";

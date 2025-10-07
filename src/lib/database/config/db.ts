@@ -13,7 +13,7 @@ export const pool = new Pool({
     },
     connectionString: process.env.POSTGRES_URL,
 });
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function query(purpose:string,text: string, params?: any[]) {
   try {
     const result = await pool.query(text, params);
@@ -21,7 +21,9 @@ export async function query(purpose:string,text: string, params?: any[]) {
       throw new ResourceNotFoundError('No project found with the given ID.');  
     }
     return result.rows;
-  } catch (err:any) {
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   catch (err:any) {
     //console.error(`ERROR : Failed to execute query at db.ts,query: \n\t${err}`);
     
     if(purpose === "CREATE USER" && err.code === '23505' && err.constraint === 'users_email_key') {

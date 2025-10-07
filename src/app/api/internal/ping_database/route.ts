@@ -11,14 +11,15 @@ export async function GET() {
         headers: { "Content-Type": "application/json" },
       }
     );
-  } catch (err: any) {
+  } catch (err: unknown ) {
     console.error("DB connection test failed:", err);
+    if(err instanceof Error){
     return new Response(
       JSON.stringify({ success: false, error: err.message }),
       {
         status: 500,
         headers: { "Content-Type": "application/json" },
       }
-    );
+    );}
   }
 }

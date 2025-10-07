@@ -1,5 +1,3 @@
-import { fa, tr } from "zod/v4/locales";
-
 export default function validateAuthInput(email: string, password: string, username: string): [boolean,string,string] {
     email = email.trim();
     password = password.trim();
@@ -12,24 +10,22 @@ export default function validateAuthInput(email: string, password: string, usern
 
   // email validation
   const isValidEmail = (email: string): [boolean,string] => {
-    let reason = ""
     if (!email || typeof email !== 'string') {
-        return [false,reason="Email must be a non-empty string"];
+        return [false,"Email must be a non-empty string"];
     }
     // A standard regex for email validation to check the format
     const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
     // Test the email against the regex
     if (hasInternalWhitespace(email)) {
-        return [false,reason="Email must not contain whitespace"];
+        return [false,"Email must not contain whitespace"];
     }
     else{
-        return [emailRegex.test(email),reason="Email format is invalid"];
+        return [emailRegex.test(email), "Email format is invalid"];
     }
     };
 
   // password validation
   const isValidPassword = (password: string): [boolean,string] => {
-    let reason = ""
     if (!password || typeof password !== 'string' || password.length < 5) {
         return [false,"Password must be at least 5 characters long"];
     }
@@ -57,13 +53,13 @@ export default function validateAuthInput(email: string, password: string, usern
     }
 
     if (hasInternalWhitespace(username)) {
-        return [false,reason="Username must not contain whitespace"];
+        return [false,"Username must not contain whitespace"];
     }
 
   // Check for invalid characters (e.g., spaces, special characters)
     const invalidChars = /[^a-zA-Z0-9_]/;
     if (invalidChars.test(username)) {
-        return [false,reason="Username must only contain letters, numbers, and underscores"];
+        return [false,"Username must only contain letters, numbers, and underscores"];
     }
 
     // If all checks pass, the username is valid

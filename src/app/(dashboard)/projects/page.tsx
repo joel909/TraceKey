@@ -1,11 +1,9 @@
 // app/dashboard/page.tsx
-import Logout from "@/lib/auth/frontend-functions/user-functions/logout";
 import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
 import { AuthenticationError } from "@/lib/errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ProjectsPage from "@/app/(dashboard)/projects/projects_main";
 import { fetchUserAssociatedProjectsService } from "@/lib/controllers/account.controller";
-import Project from "@/lib/database/user/projects/project_interface";
 // --- Main Dashboard Page ---
 export default async  function Projects() {
     let userData = null;
@@ -22,7 +20,12 @@ export default async  function Projects() {
         //redirect('/signup');
     }
   }
-  const uuid = userData.uuid || "Unknown UUID";
+  if (!userData?.uuid){
+    redirect('/logout');
+  }
+  const uuid = userData?.uuid || "Unknown UUID";
+
+  
   const projects = await fetchUserAssociatedProjectsService(uuid);
   console.log("Projects:", projects);
 

@@ -1,12 +1,9 @@
 import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
-import fetchUserInfo from './lib/database/user/user/fetchUserInfo';
 import { AuthenticationError } from './lib/errors/AuthenticationError';
-import requestUserData from './lib/auth/ssr-functions/requestUserData';
 import { non_auth_routes } from './middleware/non-auth.paths';
 export function middleware(request: NextRequest) {
     //console.log("Middleware Executed");
-    const response = NextResponse.next();
     const redirectTo = NextResponse.redirect;
     try{
         const auth_key = request.cookies.get('auth_key')?.value;
@@ -14,7 +11,6 @@ export function middleware(request: NextRequest) {
         if (!auth_key && !non_auth_routes.includes(requestedPath)) {
             return redirectTo(new URL('/signup', request.url));
         } else if (auth_key && (requestedPath === '/login' || requestedPath === '/signup')) {
-            const userData = requestUserData(auth_key);
             return redirectTo(new URL('/dashboard', request.url));
         }
 

@@ -1,23 +1,15 @@
 // app/projects/[id]/page.tsx
 //interface for project data
 import { ProjectData } from '@/app/(dashboard)/projects/manage/manage_project_interfaces';
-
 //COMPONENTS
-
 import ManageProjectPageHeading from '@/components/headings/ManageProjectHeading';
 import ActivityProjectCardContent from '@/components/cards/manage-project-card/CardContainer';
 import AnalyticsContainer from '@/components/containers/AnalyticsContainer';
 import OverviewTabContainer from '@/components/containers/OverviewTabContainer';
 import TabContainer from '@/components/containers/TabContainer';
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default function ManageProjectPage({project,error }: {project: ProjectData,error?:string }) {
-  let isValidProject = false
-  if (error){
-    isValidProject=false
-  }
-  else if (project && project.id && project.name) {
-    isValidProject=true
-  }
     const recentActivity = [
         { ip: "192.168.1.1", time: "10:42 AM", visits: 5, device: "Desktop", region: "USA" },
         { ip: "203.0.113.24", time: "10:35 AM", visits: 2, device: "Mobile", region: "Germany" },

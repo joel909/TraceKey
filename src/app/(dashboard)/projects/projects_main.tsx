@@ -1,5 +1,3 @@
-import NavBar from "@/components/navbars/dashboard_navbar";
-import SidebarNavBar from "@/components/navbars/sidebar_navbar";
 import NewProjectButton from "@/components/buttons/NewProjectButton";
 import ProjectsCard from "@/components/cards/project-card/CardContainer";
 import  Project  from "@/lib/database/user/projects/project_interface";

@@ -1,20 +1,10 @@
-import {
-  Users,
-  Globe,
-  Waypoints,
-
-} from "lucide-react";
-
+import {Users,Globe,Waypoints} from "lucide-react";
 import StatCardDashboard from "@/components/cards/stat-card/StatCardDashboard";
 import PageTitle1 from "@/components/headings/PageTitle1";
-import NavBar from "@/components/navbars/dashboard_navbar";
-import SidebarNavBar from "@/components/navbars/sidebar_navbar";
 import StatcardContainer from "@/components/cards/stat-card/StatCardContainer";
 import RecentActivityCard from "@/components/cards/RecentActivityCard";
 import ActivityTable from "@/components/tables/ActivityTable";
-import Logout from "@/lib/auth/frontend-functions/user-functions/logout";
 
-import DashboardLayout from "../layout";
 export default async function dashboard() {
     const recentActivity = [
         { ip: "192.168.1.1", time: "10:42 AM", visits: 5, device: "Desktop", region: "USA" },

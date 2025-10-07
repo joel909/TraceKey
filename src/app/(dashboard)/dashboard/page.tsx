@@ -1,8 +1,4 @@
 // app/dashboard/page.tsx
-import Logout from "@/lib/auth/frontend-functions/user-functions/logout";
-import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
-import { AuthenticationError } from "@/lib/errors/AuthenticationError";
-import { redirect } from 'next/navigation';
 import dashboard from "./dashboard";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage() {

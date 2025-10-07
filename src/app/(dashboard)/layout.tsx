@@ -3,7 +3,7 @@ import NavBar from "@/components/navbars/dashboard_navbar";
 import SidebarNavBar from "@/components/navbars/sidebar_navbar";
 import { withAuth } from "@/lib/auth/ssr-functions/fetchUserData";
 import { AuthenticationError } from "@/lib/errors/AuthenticationError";
-import { redirect, usePathname } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   let userData = null;
@@ -20,8 +20,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
           //redirect('/signup');
       }
     }
-    const userName = userData.name || "Unknown User";
-    const email = userData.email || "Unknown Email";
+    const userName = userData && userData.name ? userData.name : "Unknown User";
+    const email = userData && userData.email ? userData.email : "Unknown Email";
   
     
   return(

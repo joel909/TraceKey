@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { FileX, ArrowLeft, Flag } from "lucide-react"
 
 export default  function ErrorCard({error,messageLine1,messageLine2,reason,projectId,callback}: {error:string,messageLine1:string,messageLine2:string,reason:string,projectId:string,callback?:()=>void})   {
+  console.log("just to sue call back ",callback)
     const [isReporting, setIsReporting] = useState(false);
     const handleReturnToProjects = () => {
         window.location.href = '/projects';

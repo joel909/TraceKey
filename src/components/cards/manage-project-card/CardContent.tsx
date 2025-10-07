@@ -1,15 +1,14 @@
 'use client'
 import { ProjectData } from "@/app/(dashboard)/projects/manage/manage_project_interfaces";
+import CopyButton from "@/components/buttons/CopyButton";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
-import { Copy, ExternalLink, Settings } from "lucide-react";
-import { toast } from "sonner";
+import {  ExternalLink, Settings } from "lucide-react";
+import { useState } from 'react';
+import { ApiSetupModal } from '@/components/modals/SetupProjectApiKeyModal';
 
 export default function ManageProjectContent({ project }: { project: ProjectData }) {
-    const copyToClipboard = (text: string, label: string) => {
-        navigator.clipboard.writeText(text);
-        toast.success(`${label} copied to clipboard!`);
-    };
+    const [isApiModalOpen, setIsApiModalOpen] = useState(false);
 
     return (
         <CardContent className="space-y-6">
@@ -22,23 +21,15 @@ export default function ManageProjectContent({ project }: { project: ProjectData
                         <div className="flex-1 p-2 bg-gray-50 rounded-md text-sm text-[#647FBC] truncate">
                             {project.url}
                         </div>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => copyToClipboard(project.url, "URL")}
-                            className="border-[#647FBC]/20 text-[#647FBC] hover:bg-[#647FBC]/10"
-                            aria-label="Copy URL"
-                        >
-                            <Copy className="h-4 w-4" />
-                        </Button>
+                        <CopyButton textToCopy={project.url} label="URL" />
                         <Button
                             size="sm"
                             variant="outline"
                             onClick={() => window.open(project.url, "_blank")}
-                            className="border-[#647FBC]/20 text-[#647FBC] hover:bg-[#647FBC]/10"
+                            className="border-[#647FBC]/20 cursor-pointer text-[#647FBC] hover:bg-[#647FBC]/10"
                             aria-label="Open URL"
                         >
-                            <ExternalLink className="h-4 w-4" />
+                            <ExternalLink className="h-4 w-4 cursor-pointer" />
                         </Button>
                     </div>
                 </div>
@@ -49,25 +40,23 @@ export default function ManageProjectContent({ project }: { project: ProjectData
                         <div className="flex-1 p-2 bg-gray-50 rounded-md text-sm text-[#647FBC] font-mono">
                             {project.apiKey.substring(0, 20)}...
                         </div>
-                        <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={() => copyToClipboard(project.apiKey, "API Key")}
-                            className="border-[#647FBC]/20 text-[#647FBC] hover:bg-[#647FBC]/10"
-                            aria-label="Copy API Key"
-                        >
-                            <Copy className="h-4 w-4" />
-                        </Button>
+                        <CopyButton textToCopy={project.apiKey} label="API Key" />
                     </div>
                 </div>
             </div>
             {/* Setup Button Section */}
             <div className="flex justify-end pt-4">
-                <Button className="bg-[#647FBC] hover:bg-[#5a6fb0] text-white flex items-center">
+                <Button onClick={() => setIsApiModalOpen(true)} className="bg-[#647FBC] hover:bg-[#5a6fb0] text-white">
                     <Settings className="mr-2 h-4 w-4" />
                     Setup with API Key
                 </Button>
             </div>
+             <ApiSetupModal
+                isOpen={isApiModalOpen}
+                onClose={() => setIsApiModalOpen(false)}
+                apiKey={project?.apiKey || ''}
+                projectUrl={project?.url || ''}
+            />
         </CardContent>
     );
 }

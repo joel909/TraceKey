@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink } from "lucide-react"
 import { UserProjectCardContainerProps } from "./project_interface"
 export default function UserProjectCardHeader({ project }: UserProjectCardContainerProps) {

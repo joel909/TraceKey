@@ -1,5 +1,3 @@
-import { AuthenticationError } from "@/lib/errors/AuthenticationError";
-import requestUserData from "./requestUserData";
 import { cookies } from 'next/headers'
 import { ValidationError } from "@/lib/errors/ValidationError";
 import fetchUserInfo from "@/lib/database/user/user/fetchUserInfo";

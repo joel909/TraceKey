@@ -62,7 +62,7 @@ export default function SignupForm() {
                 if (!response.ok) {
                     if (result.error && result.field === "email") {
                     console.log("Email error from server:", result.error);
-                    setEmailError(result.error);
+                    setEmailError(typeof result.error === "string" ? result.error : "Unknown email error");
                     }
                     throw new Error(`API Error: ${result.status} ${result.statusText}`);
                 }

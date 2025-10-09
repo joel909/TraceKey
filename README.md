@@ -1,36 +1,13 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Trace Key Code Documentation :
+This will provide readers a good understanding of the flow of code and each components of the project.
 
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Basic Stack & Setup
+This project uses a rather simple stack. The project is a monolith made in next.js which uses a backend database as postgres SQL which is hosted at hackclub.app
+--> Framework used : Next.js
+--> Database used  : Postgres
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+## Database Connection
+We are using the module pg to establish a pooled connection to the Database. This has been done here [db.ts](https://github.com/joel909/TraceKey/blob/master/src/lib/database/config/db.ts). I then went on to Create a function called query to which we pass purpose,text,params which then uses pool.query to make the query, once the query executes, then it checks if the purpose of the query is *FETCH_PROJECT_DETAILS_BY_ID*  and if the result.rows is empty or not if the result is empty then it raises a custom error called *ResourceNotFoundError* which then executes the catch block. there are a few sets of error classes which are thrown if it is a known error. below are a list of the pre-defined errors
+-ResourceNotFoundError -> when a query executes and the result is an empty array
+-ValidationError       -> when Invalid input has been provided or the operation cant be executed due the provided inputs due to which the operation failed (the code makes sure that this case does not occur) 
+-AuthenticationError   -> can either occur when the database credentials were wrong or the user which requested the resource is not authenticated

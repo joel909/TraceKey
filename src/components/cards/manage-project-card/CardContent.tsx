@@ -1,5 +1,5 @@
 'use client'
-import { ProjectData } from "@/app/(dashboard)/projects/manage/manage_project_interfaces";
+import { ProjectData } from "@/lib/interfaces/manage_project_interfaces";
 import CopyButton from "@/components/buttons/CopyButton";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";

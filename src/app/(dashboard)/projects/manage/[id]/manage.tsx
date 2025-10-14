@@ -1,6 +1,6 @@
 // app/projects/[id]/page.tsx
 //interface for project data
-import { ProjectData } from '@/app/(dashboard)/projects/manage/manage_project_interfaces';
+import { ProjectData } from '@/lib/interfaces/manage_project_interfaces';
 //COMPONENTS
 import ManageProjectPageHeading from '@/components/headings/ManageProjectHeading';
 import ActivityProjectCardContent from '@/components/cards/manage-project-card/CardContainer';

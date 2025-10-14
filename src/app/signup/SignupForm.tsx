@@ -7,13 +7,10 @@ import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import FormContainer from "@/components/form/FormContainer";
 import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
-import validateAuthInput from "@/lib/auth/frontend-functions/user-functions/validateAuthInput";
-import {cleanInput} from "@/lib/auth/frontend-functions/user-functions/cleanInput";
-import requestAccountCreation from "@/lib/auth/frontend-functions/user-functions/accountCreationRequest";
-export const metadata = {
-  title: "Sign Up - TraceKey",
-  description: "Create your TraceKey account to track and manage your website visitors",
-};
+import validateAuthInput from "@/lib/utils/validateAuthInput";
+import {cleanInput} from "@/lib/utils/client/cleanInput";
+import {authRequests} from "@/lib/user-requests/AuthRequest";
+import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
 
 export default function SignupForm() {
     const router = useRouter();
@@ -29,15 +26,15 @@ export default function SignupForm() {
         setFormData((prevData) => ({...prevData, [name]: value }));
     }
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e?: React.FormEvent) => {
+        if (e) e.preventDefault(); // Prevent form submission
         setIsLoading(true);
         console.log("submitting")
         let { password, username, email } = FormData;
         password = cleanInput(password)
         username = cleanInput(username)
         email = cleanInput(email)
-        //console.log(password, username, email)
-        //console.log("Validating input fields...")
+        
         setEmailError(null);
         setUsernameError(null);
         setPasswordError(null);
@@ -57,68 +54,86 @@ export default function SignupForm() {
         }
         else {
             console.log("All input fields are valid");
+            const userCreationRequestData = {
+                email,
+                username,
+                password
+            }
+            let result;
             try{
-                const [result,response] = await requestAccountCreation(email,username,password);
-                if (!response.ok) {
-                    if (result.error && result.field === "email") {
-                    console.log("Email error from server:", result.error);
-                    setEmailError(typeof result.error === "string" ? result.error : "Unknown email error");
-                    }
-                    throw new Error(`API Error: ${result.status} ${result.statusText}`);
-                }
-                setIsLoading(false);
-                router.push("/dashboard");
+                result = await authRequests.createUser(userCreationRequestData);
+                console.log("Result from authRequests.createUser:", result);
+                
                 console.log("Account creation request successful:", result);
+                router.push("/dashboard");
                 
             }catch(error){
-                setIsLoading(false);
+                if (error instanceof ValidationError) {
+                    switch (error.field) {
+                        case "username":
+                            setUsernameError(error.message);
+                            break;
+                        case "email":
+                            setEmailError(error.message);
+                            break;
+                        case "password":
+                            setPasswordError(error.message);
+                            break;
+                        default:
+                            alert(error.message);
+                            // console.log("Validation error without specific field:", error.message);
+                    }
+                } else {
+                    alert("An unexpected error occurred. Please try again later. : " + error);
+                    console.log("Caught error during account creation request:", error);
+                }
 
+                setIsLoading(false);
                 console.error("Error during account creation request:", error);
-                
+            } finally {
+                setIsLoading(false); // Ensure loading is stopped
             }
         }
-
-        
     }
+    
     return(
         <FormContainer title="Create your account" description="Sign up to get a TraceKey!">
             <form onSubmit={handleSubmit} className="space-y-7">
                 <InputField
                     label="Username"
                     name="username"
-                        placeholder="Enter your username"
-                        value={FormData.username}
-                        onChange={handleFormDataChange}
-                        IconComponent={() => (<UserIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={usernameError}
-                    />
-                     <InputField
-                        label="Email"
-                        name="email"
-                        placeholder="Enter your Email"
-                        value={FormData.email}
-                        onChange={handleFormDataChange}
-                        IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={emailError}
-                    />
-                    <InputField
-                        label="Password"
-                        name="password"
-                        type="password"
-                        placeholder="Enter your Password"
-                        value={FormData.password}
-                        onChange={handleFormDataChange}
-                        IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
-                        errorMessage={passwordError}
-                    />
-
-                </form>
-                <FormFooter 
-                    message="Already have an account?" 
-                    redirectText="Log in" 
-                    redirectLink="/login" 
+                    placeholder="Enter your username"
+                    value={FormData.username}
+                    onChange={handleFormDataChange}
+                    IconComponent={() => (<UserIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
+                    errorMessage={usernameError}
                 />
-                <FormSubmitButton text="Sign Up" handleSubmit={handleSubmit} isLoading={isLoading} />
+                <InputField
+                    label="Email"
+                    name="email"
+                    placeholder="Enter your Email"
+                    value={FormData.email}
+                    onChange={handleFormDataChange}
+                    IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
+                    errorMessage={emailError}
+                />
+                <InputField
+                    label="Password"
+                    name="password"
+                    type="password"
+                    placeholder="Enter your Password"
+                    value={FormData.password}
+                    onChange={handleFormDataChange}
+                    IconComponent={() => (<EnvelopeIcon className="absolute left-4 h-5 w-5 text-[#647FBC]" />)}
+                    errorMessage={passwordError}
+                />
+            </form>
+            <FormFooter 
+                message="Already have an account?" 
+                redirectText="Log in" 
+                redirectLink="/login" 
+            />
+            <FormSubmitButton text="Sign Up" handleSubmit={handleSubmit} isLoading={isLoading} />
         </FormContainer>
    )
 }

@@ -1,6 +1,6 @@
 'use client';
 import { Card} from "@/components/ui/card";
-import { UserProjectCardContainerProps } from "./project_interface";
+import { UserProjectCardContainerProps } from "../../../lib/interfaces/project_card_interface";
 import UserProjectCardContent from "./CardContent";
 import UserProjectCardHeader from "./CardHeader";
 export default function ProjectsCard({ project }: UserProjectCardContainerProps){

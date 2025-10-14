@@ -1,6 +1,6 @@
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {ProjectData} from "@/app/(dashboard)/projects/manage/manage_project_interfaces"
+import {ProjectData} from "@/lib/interfaces/manage_project_interfaces"
 export default function ManageProjectHeading({project}: {project: ProjectData}) {
     return (
         <div className="flex items-center justify-between mb-4">

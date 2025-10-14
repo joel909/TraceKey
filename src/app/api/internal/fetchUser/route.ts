@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import fetchUserInfo from '@/lib/database/user/user/fetchUserInfo';
-import { AuthenticationError } from '@/lib/errors/AuthenticationError';
+import { AuthenticationError } from '@/lib/errors/extended_errors/AuthenticationError';
 
 export async function GET(request: Request) {
   try {

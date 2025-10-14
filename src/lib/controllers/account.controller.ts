@@ -1,10 +1,12 @@
 // lib/services/accountService.ts
 import UserHandler from "@/lib/database/user/UserHandler";
 import gen_auth_key from "@/lib/utils/auth_key";
-import { cleanInputForServer } from "@/lib/auth/api-functions/cleanInputs";
-import validateAuthInput from "@/lib/auth/frontend-functions/user-functions/validateAuthInput";
 import { setCookie } from "@/lib/cookies/setCookie";
-import { ValidationError } from "@/lib/errors/ValidationError";
+import { UserCreationRequestInterface, AccountCreationResponse } from "../interfaces/CreateUserInterfaces";
+import createUser from "../database/user/user/createUser";
+import createUserProject from "../database/user/projects/createProject";
+
+
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -14,38 +16,27 @@ const COOKIE_OPTIONS = {
   sameSite: 'lax' as 'lax' | 'strict' | 'none' | undefined,
 };
 
-export async function createAccountService({ username, email, password }: { username: string, email: string, password: string }) {
-  if (!username || !email || !password) {
-    throw new ValidationError("Username, email, and password are required", "missing_fields");
-  }
+export  class AuthController {
+  async createUser(data: UserCreationRequestInterface) : Promise<AccountCreationResponse> {
+    const authKey = gen_auth_key();
+    const { email, username: name, password } = data;
+    const requestUserCreation = await createUser(email, name, password, authKey);
+    const projectApiKey = gen_auth_key();
+    const requestProjectCreation =  await createUserProject(requestUserCreation.uuid,"Default Project",projectApiKey,"default_password","This is your default project","http://example.com");
 
-  const userHandler = new UserHandler();
+    await setCookie('auth_key', authKey, COOKIE_OPTIONS);
+    await setCookie('username', name, COOKIE_OPTIONS);
+    await setCookie('email', email, COOKIE_OPTIONS);
 
-  // clean inputs
-  username = cleanInputForServer(username);
-  email = cleanInputForServer(email);
-  password = cleanInputForServer(password);
 
-  // validate
-  const [isValid, fields, reason] = validateAuthInput(email, password, username);
-  if (!isValid) {
-    throw new ValidationError(reason, fields);
-  }
+  return requestUserCreation
+    }
 
-  const auth_key = gen_auth_key();
-
-  const user = await userHandler.createUser(email, username, password, auth_key);
-
-  // set cookies
-  await setCookie('auth_key', auth_key, COOKIE_OPTIONS);
-  await setCookie('username', username, COOKIE_OPTIONS);
-  await setCookie('email', email, COOKIE_OPTIONS);
-
-  return {
-    message: "Account created successfully!",
-    data: user,
-  };
 }
+
+export const authController = new AuthController();
+
+
 export  async function fetchUserAssociatedProjectsService(uuid: string) {
     const userHandler = new UserHandler();
     return await userHandler.fetchUserAssociatedProjects(uuid);

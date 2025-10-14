@@ -1,6 +1,6 @@
 import { CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink } from "lucide-react"
-import { UserProjectCardContainerProps } from "./project_interface"
+import { UserProjectCardContainerProps } from "../../../lib/interfaces/project_card_interface"
 export default function UserProjectCardHeader({ project }: UserProjectCardContainerProps) {
     return (
         <CardHeader className="pb-3">

@@ -2,7 +2,7 @@
 import { CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3 } from "lucide-react";
-import { UserProjectCardContainerProps } from "./project_interface";
+import { UserProjectCardContainerProps } from "../../../lib/interfaces/project_card_interface";
     
 export default function UserProjectCardContent({ project }: UserProjectCardContainerProps) {
     const onclick =() => {

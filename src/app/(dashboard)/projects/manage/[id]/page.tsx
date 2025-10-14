@@ -1,14 +1,14 @@
 // app/dashboard/page.tsx
-import {AuthorizationError} from "@/lib/errors/AuthorizationError";
+import {AuthorizationError} from "@/lib/errors/extended_errors/AuthorizationError";
 import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
-import { AuthenticationError } from "@/lib/errors/AuthenticationError";
+import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ManageProjectPage from "./manage";
 import { fetchUserAssociatedProjectsService } from "@/lib/controllers/account.controller";
-import{ProjectData} from "../manage_project_interfaces";
+import{ProjectData} from "../../../../../lib/interfaces/manage_project_interfaces";
 import ProjectController from "@/lib/controllers/project.controller";
-import { ValidationError } from "@/lib/errors/ValidationError";
-import { ResourceNotFoundError } from "@/lib/errors/ResourceNotFoundError";
+import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
+import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
 import InvalidManageProjectPage from "./invalidPage";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {

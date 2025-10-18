@@ -25,15 +25,16 @@ To ensure robust error handling and clean debugging, several custom error classe
 
 ---
 
-## 🗃️ Database Connection
+## 🗃️ Database Connection and Handleing
 
 We use the **`pg`** module to establish a **pooled connection** to the PostgreSQL database.
 This logic is implemented in [`db.ts`](https://github.com/joel909/TraceKey/blob/master/src/lib/database/config/db.ts).
 
 A custom `query` function takes three parameters — `purpose`, `text`, and `params` — and executes the query using `pool.query`.
 
-If the `purpose` is `FETCH_PROJECT_DETAILS_BY_ID` and `result.rows` is empty, it throws a `ResourceNotFoundError`.
-This error is then caught and passed to the `createDatabaseError` function, which transforms it into a consistent, centralized error format.
+It then proceeds to run a [`validateDatabaseResult`](https://github.com/joel909/TraceKey/blob/master/src/lib/database/config/databaseResultValidator.ts) this validates the result based on the requested source and makes sure the query contains appropirate information needed and it is correct else it throws relevent erros.
+
+on success the result row is returned else it goes into thje catch if there is an error which then goes into cetralised error handler and it tries to decode and elaborate the error it then throws the error which then gets passed on to the main function 
 
 ---
 
@@ -45,9 +46,9 @@ This approach ensures consistent and meaningful error reporting across the entir
 
 ---
 
-## 🔐 Auth Controller
+## 🔐 Auth Controller 
 
-The **Auth Controller** is responsible for user management and authentication logic.
+The **Auth Controller**(https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/auth.controller.ts) is responsible for user management and authentication logic.
 It provides functions to create, edit, and manage user accounts, validate authentication keys, and verify user authorization levels.
 
 **Core Functions:**

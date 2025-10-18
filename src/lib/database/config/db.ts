@@ -4,7 +4,8 @@ import { AuthenticationError } from "@/lib/errors/extended_errors/Authentication
 import { ValidationError } from '../../errors/extended_errors/ValidationError';
 import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
 import {DatabaseConnectionError} from "@/lib/errors/extended_errors/DatabaseConnectionError";
-import { createDatabaseError } from "@/lib/utils/error-handler";
+import { createDatabaseError } from "@/lib/errors/error-handler";
+import validateDatabaseResult from "./databaseResultValidator";
 
 
 dotenv.config();
@@ -20,9 +21,7 @@ export async function query(purpose:string,text: string, params?: any[]) {
   try {
     const result = await pool.query(text, params);
     //Request Validation
-    if(purpose === "FETCH_PROJECT_DETAILS_BY_ID" && result.rows.length === 0){
-      throw new ResourceNotFoundError('No project found with the given ID.');  
-    }
+    validateDatabaseResult(result, purpose);
     return result.rows;
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

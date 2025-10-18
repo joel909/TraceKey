@@ -16,10 +16,11 @@ import {
   SerializationError,
   ResourceLimitError,
   QueryTimeoutError
-} from '../errors/errors';
-import { PG_ERROR_CODES } from '../errors/errors/pg-error-codes';
-import { ValidationError } from '../errors/extended_errors/ValidationError';
-import { ResourceNotFoundError } from "../errors/extended_errors/ResourceNotFoundError";
+} from './errors';
+import { PG_ERROR_CODES } from './errors/pg-error-codes';
+import { ValidationError } from './extended_errors/ValidationError';
+import { ResourceNotFoundError } from "./extended_errors/ResourceNotFoundError";
+import { AuthenticationError } from './extended_errors/AuthenticationError';
 
 // Helper function to determine the appropriate error class based on PostgreSQL error code
 export function createDatabaseError(
@@ -35,7 +36,7 @@ export function createDatabaseError(
   // Handle purpose-specific errors
   if (purpose) {
     // Handle special cases based on query purpose
-    console.log("Purpose:", purpose, "Error Code:", err.code);
+    // console.log("Purpose:", purpose, "Error Code:", err.code);
     if (purpose === "CREATE_USER" && err.code === '23505') {
       // console.error("Unique constraint violation during user creation:", err);
       if (err.constraint === 'users_email_key') {
@@ -148,6 +149,7 @@ export function createDatabaseError(
   if (
     err instanceof ResourceNotFoundError ||
     err instanceof ValidationError ||
+    err instanceof AuthenticationError ||
     err instanceof DatabaseError
   ) {
     return err;

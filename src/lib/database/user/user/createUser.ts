@@ -3,7 +3,7 @@ import { query } from "../../config/db";
 import { ValidationError } from '../../../errors/extended_errors/ValidationError';
 import { cleanInputForServer } from "@/lib/utils/cleanInputs";
 import validateAuthInput from "@/lib/utils/validateAuthInput";
-import { AccountCreationResponse } from "@/lib/interfaces/CreateUserInterfaces";
+import { AccountCreationResponse } from "@/lib/interfaces/UserInterfaces";
 
 
 export default async function createUser(email: string, username: string, password: string, authKey: string) : Promise<AccountCreationResponse>{

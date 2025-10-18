@@ -10,3 +10,9 @@ export interface AccountCreationResponse {
     name: string;
     auth_key: string;
 }
+
+export interface UserInfoInterface {
+    uuid: string;
+    email: string;
+    name: string;
+}

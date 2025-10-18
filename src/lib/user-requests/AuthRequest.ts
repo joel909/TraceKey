@@ -1,7 +1,7 @@
 // src/lib/user/request.ts
 
 import { apiClient } from '@/lib/api/client';
-import {UserCreationRequestInterface} from '@/lib/interfaces/CreateUserInterfaces';
+import {UserCreationRequestInterface} from '@/lib/interfaces/UserInterfaces';
 import { ValidationError } from '../errors/extended_errors/ValidationError';
 
 

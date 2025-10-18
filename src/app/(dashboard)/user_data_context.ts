@@ -1,4 +1,7 @@
+import { UserInfoInterface } from '@/lib/interfaces/UserInterfaces';
 import { createContext } from 'react';
 
-// export const userDataContext = createContext({});
-export function CreateGlobalUserDataContext(UserData : 
+// export function UserDataContext(userData: UserInfoInterface) {
+//   return createContext(userData);
+// }
+export const testcontext = createContext("LIGHT")

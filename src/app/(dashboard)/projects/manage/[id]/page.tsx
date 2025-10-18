@@ -4,7 +4,7 @@ import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ManageProjectPage from "./manage";
-import { fetchUserAssociatedProjectsService } from "@/lib/controllers/account.controller";
+import { fetchUserAssociatedProjectsService } from "@/lib/controllers/auth.controller";
 import{ProjectData} from "../../../../../lib/interfaces/manage_project_interfaces";
 import ProjectController from "@/lib/controllers/project.controller";
 import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";

@@ -1,7 +1,7 @@
 import NewProjectButton from "@/components/buttons/NewProjectButton";
 import ProjectsCard from "@/components/cards/project-card/CardContainer";
-import { fetchUserAssociatedProjectsService } from "@/lib/controllers/account.controller";
-import  Project  from "@/lib/interfaces/project_interface";
+import { fetchUserAssociatedProjectsService } from "@/lib/controllers/auth.controller";
+import  {Project}  from "@/lib/interfaces/project_interface";
 
 // --- Mock Project Data ---
 // const projects = [
@@ -40,9 +40,9 @@ import  Project  from "@/lib/interfaces/project_interface";
 // ];
 
 // --- Main Projects Page ---
-export default async function ProjectsPage({projects,uuid}: {projects :Project[], uuid: string}) {
-    const projects_2 = await fetchUserAssociatedProjectsService(uuid);
-    console.log("Rendering Projects Page with projects:", projects_2);
+export default async function ProjectsPage({projects = []}: {projects :Project[]}) {
+    // const projects_2 = await fetchUserAssociatedProjectsService(uuid);
+    console.log("Rendering Projects Page with projects:", projects);
 
     return (
         <main className="flex-1 p-6">

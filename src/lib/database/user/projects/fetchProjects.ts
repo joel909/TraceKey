@@ -1,8 +1,8 @@
 import { query } from "../../config/db";
 import { fetchUserAssociatedProjects } from "../../config/queries";
-import  Project  from "../../../interfaces/project_interface";
+import  {Project}  from "../../../interfaces/project_interface";
 
-export default async function fetchProjects(uuid: string) {
+export default async function fetchProjects(uuid: string) : Promise<Project[]> {
     const userProjects = await query("FETCH USER ASSOCIATED PROJECTS",fetchUserAssociatedProjects, [uuid]);
     //console.log("Fetched User Projects:", userProjects);
     const project_set : Project[] = [];

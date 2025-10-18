@@ -5,7 +5,7 @@ const auth_routes = ["/dashboard", "/settings", "/project"];
 const non_auth_routes = ["/login", "/signup", "/api/logout"];
 
 export function middleware(request: NextRequest) {
-    //console.log("Middleware Executed");
+    console.log("Middleware Executed");
     const redirectTo = NextResponse.redirect;
     try{
         const auth_key = request.cookies.get('auth_key')?.value;

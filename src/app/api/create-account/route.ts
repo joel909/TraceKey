@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { ValidationError } from '@/lib/errors/extended_errors/ValidationError';
-import {authController} from '@/lib/controllers/account.controller';
+import {authController} from '@/lib/controllers/auth.controller';
 import generateFailedResponse from '@/lib/utils/response-generator/FailedResponse';
 import generateResponse from '@/lib/utils/response-generator/ValidResponse';
 import { DatabaseError } from '@/lib/errors/errors/DatabaseError';

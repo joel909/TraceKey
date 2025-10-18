@@ -65,3 +65,35 @@ It provides functions to create, edit, and manage user accounts, validate authen
   If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
 ---
+
+## 🗂️ Project Controller 
+The **Project Controller** [`project.controller.ts`](https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/project.controller.ts) is responsible for project management operations.
+It provides functions to create projects, fetch project details, and retrieve user-specific projects with proper authentication.
+
+**Core Functions:**
+
+* **`createProject(uuid: string, project_name: string, api_key: string, password: string, description: string, site_url: string)`** → Creates a new project for a user.
+  - **Parameters**: 
+    - `uuid` - User's unique identifier
+    - `project_name` - Name of the project
+    - `api_key` - API key for the project
+    - `password` - Password for project access
+    - `description` - Project description
+    - `site_url` - URL of the project site
+  
+  Returns a plain JSON object conforming to the CreateUserProjectResponse interface, containing the newly created project details.
+  If the operation fails, an appropriate error is thrown and handled centrally.
+
+* **`fetchSingleProjectDetailsByID(id: string)`** → Retrieves detailed information for a specific project by its ID.
+  - **Parameters**: `id` - The unique project identifier
+  
+  Returns project details as a plain JSON object containing comprehensive information about the specified project.
+  Logs project details to console for debugging purposes.
+  If the project is not found or operation fails, an appropriate error is thrown and handled centrally.
+
+* **`fetchUserProjects(auth_key: string)`** → Fetches all projects associated with a user's authentication key.
+  - **Parameters**: `auth_key` - The user's authentication key
+  
+  Returns an array of Project objects conforming to the Project interface, containing all projects owned by the authenticated user.
+  First verifies the authentication key to obtain the user's UUID, then retrieves all associated projects.
+  If no auth key is provided, an AuthenticationError is thrown. If verification or retrieval fails, an appropriate error is thrown and handled centrally.

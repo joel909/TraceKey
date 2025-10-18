@@ -48,12 +48,20 @@ This approach ensures consistent and meaningful error reporting across the entir
 
 ## 🔐 Auth Controller 
 
-The **Auth Controller** [`auth.controller.ts1`](https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/auth.controller.ts) is responsible for user management and authentication logic.
+The **Auth Controller** [`auth.controller.ts`](https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/auth.controller.ts) is responsible for user management and authentication logic.
 It provides functions to create, edit, and manage user accounts, validate authentication keys, and verify user authorization levels.
 
 **Core Functions:**
 
-* **`createUser(data: UserCreationRequestInterface)`** → Creates a new user and Returns a plain JSON object conforming to the AccountCreationResponse interface, containing details such as the user ID, email, and creation timestamp..
+* **`createUser(data: UserCreationRequestInterface)`** → Creates a new user with a default project and sets authentication cookies.
+  - **Parameters**: `data` - User creation request containing email, username, and password
+  Returns a plain JSON object conforming to the AccountCreationResponse interface, containing details such as the user ID, email, and creation timestamp.
+  Additionally creates a default project for the user and sets authentication cookies (auth_key, username, email).
   If the operation fails, an appropriate error is thrown and handled centrally.
+
+* **`verifyAuthKey(authKey?: string)`** → Verifies the provided authentication key and returns user information.
+  - **Parameters**: `authKey` (optional) - The authentication key to verify
+  Returns a plain JSON object conforming to the UserInfoInterface, containing user details associated with the authentication key.
+  If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
 ---

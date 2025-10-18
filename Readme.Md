@@ -48,7 +48,7 @@ This approach ensures consistent and meaningful error reporting across the entir
 
 ## 🔐 Auth Controller 
 
-The **Auth Controller**(https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/auth.controller.ts) is responsible for user management and authentication logic.
+The **Auth Controller** [`auth.controller.ts1`](https://github.com/joel909/TraceKey/blob/master/src/lib/controllers/auth.controller.ts) is responsible for user management and authentication logic.
 It provides functions to create, edit, and manage user accounts, validate authentication keys, and verify user authorization levels.
 
 **Core Functions:**

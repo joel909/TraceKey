@@ -64,6 +64,14 @@ It provides functions to create, edit, and manage user accounts, validate authen
   Returns a plain JSON object conforming to the UserInfoInterface, containing user details associated with the authentication key.
   If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
+**verifyUserProjectAccess(uuid: string, projectId: string)** → Verifies that a user has access rights to a specific project.
+
+**Parameters:**
+- `uuid` - User's unique identifier
+- `projectId` - The unique project identifier to verify access for
+
+Does not return any value. This method performs access verification and throws an authorization error if the user does not have access rights to the specified project. If verification succeeds, the method completes without returning data. If verification fails or an error occurs during the process, an appropriate error is thrown and can be handled by the parent function.
+
 ---
 
 ## 🗂️ Project Controller 
@@ -84,12 +92,14 @@ It provides functions to create projects, fetch project details, and retrieve us
   Returns a plain JSON object conforming to the CreateUserProjectResponse interface, containing the newly created project details.
   If the operation fails, an appropriate error is thrown and handled centrally.
 
-* **`fetchSingleProjectDetailsByID(id: string)`** → Retrieves detailed information for a specific project by its ID.
-  - **Parameters**: `id` - The unique project identifier
-  
-  Returns project details as a plain JSON object containing comprehensive information about the specified project.
-  Logs project details to console for debugging purposes.
-  If the project is not found or operation fails, an appropriate error is thrown and handled centrally.
+**fetchSingleProjectDetailsByID(id: string, auth_key: string)** → Retrieves detailed information for a specific project by its ID with authentication and access verification.
+
+**Parameters:**
+- `id` - The unique project identifier
+- `auth_key` - The user's authentication key for verification
+
+Returns a plain JSON object conforming to the `SingleProjectDetails` interface, containing comprehensive information about the specified project. First verifies the authentication key to obtain the user's UUID, then checks if the user has access rights to the requested project before fetching the project details. If the auth key is invalid, an `AuthenticationError` is thrown. If the user lacks access to the project, an authorization error is thrown. If the project is not found or operation fails, an appropriate error is thrown and handled centrally.
+
 
 * **`fetchUserProjects(auth_key: string)`** → Fetches all projects associated with a user's authentication key.
   - **Parameters**: `auth_key` - The user's authentication key

@@ -21,6 +21,7 @@ import { PG_ERROR_CODES } from './errors/pg-error-codes';
 import { ValidationError } from './extended_errors/ValidationError';
 import { ResourceNotFoundError } from "./extended_errors/ResourceNotFoundError";
 import { AuthenticationError } from './extended_errors/AuthenticationError';
+import { AuthorizationError } from './extended_errors/AuthorizationError';
 
 // Helper function to determine the appropriate error class based on PostgreSQL error code
 export function createDatabaseError(
@@ -148,6 +149,7 @@ export function createDatabaseError(
   
   if (
     err instanceof ResourceNotFoundError ||
+    err instanceof AuthorizationError ||
     err instanceof ValidationError ||
     err instanceof AuthenticationError ||
     err instanceof DatabaseError

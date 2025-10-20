@@ -20,3 +20,11 @@ export interface CreateUserProjectResponse {
     uuid: string;
     timestamp: Date;
 }
+
+export interface SingleProjectDetails {
+    id : string,
+    project_name : string,
+    api_key: string;
+    description: string;
+    site_url: string;
+}

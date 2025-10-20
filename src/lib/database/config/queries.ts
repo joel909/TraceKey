@@ -35,3 +35,8 @@ export const fetchSingleProjectDataByIDQuery =
 `
 SELECT project_name,api_key,description,site_url FROM projects WHERE project_id = $1
 `
+
+export const verifyUserProjectAccessQuery =
+`
+    SELECT * FROM user_projects WHERE uuid = $1 AND project_id = $2
+`;

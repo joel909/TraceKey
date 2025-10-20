@@ -3,7 +3,6 @@ import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ProjectsPage from "@/app/(dashboard)/projects/projects_main";
-import { fetchUserAssociatedProjectsService } from "@/lib/controllers/auth.controller";
 import { DatabaseConnectionError } from "@/lib/errors/extended_errors/DatabaseConnectionError";
 import InvalidManageProjectPage from "./manage/[id]/invalidPage";
 import { cookies } from "next/headers";

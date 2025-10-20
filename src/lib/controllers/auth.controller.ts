@@ -1,13 +1,10 @@
 // lib/services/accountService.ts
-import UserHandler from "@/lib/database/user/UserHandler";
 import gen_auth_key from "@/lib/utils/auth_key";
 import { setCookie } from "@/lib/cookies/setCookie";
 import { UserCreationRequestInterface, AccountCreationResponse, UserInfoInterface } from "../interfaces/UserInterfaces";
 import createUser from "../database/user/user/createUser";
-import createUserProject from "../database/user/projects/createProject";
 import fetchUserInfo from "../database/user/user/fetchUserInfo";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
-import fetchProjects from "../database/user/projects/fetchProjects";
 import { projectController } from "./project.controller";
 import verifyUserProjectAccess from "../database/user/projects/verifyUserProjectAccess";
 
@@ -32,7 +29,7 @@ export class AuthController {
     const { email, username: name, password } = data;
     const requestUserCreation = await createUser(email, name, password, authKey);
     const projectApiKey = gen_auth_key();
-    const requestProjectCreation =  await projectController.createProject(requestUserCreation.uuid,"Default Project",projectApiKey,"default_password","This is your default project",`https://tracekey.joeljoby.com/project/sample/${projectApiKey}`);
+    await projectController.createProject(requestUserCreation.uuid,"Default Project",projectApiKey,"default_password","This is your default project",`https://tracekey.joeljoby.com/project/sample/${projectApiKey}`);
     await setCookie('auth_key', authKey, COOKIE_OPTIONS);
     await setCookie('username', name, COOKIE_OPTIONS);
     await setCookie('email', email, COOKIE_OPTIONS);

@@ -25,138 +25,138 @@ import { AuthorizationError } from './extended_errors/AuthorizationError';
 
 // Helper function to determine the appropriate error class based on PostgreSQL error code
 export function createDatabaseError(
-  err: any, 
+  _err: any, 
   query?: string, 
   purpose?: string
 ): Error {
   // Handle non-PostgreSQL errors with specific codes
-  if (["ECONNREFUSED", "ENOTFOUND", "ETIMEDOUT", "ECONNRESET"].includes(err.code)) {
-    return new NetworkError(`Failed to connect to the database server: ${err.message}`, err.code, err);
+  if (["ECONNREFUSED", "ENOTFOUND", "ETIMEDOUT", "ECONNRESET"].includes(_err.code)) {
+    return new NetworkError(`Failed to connect to the database server: ${_err.message}`, _err.code, _err);
   }
 
   // Handle purpose-specific errors
   if (purpose) {
     // Handle special cases based on query purpose
-    // console.log("Purpose:", purpose, "Error Code:", err.code);
-    if (purpose === "CREATE_USER" && err.code === '23505') {
-      // console.error("Unique constraint violation during user creation:", err);
-      if (err.constraint === 'users_email_key') {
+    // console.log("Purpose:", purpose, "Error Code:", _err.code);
+    if (purpose === "CREATE_USER" && _err.code === '23505') {
+      // console.error("Unique constraint violation during user creation:", _err);
+      if (_err.constraint === 'users_email_key') {
         return new ValidationError('A user with this email already exists.', 'email');
-      } else if (err.constraint === 'users_username_key') {
+      } else if (_err.constraint === 'users_username_key') {
         return new ValidationError('This username is already taken.', 'username');
       }
     }
-    else if (purpose === "FETCH_PROJECT_DETAILS_BY_ID" && err.code === "22P02") {
+    else if (purpose === "FETCH_PROJECT_DETAILS_BY_ID" && _err.code === "22P02") {
       return new ValidationError('The Resource ID is invalid.', 'project_id');
     }
   }
 
   // Map PostgreSQL errors based on error code
-  if (err.code && PG_ERROR_CODES[err.code]) {
-    const errorInfo = PG_ERROR_CODES[err.code];
+  if (_err.code && PG_ERROR_CODES[_err.code]) {
+    const errorInfo = PG_ERROR_CODES[_err.code];
     
     switch (errorInfo.type) {
       case "connection":
-        if (err.code === "28000" || err.code === "28P01") {
+        if (_err.code === "28000" || _err.code === "28P01") {
           return new DatabaseAuthenticationError(
             errorInfo.message || 'Database authentication failed', 
-            err.code, 
-            err
+            _err.code, 
+            _err
           );
-        } else if (err.code === "53300") {
+        } else if (_err.code === "53300") {
           return new ConnectionLimitError(
             errorInfo.message || 'Too many database connections', 
-            err.code, 
-            err
+            _err.code, 
+            _err
           );
         } else {
           return new DatabaseConnectionError(
-            errorInfo.message || `Database connection error: ${err.message}`, 
-            err.code, 
-            err
+            errorInfo.message || `Database connection error: ${_err.message}`, 
+            _err.code, 
+            _err
           );
         }
 
       case "query":
         if (errorInfo.subtype === "syntax_error") {
           return new SyntaxError(
-            `SQL syntax error: ${err.message}`, 
-            err.code, 
+            `SQL syntax error: ${_err.message}`, 
+            _err.code, 
             query, 
-            err
+            _err
           );
         } else {
           return new QueryError(
-            `${errorInfo.message}: ${err.message}`, 
-            err.code, 
+            `${errorInfo.message}: ${_err.message}`, 
+            _err.code, 
             query, 
-            err
+            _err
           );
         }
 
       case "constraint":
         switch (errorInfo.subtype) {
           case "unique_violation":
-            return new UniqueViolationError(err.constraint, err.code, query, err);
+            return new UniqueViolationError(_err.constraint, _err.code, query, _err);
           case "foreign_key_violation":
-            return new ForeignKeyViolationError(err.constraint, err.code, query, err);
+            return new ForeignKeyViolationError(_err.constraint, _err.code, query, _err);
           case "not_null_violation":
-            return new NotNullViolationError(err.column, err.code, query, err);
+            return new NotNullViolationError(_err.column, _err.code, query, _err);
           case "check_violation":
-            return new CheckConstraintViolationError(err.constraint, err.code, query, err);
+            return new CheckConstraintViolationError(_err.constraint, _err.code, query, _err);
           default:
             return new ConstraintViolationError(
-              `${errorInfo.message}: ${err.message}`, 
-              err.code, 
-              err.constraint, 
+              `${errorInfo.message}: ${_err.message}`, 
+              _err.code, 
+              _err.constraint, 
               query, 
-              err
+              _err
             );
         }
 
       case "transaction":
         if (errorInfo.subtype === "deadlock_detected") {
-          return new DeadlockError(err.code, query, err);
+          return new DeadlockError(_err.code, query, _err);
         } else if (errorInfo.subtype === "serialization_failure") {
-          return new SerializationError(err.code, query, err);
+          return new SerializationError(_err.code, query, _err);
         } else {
           return new TransactionError(
-            `${errorInfo.message}: ${err.message}`, 
-            err.code, 
+            `${errorInfo.message}: ${_err.message}`, 
+            _err.code, 
             query, 
-            err
+            _err
           );
         }
 
       case "resource":
         if (errorInfo.subtype === "query_canceled") {
-          return new QueryTimeoutError(err.code, query, err);
+          return new QueryTimeoutError(_err.code, query, _err);
         } else {
           return new ResourceLimitError(
-            `${errorInfo.message}: ${err.message}`, 
-            err.code, 
+            `${errorInfo.message}: ${_err.message}`, 
+            _err.code, 
             query, 
-            err
+            _err
           );
         }
 
       default:
-        return new DatabaseError(`Database error: ${errorInfo.message}`, err.code, err);
+        return new DatabaseError(`Database error: ${errorInfo.message}`, _err.code, _err);
     }
   }
 
   // Handle already thrown custom errors
   
   if (
-    err instanceof ResourceNotFoundError ||
-    err instanceof AuthorizationError ||
-    err instanceof ValidationError ||
-    err instanceof AuthenticationError ||
-    err instanceof DatabaseError
+    _err instanceof ResourceNotFoundError ||
+    _err instanceof AuthorizationError ||
+    _err instanceof ValidationError ||
+    _err instanceof AuthenticationError ||
+    _err instanceof DatabaseError
   ) {
-    return err;
+    return _err;
   }
 
   // For any other unknown errors
-  return new DatabaseError(`Unexpected database error: ${err.message}`, err.code, err);
+  return new DatabaseError(`Unexpected database error: ${_err.message}`, _err.code, _err);
 }

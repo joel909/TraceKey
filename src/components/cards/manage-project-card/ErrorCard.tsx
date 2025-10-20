@@ -7,7 +7,8 @@ import { FileX, ArrowLeft, Flag } from "lucide-react"
 
 export default  function ErrorCard({error,messageLine1,messageLine2,reason,projectId,callback}: {error:string,messageLine1:string,messageLine2:string,reason:string,projectId:string,callback?:()=>void})   {
   console.log("just to use call back ",callback)
-  const [isProjectID, setIsProjectID] = useState(projectId !== "");
+  const isProjectID = projectId !== "";
+  // const [isProjectID, setIsProjectID] = useState(projectId !== "");
   const [isReporting, setIsReporting] = useState(false);
   const handleReturnToProjects = () => {
     window.location.href = '/projects';

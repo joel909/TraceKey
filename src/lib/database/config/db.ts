@@ -1,9 +1,5 @@
 import {Pool} from "pg";
 import dotenv from "dotenv";
-import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
-import { ValidationError } from '../../errors/extended_errors/ValidationError';
-import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
-import {DatabaseConnectionError} from "@/lib/errors/extended_errors/DatabaseConnectionError";
 import { createDatabaseError } from "@/lib/errors/error-handler";
 import validateDatabaseResult from "./databaseResultValidator";
 

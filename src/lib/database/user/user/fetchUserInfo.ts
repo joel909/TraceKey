@@ -1,7 +1,5 @@
-import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { query } from "../../config/db";
 import { fetchUserByEmailQuery } from "../../config/queries";
-import { DatabaseConnectionError } from "@/lib/errors/extended_errors/DatabaseConnectionError";
 import { UserInfoInterface } from "@/lib/interfaces/UserInterfaces";
 
 export default async function fetchUserInfo(api_key: string) : Promise<UserInfoInterface> {

@@ -1,5 +1,4 @@
 // app/dashboard/page.tsx
-import {withAuth} from "@/lib/auth/ssr-functions/fetchUserData";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ProjectsPage from "@/app/(dashboard)/projects/projects_main";

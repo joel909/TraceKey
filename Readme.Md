@@ -64,7 +64,7 @@ It provides functions to create, edit, and manage user accounts, validate authen
   Returns a plain JSON object conforming to the UserInfoInterface, containing user details associated with the authentication key.
   If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
-**verifyUserProjectAccess(uuid: string, projectId: string)** → Verifies that a user has access rights to a specific project.
+* **`verifyUserProjectAccess(uuid: string, projectId: string)* **` → Verifies that a user has access rights to a specific project.
 
 **Parameters:**
 - `uuid` - User's unique identifier
@@ -92,7 +92,7 @@ It provides functions to create projects, fetch project details, and retrieve us
   Returns a plain JSON object conforming to the CreateUserProjectResponse interface, containing the newly created project details.
   If the operation fails, an appropriate error is thrown and handled centrally.
 
-**fetchSingleProjectDetailsByID(id: string, auth_key: string)** → Retrieves detailed information for a specific project by its ID with authentication and access verification.
+* **`fetchSingleProjectDetailsByID(id: string, auth_key: string)* **` → Retrieves detailed information for a specific project by its ID with authentication and access verification.
 
 **Parameters:**
 - `id` - The unique project identifier

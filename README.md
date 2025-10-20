@@ -64,6 +64,13 @@ It provides functions to create, edit, and manage user accounts, validate authen
   Returns a plain JSON object conforming to the UserInfoInterface, containing user details associated with the authentication key.
   If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
+* **`verifyUserProjectAccess(uuid: string, projectId: string)`** → Verifies that a user has access rights to a specific project.
+  - **Parameters:**
+  - `uuid` - User's unique identifier
+  - `projectId` - The unique project identifier to verify access for
+
+  Does not return any value. This method performs access verification and throws an authorization error if the user does not have access rights to the specified project. If verification succeeds, the method completes without returning data. If verification fails or an error occurs during the process, an appropriate error is thrown and handled centrally.
+
 ---
 
 ## 🗂️ Project Controller 

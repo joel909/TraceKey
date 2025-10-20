@@ -57,19 +57,23 @@ It provides functions to create, edit, and manage user accounts, validate authen
   - **Parameters**: `data` - User creation request containing email, username, and password
   Returns a plain JSON object conforming to the AccountCreationResponse interface, containing details such as the user ID, email, and creation timestamp.
   Additionally creates a default project for the user and sets authentication cookies (auth_key, username, email).
-  If the operation fails, an appropriate error is thrown and handled centrally.
+  If the operation fails, an appropriate error is thrown and handled centrally
+
+  -returns the data used to create the user if the operation is successfull 
 
 * **`verifyAuthKey(authKey?: string)`** → Verifies the provided authentication key and returns user information.
   - **Parameters**: `authKey` (optional) - The authentication key to verify
   Returns a plain JSON object conforming to the UserInfoInterface, containing user details associated with the authentication key.
   If no auth key is provided or verification fails, an AuthenticationError is thrown and handled centrally.
 
+  -Returns the uuid name and email upon successfull verification
+
 * **`verifyUserProjectAccess(uuid: string, projectId: string)`** → Verifies that a user has access rights to a specific project.
   - **Parameters:**
   - `uuid` - User's unique identifier
   - `projectId` - The unique project identifier to verify access for
 
-  Does not return any value. This method performs access verification and throws an authorization error if the user does not have access rights to the specified project. If verification succeeds, the method completes without returning data. If verification fails or an error occurs during the process, an appropriate error is thrown and handled centrally.
+  -Does not return any value. This method performs access verification and throws an authorization error if the user does not have access rights to the specified project. If verification succeeds, the method completes without returning data. If verification fails or an error occurs during the process, an appropriate error is thrown and handled centrally.
 
 ---
 

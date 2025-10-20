@@ -25,33 +25,6 @@ export default async function dashboard() {
           <ActivityTable data={recentActivity} />
         </RecentActivityCard>
       </main>
-    // <div className="flex min-h-screen w-full flex-col" style={{ backgroundColor: '#FAFDD6' }}>
-    //   {/* ===== Subtle Header Bar ===== */}
-    //   <header className="sticky top-0 flex h-16 items-center justify-between gap-4 border-b border-gray-300/50 bg-white/40 backdrop-blur-md px-6 z-50 shadow-sm">
-    //     <h1 className="text-2xl font-bold text-[#647FBC]">TraceKey</h1>
-    //     <NavBar userName={userName} userEmail={email} />
-    //   </header>
 
-    //   <div className="flex flex-1">
-    //     {/* ===== Subtle Sidebar Navigation ===== */}
-    //     <SidebarNavBar active_tab="dashboard" />
-
-    //     {/* ===== Main Content Area ===== */}
-    //     <main className="flex-1 p-6">
-    //       <PageTitle1 Heading="Dashboard" />
-
-    //       <StatcardContainer>
-    //         <StatCardDashboard title="Unique Users" value="1,204" Icon={Users} />
-    //         <StatCardDashboard title="Total Visits" value="15,302" Icon={Waypoints} />
-    //         <StatCardDashboard title="Top Region" value="North America" Icon={Globe} />
-    //       </StatcardContainer>
-
-    //       {/* --- Recent Activity Table (Using your blue) --- */}
-    //       <RecentActivityCard>
-    //         <ActivityTable data={recentActivity} />
-    //       </RecentActivityCard>
-    //     </main>
-    //   </div>
-    // </div>
     )
 }

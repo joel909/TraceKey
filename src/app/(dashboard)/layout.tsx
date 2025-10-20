@@ -7,7 +7,6 @@ import { DatabaseConnectionError } from "@/lib/errors/extended_errors/DatabaseCo
 import { redirect } from 'next/navigation';
 import InvalidManageProjectPage from "@/app/(dashboard)/projects/manage/[id]/invalidPage";
 import {authController} from "@/lib/controllers/auth.controller";
-import { UserInfoInterface } from "@/lib/interfaces/UserInterfaces";
 
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -25,11 +24,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
         // console.log("User Data:", userData);
       }
       catch(e){
-      if (e instanceof AuthenticationError) {
-          // console.log("Authentication Error:", e.message);
-          // console.log("Logging out user due to authentication error.");
+      if (e instanceof AuthenticationError) {;
           redirect('/logout');
-          //redirect('/signup');
       }
       else if (e instanceof DatabaseConnectionError){
         console.error("Database Connection Error On Server End:", e.message);
@@ -46,11 +42,6 @@ export default async function DashboardLayout({ children }: { children: React.Re
 
       console.error("Error fetching user data in layout:", e);
     }
-    // console.log("DATATATATAT", useContext(testcontext));
-
-    // userData = AuthRequest;
-    // const userName = AuthRequest.name;
-    // const email = AuthRequest?.email ?? "";
 
   return(
     <div className="flex min-h-screen w-full flex-col" style={{ backgroundColor: '#FAFDD6' }}>

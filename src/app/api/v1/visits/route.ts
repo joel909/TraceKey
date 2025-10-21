@@ -5,11 +5,12 @@ import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { api_key } = body;
+    const { api_key, additionalDeviceInfo = {} } = body;
     if (!api_key) {return NextResponse.json({ message: "API key is missing" }, { status: 400 });}
     const userClientController = new userClientRequestsController(req);
 
     try{
+        // const additionalDeviceInfo = req.
         const ip_address = await userClientController.getClientIP();
         const user_agent = req.headers.get("user-agent") || "Unknown User Agent";
         const refferer_url = req.headers.get("referer") || "";

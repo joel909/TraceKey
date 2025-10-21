@@ -4,10 +4,20 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Code, PartyPopper, BarChartHorizontal } from "lucide-react";
 import { apiClient } from '@/lib/user-requests/api/client';
+import {DeviceInfo} from '@/lib/interfaces/deviceInfoInterface';
 
-// The props type is now { params: Promise<{ apikey: string }> }
+// Define types for the data we're working with
+interface UaHighEntropyValues {
+  brands: { brand: string, version: string }[];
+  mobile: boolean;
+  platform: string;
+  model: string;
+  platformVersion: string;
+}
+
+
+
 export default function SampleAnalyticsPageThemed({ params }: { params: Promise<{ apikey: string }> }) {
-  // `use(params)` correctly unwraps the promise to get the object
   const { apikey } = use(params);
 
   useEffect(() => {
@@ -16,9 +26,45 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
         console.error("API key is missing.");
         return;
       }
-      console.log("TraceKey: Tracking visit with API Key:", apikey);
+
+      // --- Start of New Device Info Logic ---
+      let deviceInfo: DeviceInfo = {}; // Default to an empty object
+
       try {
-        await apiClient.post('/v1/visits', { api_key: apikey });
+        // 1. Check if the modern API is available
+        if ((navigator as any).userAgentData) {
+          // 2. Request the detailed ("high entropy") values
+          const uaData = await (navigator as any).userAgentData.getHighEntropyValues([
+            "platform",
+            "platformVersion",
+            "model"
+          ]) as UaHighEntropyValues;
+
+          // 3. Find the real brand name, ignoring the junk value
+          const primaryBrand = uaData.brands.find(b => b.brand !== "Not;A=Brand");
+          
+          // 4. Populate our deviceInfo object with the clean data
+          deviceInfo = {
+            brand: primaryBrand?.brand,
+            model: uaData.model,
+            platform: uaData.platform,
+            platformVersion: uaData.platformVersion,
+          };
+        }
+      } catch (error) {
+        console.warn("Could not get detailed device info, proceeding with basic tracking.", error);
+        // If it fails, deviceInfo remains an empty object, and the visit is still tracked.
+      }
+      // --- End of New Device Info Logic ---
+
+      console.log("TraceKey: Tracking visit with API Key and Device Info:", { apikey, deviceInfo });
+
+      try {
+        // 5. Send the API key AND the collected device info in one request
+        await apiClient.post('/v1/visits', { 
+          api_key: apikey,
+          device_info: deviceInfo // Nest the device info for clean data structure
+        });
         console.log("TraceKey: Visit tracked successfully!");
       } catch (error) {
         console.error("TraceKey: Failed to track visit.", error);
@@ -38,7 +84,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
             </div>
           </div>
           <CardTitle className="text-4xl font-bold text-gray-800">
-            It is Working!
+            It's Working!
           </CardTitle>
           <CardDescription className="text-lg text-gray-500 pt-2">
             This sample page confirms that TraceKey is successfully tracking visitors.
@@ -51,7 +97,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
                 How It Works
             </h3>
             <p className="mb-4 text-gray-600">
-              When this page loaded, our script sent a POST request to 
+              When this page loaded, our script collected your accurate device info and sent it in a POST request to 
               <code className="bg-gray-200 text-gray-700 font-mono text-sm px-1.5 py-0.5 rounded-md mx-1">
                 /api/v1/visits
               </code>
@@ -61,10 +107,10 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
               </code>.
             </p>
             <p className="text-gray-600">
-              This request included headers, IP address, device details, and more. We then decode it all on our end.
+              This now includes details like your phone's model, brand, and OS version, bypassing any privacy spoofing.
             </p>
             <p className="mt-4 text-tracekey-primary font-semibold">
-              YAY! Your first visitor (you!) is now logged.
+              YAY! Your first visitor (you!) is now logged with correct device data.
             </p>
           </div>
           
@@ -72,7 +118,6 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
             <p className="text-xl font-semibold text-gray-800 mb-6">
               You can now check your project dashboard to see the details. Enjoy, have fun!
             </p>
-            {/* Use useRouter for navigation */}
             <Button 
               size="lg"
               onClick={() => window.location.href = "/dashboard"}

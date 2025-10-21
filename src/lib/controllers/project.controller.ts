@@ -3,6 +3,7 @@ import createUserClientRecord from "../database/user/projects/createUserClientip
 import fetchProjects from "../database/user/projects/fetchProjects";
 import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
+import { DeviceInfo } from "../interfaces/deviceInfoInterface";
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
 
@@ -33,8 +34,8 @@ export class ProjectController {
         return fetchUserProjects;
       }
 
-    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string): Promise<void> {
-        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location);
+    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {}): Promise<void> {
+        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
 
     }
 

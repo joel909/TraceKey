@@ -48,6 +48,6 @@ export const fetchProjectIDByAPIKeyQuery =
 
 export const createUserClientIPRecordQuery =
 `
-INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region)
-VALUES ($1, $2, $3, $4, $5, $6,$7,$8)
+INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region,additional_device_info)
+VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9)
 `

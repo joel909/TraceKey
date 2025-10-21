@@ -17,3 +17,10 @@ export interface DeviceInfoInterface {
     architecture?: string;
   };
 }
+
+export interface DeviceInfo {
+  brand?: string;
+  model?: string;
+  platform?: string;
+  platformVersion?: string;
+}

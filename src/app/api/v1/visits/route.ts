@@ -4,8 +4,8 @@ import userClientRequestsController from "@/lib/controllers/client.requests.cont
 
 export async function POST(req: NextRequest) {
     const userClientController = new userClientRequestsController(req);
-    const clientIp = userClientController.getClientIP();
-    const device_information = userClientController.getDeviceInfo();
+    const clientIp = await userClientController.getClientIP();
+    const device_information = await userClientController.getDeviceInfo();
     console.log("Client IP :", clientIp);
     console.log("Device Information :", device_information);
     return NextResponse.json({ message: "Visit logged successfully", clientIp, device_information }, { status: 200 });

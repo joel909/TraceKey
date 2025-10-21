@@ -19,16 +19,15 @@ export async function POST(req: NextRequest) {
       continue;
     }
 
-    // Take all IPs (in case multiple are present)
     const ips = raw.split(",").map(s => s.trim()).filter(Boolean);
     foundIps[key] = ips.join(", ");
   }
 
-  // Detect most likely client IP from first found header
+  // Detect likely client IP
   let clientIp =
     Object.values(foundIps).find(v => v && v.length > 0) || null;
 
-  // Development fallback — fetch both IPv6 and IPv4 from external APIs
+  // Dev fallback: fetch IPv4 & IPv6 from ipify
   let ipv6: string | null = null;
   let ipv4: string | null = null;
 
@@ -37,24 +36,28 @@ export async function POST(req: NextRequest) {
       const res6 = await fetch("https://api64.ipify.org?format=text");
       const text6 = (await res6.text()).trim();
       if (text6 && text6.includes(":")) ipv6 = text6;
-    } catch {
-      ipv6 = null;
-    }
+    } catch {}
 
     try {
       const res4 = await fetch("https://api.ipify.org?format=text");
       const text4 = (await res4.text()).trim();
       if (text4 && text4.includes(".")) ipv4 = text4;
-    } catch {
-      ipv4 = null;
-    }
+    } catch {}
 
-    // Use whichever was successfully fetched if no client IP was detected
     if (!clientIp) clientIp = ipv6 || ipv4 || "unknown";
   }
 
-  // Final fallback
-  if (!clientIp) clientIp = req.headers.get("x-forwarded-for") || req.ip || "unknown";
+  // Final fallback (works both locally and in prod)
+  if (!clientIp) {
+    const forwardedFor = req.headers.get("x-forwarded-for");
+    if (forwardedFor) {
+      clientIp = forwardedFor.split(",")[0].trim();
+    } else {
+      // req.ip doesn’t exist on NextRequest, so parse from request metadata
+      const conn = (req as any)?._req?.socket?.remoteAddress;
+      clientIp = conn || "unknown";
+    }
+  }
 
   console.log("Resolved IP info:", {
     official: clientIp,

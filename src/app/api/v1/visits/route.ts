@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
-  // Common IP headers
   const headerKeys = [
     "x-client-ip",
     "x-forwarded-for",
@@ -10,47 +9,64 @@ export async function POST(req: NextRequest) {
     "x-real-ip",
   ];
 
-  let clientIp: string | null = null;
+  const foundIps: Record<string, string | null> = {};
 
-  // Try to extract IP from headers
+  // Collect all IPs from headers
   for (const key of headerKeys) {
     const raw = req.headers.get(key);
-    if (!raw) continue;
-
-    // Some headers may have multiple IPs, we take the first non-empty
-    const first = raw.split(",").map(s => s.trim()).find(Boolean);
-    if (first) {
-      clientIp = first;
-      break;
+    if (!raw) {
+      foundIps[key] = null;
+      continue;
     }
+
+    // Take all IPs (in case multiple are present)
+    const ips = raw.split(",").map(s => s.trim()).filter(Boolean);
+    foundIps[key] = ips.join(", ");
   }
 
-  // Function to detect if it's IPv6
-  const isIPv6 = (ip: string) => ip.includes(":") && !ip.includes(".");
+  // Detect most likely client IP from first found header
+  let clientIp =
+    Object.values(foundIps).find(v => v && v.length > 0) || null;
 
-  // If no IP from headers, try external APIs (preferring IPv6)
-  if (!clientIp && process.env.NODE_ENV === "development") {
+  // Development fallback — fetch both IPv6 and IPv4 from external APIs
+  let ipv6: string | null = null;
+  let ipv4: string | null = null;
+
+  if (process.env.NODE_ENV === "development") {
     try {
-      // Try IPv6 lookup first
-      let res = await fetch("https://api64.ipify.org?format=text");
-      let text = (await res.text()).trim();
-      if (text && isIPv6(text)) {
-        clientIp = text;
-      } else {
-        // fallback to IPv4
-        res = await fetch("https://api.ipify.org?format=text");
-        text = (await res.text()).trim();
-        if (text) clientIp = text;
-      }
-    } catch (err) {
-      console.error("Failed to fetch IP:", err);
-      clientIp = "unknown";
+      const res6 = await fetch("https://api64.ipify.org?format=text");
+      const text6 = (await res6.text()).trim();
+      if (text6 && text6.includes(":")) ipv6 = text6;
+    } catch {
+      ipv6 = null;
     }
+
+    try {
+      const res4 = await fetch("https://api.ipify.org?format=text");
+      const text4 = (await res4.text()).trim();
+      if (text4 && text4.includes(".")) ipv4 = text4;
+    } catch {
+      ipv4 = null;
+    }
+
+    // Use whichever was successfully fetched if no client IP was detected
+    if (!clientIp) clientIp = ipv6 || ipv4 || "unknown";
   }
 
-  if (!clientIp) clientIp = "unknown";
+  // Final fallback
+  if (!clientIp) clientIp = req.headers.get("x-forwarded-for") || req.ip || "unknown";
 
-  console.log("THE IP IS:", clientIp);
+  console.log("Resolved IP info:", {
+    official: clientIp,
+    ipv4,
+    ipv6,
+    allHeaders: foundIps,
+  });
 
-  return NextResponse.json({ ip: clientIp });
+  return NextResponse.json({
+    officialClientIp: clientIp,
+    ipv4,
+    ipv6,
+    allHeaderIps: foundIps,
+  });
 }

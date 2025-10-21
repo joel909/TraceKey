@@ -63,7 +63,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
         // 5. Send the API key AND the collected device info in one request
         await apiClient.post('/v1/visits', { 
           api_key: apikey,
-          device_info: deviceInfo // Nest the device info for clean data structure
+          additionalDeviceInfo: deviceInfo // Nest the device info for clean data structure
         });
         console.log("TraceKey: Visit tracked successfully!");
       } catch (error) {

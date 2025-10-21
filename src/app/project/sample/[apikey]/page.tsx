@@ -84,7 +84,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
             </div>
           </div>
           <CardTitle className="text-4xl font-bold text-gray-800">
-            It's Working!
+            It&apos;s Working!
           </CardTitle>
           <CardDescription className="text-lg text-gray-500 pt-2">
             This sample page confirms that TraceKey is successfully tracking visitors.
@@ -107,7 +107,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
               </code>.
             </p>
             <p className="text-gray-600">
-              This now includes details like your phone's model, brand, and OS version, bypassing any privacy spoofing.
+              This now includes details like your phone&apos;s model, brand, and OS version, bypassing any privacy spoofing.
             </p>
             <p className="mt-4 text-tracekey-primary font-semibold">
               YAY! Your first visitor (you!) is now logged with correct device data.

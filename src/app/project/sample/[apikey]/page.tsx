@@ -38,7 +38,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
             </div>
           </div>
           <CardTitle className="text-4xl font-bold text-gray-800">
-            It's Working!
+            It is Working!
           </CardTitle>
           <CardDescription className="text-lg text-gray-500 pt-2">
             This sample page confirms that TraceKey is successfully tracking visitors.
@@ -55,7 +55,7 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
               <code className="bg-gray-200 text-gray-700 font-mono text-sm px-1.5 py-0.5 rounded-md mx-1">
                 /api/v1/visits
               </code>
-              with your project's unique 
+              with your project&apos;s unique 
               <code className="bg-gray-200 text-gray-700 font-mono text-sm px-1.5 py-0.5 rounded-md mx-1">
                 API_KEY
               </code>.

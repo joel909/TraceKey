@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
         const device_type = await userClientController.getDeviceType();
         const cookies =  req.cookies.getAll();
         const location = await userClientController.getDeviceLocation(ip_address);
-        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, cookies, device_type, location);
+        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, cookies, device_type, location,additionalDeviceInfo);
         console.log("Client IP :", ip_address);
         console.log("Device Information :", device_information);
         return NextResponse.json({ message: "Visit logged successfully", ip_address, device_information, user_agent, refferer_url, cookies }, { status: 200 });

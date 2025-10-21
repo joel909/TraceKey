@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
 
     try{
         const ip_address = await userClientController.getClientIP();
-        const user_agent = await userClientController.getDeviceName();
+        const user_agent = req.headers.get("user-agent") || "Unknown User Agent";
         const refferer_url = req.headers.get("referer") || "";
         const device_information = await userClientController.getDeviceInfo();
         const device_type = await userClientController.getDeviceType();

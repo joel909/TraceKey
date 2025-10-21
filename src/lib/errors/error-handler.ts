@@ -49,6 +49,9 @@ export function createDatabaseError(
     else if (purpose === "FETCH_PROJECT_DETAILS_BY_ID" && _err.code === "22P02") {
       return new ValidationError('The Resource ID is invalid.', 'project_id');
     }
+    else if(purpose === "CREATE_USER_IP_RECORD" && _err.code === '23503') {
+      return new ValidationError('The provided API key does not exist.', 'api_key');
+    }
   }
 
   // Map PostgreSQL errors based on error code

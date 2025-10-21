@@ -19,12 +19,34 @@ export default class userClientRequestsController{
         }
         return detectDevice(userAgent);
     }
+    async getDeviceType(): Promise<string> {
+        let device_type : string = "Desktop";
+        const deviceInfo = await this.getDeviceInfo();
+        if (typeof deviceInfo !== "string") {
+            if (deviceInfo.device.type !== "Desktop") {
+                device_type = "Mobile";
+                return device_type;
+            }
+
+        }
+        return device_type;
+    }
     async getDeviceName(): Promise<string> {
         const deviceInfo = await this.getDeviceInfo();
         if (typeof deviceInfo === "string") {
             return deviceInfo;
         }
         return getDeviceName(deviceInfo);
+    }
+    async getDeviceLocation(ip:string): Promise<string> {
+        // const ip = await this.getClientIP();
+        try{
+            const response = await fetch(`http://ip-api.com/json/${ip}`);
+            const data = await response.json();
+            return data.country || "Unknown Location";
+        }catch(error){
+            return "Unknown Location";
+        }
     }
         
 }

@@ -1,4 +1,5 @@
 import createUserProject from "../database/user/projects/createProject";
+import createUserClientRecord from "../database/user/projects/createUserClientipRecord";
 import fetchProjects from "../database/user/projects/fetchProjects";
 import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
@@ -17,7 +18,11 @@ export class ProjectController {
       await authController.verifyUserProjectAccess( uuid, id);
       const projectDetails = await fetchSingleProjectDataByID(id);
       return projectDetails;
-  }
+    }
+
+    //  async fetchProjectIDByAPIKey(api_key: string) : Promise<string> {
+
+    //  }
     async fetchUserProjects(auth_key: string) : Promise<Project[]> {
         if (!auth_key) {
           throw new AuthenticationError('Authentication key is required');
@@ -27,6 +32,11 @@ export class ProjectController {
         const fetchUserProjects = await fetchProjects(uuid);
         return fetchUserProjects;
       }
+
+    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string): Promise<void> {
+        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location);
+
+    }
 
 }
 

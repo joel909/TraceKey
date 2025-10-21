@@ -40,3 +40,14 @@ export const verifyUserProjectAccessQuery =
 `
     SELECT * FROM user_projects WHERE uuid = $1 AND project_id = $2
 `;
+
+export const fetchProjectIDByAPIKeyQuery =
+`
+    SELECT project_id FROM projects WHERE api_key = $1
+`;
+
+export const createUserClientIPRecordQuery =
+`
+INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region)
+VALUES ($1, $2, $3, $4, $5, $6,$7,$8)
+`

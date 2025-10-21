@@ -11,7 +11,7 @@ export function detectDevice(userAgentString: string): DeviceInfoInterface {
             version: result.browser.version || undefined,
         },
         device: {
-            type: result.device.type || "desktop",
+            type: result.device.type || "Desktop",
             vendor: result.device.vendor || undefined,
             model: result.device.model || undefined,
         },

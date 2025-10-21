@@ -19,7 +19,7 @@ body {
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #FAFDD6;
-    --foreground: #ededed;
+    --foreground: #FAFDD6;
   }
 }
 

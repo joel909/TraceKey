@@ -24,3 +24,15 @@ export interface DeviceInfo {
   platform?: string;
   platformVersion?: string;
 }
+
+export interface LogActivity {
+  ip: string;
+  time: string;
+  device: string;
+  region: string;
+  interactionID: string;
+  additionalDeviceInfo?: string;
+  userAgent: string;
+  referrerUrl: string;
+  cookies: string;
+}

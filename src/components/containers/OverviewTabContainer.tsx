@@ -5,8 +5,9 @@ import StatCardDashboard from "../cards/stat-card/StatCardDashboard";
 import { TabsContent } from "../ui/tabs";
 import RecentActivityCard from "../cards/RecentActivityCard";
 import ActivityTable from "../tables/ActivityTable";
+import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
 
-export default function OverviewTabContainer({ data }: { data: Array<{ip: string, time: string, visits: number, device: string, region: string}> }) {
+export default function OverviewTabContainer({ data }: { data: LogActivity[] }) {
     return(
         <TabsContent value="overview" className="space-y-6">
               {/* Stats Cards */}

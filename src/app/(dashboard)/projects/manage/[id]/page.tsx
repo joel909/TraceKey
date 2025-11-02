@@ -4,17 +4,19 @@ import { AuthenticationError } from "@/lib/errors/extended_errors/Authentication
 import { redirect } from 'next/navigation';
 import ManageProjectPage from "./manage";
 import{ProjectData} from "../../../../../lib/interfaces/manage_project_interfaces";
-import {ProjectController} from "@/lib/controllers/project.controller";
+import {projectController, ProjectController} from "@/lib/controllers/project.controller";
 import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
 import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
 import InvalidManageProjectPage from "./invalidPage";
 import { cookies } from "next/headers";
 import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
 import { QueryError } from "@/lib/errors/errors";
+import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {
   const ProjectControllerObject = new ProjectController();
   let projectData : SingleProjectDetails;
+  let VistorIpLogs : LogActivity[];
   const { id } = await params;
     try{
       const auth_key = (await cookies()).get('auth_key')?.value
@@ -23,6 +25,7 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       }
       
       projectData = await ProjectControllerObject.fetchSingleProjectDetailsByID(id,auth_key);
+      VistorIpLogs = await projectController.getIntialProjectIpLogs(id);
     }
     catch(e){
       if (e instanceof AuthenticationError) {
@@ -48,9 +51,10 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       }
       else{
         console.error("Error fetching project details:", e);
-        return (InvalidManageProjectPage({error: "Unknown Error",messageLine1: "Unknown Error.",messageLine2: "Please try again later.",reason: "UNDEFINED ERROR ",projectId: id}));
+        return (InvalidManageProjectPage({error: "Unknown Error",messageLine1: "Unknown Error.",messageLine2: "Please try again later.",reason: "This could be because Our Postgres database is down Please try again later.",projectId: id}));
       }
     }
+    
     const project: ProjectData = {
         id: id || "failed to fetch ID",
         name: projectData?.project_name || "failed to fetch project name",
@@ -60,42 +64,8 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
         uniqueVisitors: 1204,
         totalVisits: 15302,
         topRegion: "North America",
-        recentActivity: [
-          {
-            id: "1",
-            ipAddress: "192.168.1.1",
-            time: "10:42 AM",
-            visits: 5,
-            device: "Desktop",
-            region: "USA"
-          },
-          {
-            id: "2",
-            ipAddress: "203.0.113.24",
-            time: "10:35 AM",
-            visits: 2,
-            device: "Mobile",
-            region: "Germany"
-          },
-          {
-            id: "3",
-            ipAddress: "198.51.100.8",
-            time: "10:31 AM",
-            visits: 8,
-            device: "Desktop",
-            region: "Canada"
-          },
-          {
-            id: "4",
-            ipAddress: "192.168.1.2",
-            time: "10:25 AM",
-            visits: 1,
-            device: "Mobile",
-            region: "USA"
-          }
-        ]
-      };
-
+        recentActivity: VistorIpLogs || []
+      }
       return ManageProjectPage({project});
 }
 

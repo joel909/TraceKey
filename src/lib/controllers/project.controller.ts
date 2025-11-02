@@ -2,8 +2,9 @@ import createUserProject from "../database/user/projects/createProject";
 import createUserClientRecord from "../database/user/projects/createUserClientipRecord";
 import fetchProjects from "../database/user/projects/fetchProjects";
 import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
+import getProjectLogs from "../database/user/projects/logs/getIntialProjectLogs";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
-import { DeviceInfo } from "../interfaces/deviceInfoInterface";
+import { DeviceInfo, LogActivity } from "../interfaces/deviceInfoInterface";
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
 
@@ -36,8 +37,21 @@ export class ProjectController {
 
     async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {}): Promise<void> {
         await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
-
     }
+
+    //     ****CRITICAL****
+    /*
+    this is a bare function and does not verify auth keys nor does it check if the user is authorized to view to
+    project logs, this is been done as this runs as an internal
+    function after it makes sure the user is valid and has access so do not use this as a standalone function
+    */
+    async getIntialProjectIpLogs(id: string) : Promise<LogActivity[]> {
+      const projectDetails = await getProjectLogs(id);
+      // console.log("Project details fetched in controller:", projectDetails);
+      return projectDetails;
+    }
+
+
 
 }
 

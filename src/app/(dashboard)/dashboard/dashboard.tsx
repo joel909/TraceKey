@@ -11,6 +11,10 @@ export default async function dashboard() {
         { ip: "203.0.113.24", time: "10:35 AM", visits: 2, device: "Mobile", region: "Germany" },
         { ip: "198.51.100.8", time: "10:31 AM", visits: 8, device: "Desktop", region: "Canada" },
         { ip: "192.168.1.2", time: "10:25 AM", visits: 1, device: "Mobile", region: "USA" },
+        // { ip: "192.168.1.11", time: "10:42 AM", visits: 5, device: "Desktop", region: "USA" },
+        // { ip: "203.0.113.241", time: "10:35 AM", visits: 2, device: "Mobile", region: "Germany" },
+        // { ip: "198.51.100.812", time: "10:31 AM", visits: 8, device: "Desktop", region: "Canada" },
+        // { ip: "192.168.1.21", time: "10:25 AM", visits: 1, device: "Mobile", region: "USA" },
     ];
     return(
       <main className="flex-1 p-6">

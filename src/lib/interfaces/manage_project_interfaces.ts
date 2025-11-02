@@ -1,3 +1,5 @@
+import { LogActivity } from "./deviceInfoInterface";
+
 export interface ProjectData {
   id: string;
   name: string;
@@ -7,7 +9,7 @@ export interface ProjectData {
   uniqueVisitors: number;
   totalVisits: number;
   topRegion: string;
-  recentActivity: ActivityItem[];
+  recentActivity: LogActivity[];
 }
 
 export interface ActivityItem {

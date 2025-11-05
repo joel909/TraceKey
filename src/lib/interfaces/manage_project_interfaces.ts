@@ -6,8 +6,8 @@ export interface ProjectData {
   description: string;
   url: string;
   apiKey: string;
-  uniqueVisitors: number;
-  totalVisits: number;
+  uniqueVisitors: string;
+  totalVisits: string;
   topRegion: string;
   recentActivity: LogActivity[];
 }

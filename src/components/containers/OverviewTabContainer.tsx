@@ -6,18 +6,30 @@ import { TabsContent } from "../ui/tabs";
 import RecentActivityCard from "../cards/RecentActivityCard";
 import ActivityTable from "../tables/ActivityTable";
 import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
+import { ProjectData } from "@/lib/interfaces/manage_project_interfaces";
 
-export default function OverviewTabContainer({ data }: { data: LogActivity[] }) {
+export default function OverviewTabContainer({ data } : { data:ProjectData  }) {
+    let total_visits;
+    try{
+        total_visits = parseInt(data.totalVisits);
+    }
+    catch{
+        total_visits = 0;
+    }
+    // total_visits = 0
     return(
-        <TabsContent value="overview" className="space-y-6">
+        <TabsContent value="overview" className="space-y-6 text-">
               {/* Stats Cards */}
             <StatcardContainer>
-                <StatCardDashboard title="Unique Users" value="1,204" Icon={Users} />
-                <StatCardDashboard title="Total Visits" value="15,302" Icon={Waypoints} />
-                <StatCardDashboard title="Top Region" value="North America" Icon={Globe} />
+                <StatCardDashboard title="Unique Users" value={`${data.uniqueVisitors}`} Icon={Users} />
+                <StatCardDashboard title="Total Visits" value={`${data.totalVisits}`} Icon={Waypoints} />
+                <StatCardDashboard title="Top Region" value={`${data.topRegion}`} Icon={Globe} />
             </StatcardContainer>
             <RecentActivityCard>
-                <ActivityTable data={data} />
+                {total_visits === 0 ? (
+                <ActivityTable data={data.recentActivity} />) : (
+                    <ActivityTable data={data.recentActivity} totalRecords={total_visits} />
+                )}
             </RecentActivityCard>
         </TabsContent>
         

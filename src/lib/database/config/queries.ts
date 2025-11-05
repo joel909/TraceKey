@@ -1,3 +1,5 @@
+import { count } from "console";
+
 //query to create new user 
 export const createUserQuery = `
     INSERT INTO users (email, name, password, auth_key)
@@ -58,8 +60,25 @@ SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_
 `
 const countIpLogs = 
 `
-  SELECT COUNT(*) as total
-  FROM interactions i 
-  JOIN projects p ON i.api_key = p.api_key 
-  WHERE p.project_id = $1
+    SELECT COUNT(*) as total
+    FROM interactions i 
+    JOIN projects p ON i.api_key = p.api_key 
+    WHERE p.project_id = $1
 `;
+
+export const projectLogStatics = 
+`
+    SELECT COUNT(DISTINCT i.ip_address) as unique_visitors,
+    COUNT(*) as total_visits
+    FROM interactions i
+    JOIN projects p ON i.api_key = p.api_key
+    WHERE p.project_id = $1
+`;
+
+
+export const fetchTopRegion = 
+`
+    SELECT i.region, COUNT(*) as visit_count FROM interactions i JOIN 
+    projects p ON i.api_key = p.api_key 
+    WHERE p.project_id = $1 GROUP BY i.region ORDER BY visit_count DESC LIMIT 1
+`

@@ -11,12 +11,14 @@ import InvalidManageProjectPage from "./invalidPage";
 import { cookies } from "next/headers";
 import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
 import { QueryError } from "@/lib/errors/errors";
-import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
+import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {
   const ProjectControllerObject = new ProjectController();
-  let projectData : SingleProjectDetails;
+  let projectDetails : SingleProjectDetails;
   let VistorIpLogs : LogActivity[];
+  let VistorLogStatics : LogActivityStaticsInterface;
+  let TopRegion : string;
   const { id } = await params;
     try{
       const auth_key = (await cookies()).get('auth_key')?.value
@@ -24,8 +26,10 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
           redirect('/logout');
       }
       
-      projectData = await ProjectControllerObject.fetchSingleProjectDetailsByID(id,auth_key);
+      projectDetails = await ProjectControllerObject.fetchSingleProjectDetailsByID(id,auth_key);
       VistorIpLogs = await projectController.getIntialProjectIpLogs(id);
+      VistorLogStatics = await projectController.getProjectLogStatistics(id);
+      TopRegion = await projectController.getTopRegionOfProject(id);
     }
     catch(e){
       if (e instanceof AuthenticationError) {
@@ -55,17 +59,17 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       }
     }
     
-    const project: ProjectData = {
+    const projectData: ProjectData = {
         id: id || "failed to fetch ID",
-        name: projectData?.project_name || "failed to fetch project name",
-        description: projectData?.description || "failed to fetch description",
-        url: projectData?.site_url || "failed to fetch URL",
-        apiKey: projectData?.api_key || "failed to fetch API key",
-        uniqueVisitors: 1204,
-        totalVisits: 15302,
-        topRegion: "North America",
+        name: projectDetails?.project_name || "failed to fetch project name",
+        description: projectDetails?.description || "failed to fetch description",
+        url: projectDetails?.site_url || "failed to fetch URL",
+        apiKey: projectDetails?.api_key || "failed to fetch API key",
+        uniqueVisitors: String(VistorLogStatics?.uniqueVisitors),
+        totalVisits: String(VistorLogStatics?.totalVisits),
+        topRegion: TopRegion,
         recentActivity: VistorIpLogs || []
       }
-      return ManageProjectPage({project});
+      return ManageProjectPage({projectData});
 }
 

@@ -36,3 +36,7 @@ export interface LogActivity {
   referrerUrl: string;
   cookies: string;
 }
+export interface LogActivityStaticsInterface {
+  uniqueVisitors: string;
+  totalVisits: string;
+}

@@ -3,8 +3,10 @@ import createUserClientRecord from "../database/user/projects/createUserClientip
 import fetchProjects from "../database/user/projects/fetchProjects";
 import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
 import getProjectLogs from "../database/user/projects/logs/getIntialProjectLogs";
+import getLogStatics from "../database/user/projects/logs/getLogStatics";
+import getTopRegion from "../database/user/projects/logs/getTopRegion";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
-import { DeviceInfo, LogActivity } from "../interfaces/deviceInfoInterface";
+import { DeviceInfo, LogActivity, LogActivityStaticsInterface } from "../interfaces/deviceInfoInterface";
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
 
@@ -41,9 +43,9 @@ export class ProjectController {
 
     //     ****CRITICAL****
     /*
-    this is a bare function and does not verify auth keys nor does it check if the user is authorized to view to
+    the below functions are bare function and does not verify auth keys nor does it check if the user is authorized to view to
     project logs, this is been done as this runs as an internal
-    function after it makes sure the user is valid and has access so do not use this as a standalone function
+    function after it makes sure the user is valid and has access so do not use this as a standalone function Make sure to verify user access before using this function
     */
     async getIntialProjectIpLogs(id: string) : Promise<LogActivity[]> {
       const projectDetails = await getProjectLogs(id);
@@ -51,10 +53,15 @@ export class ProjectController {
       return projectDetails;
     }
 
-
-
+    async getProjectLogStatistics(id: string): Promise<LogActivityStaticsInterface> {
+      const projectLogStatistics = await getLogStatics(id);
+      return projectLogStatistics;
+    }
+    async getTopRegionOfProject(id: string): Promise<string> {
+      const topRegion = await getTopRegion(id);
+      return topRegion;
+    }
 }
-
 export const projectController = new ProjectController();
 
 

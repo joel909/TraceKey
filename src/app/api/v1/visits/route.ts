@@ -2,7 +2,9 @@ import { NextRequest, NextResponse} from "next/server";
 import userClientRequestsController from "@/lib/controllers/client.requests.controller";
 import { projectController } from "@/lib/controllers/project.controller";
 import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
-
+//TODO 
+//1 -- VALIDATE THE API KEY AND MAKE SURE IT IS REGISTERED TO A PROJECT
+//2 -- Validate the body of the request of additional device info and other fields to prevent injection attacks
 export async function POST(req: NextRequest) {
     const body = await req.json();
     const { api_key, additionalDeviceInfo = {} } = body;
@@ -11,6 +13,7 @@ export async function POST(req: NextRequest) {
 
     try{
         // const additionalDeviceInfo = req.
+        // await authController.verifyAuthKey(auth_key);
         const ip_address = await userClientController.getClientIP();
         const user_agent = req.headers.get("user-agent") || "Unknown User Agent";
         const refferer_url = req.headers.get("referer") || "";

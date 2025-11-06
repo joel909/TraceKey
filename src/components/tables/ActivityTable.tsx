@@ -26,16 +26,19 @@ import {LogActivity}  from "@/lib/interfaces/deviceInfoInterface"
 interface ActivityTableProps {
   data: LogActivity[];
   totalRecords?: number;
+  onFetchPage?: (page: number) => Promise<LogActivity[]>;  // Function to fetch data for a specific page
 }
 
 export default function ActivityTable({ 
   data,
-  totalRecords
+  totalRecords,
+  onFetchPage
 }: ActivityTableProps) {
   
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const [allPagesData, setAllPagesData] = useState<{[key: number]: LogActivity[]}>({})
+  const [error, setError] = useState<string | null>(null)
   
   // --- State for Modal ---
   const [selectedActivity, setSelectedActivity] = useState<LogActivity | null>(null);
@@ -57,21 +60,15 @@ export default function ActivityTable({
     return allPagesData[currentPage] || []
   }
   
-  // Fetch page data from API (to be implemented)
+  // Fetch page data from API
   const fetchPageData = async (page: number) => {
     setLoading(true)
+    setError(null)
     console.log(`Fetching data for page ${page}...`)
     
     try {
-      // TODO: Replace with actual API call
-      // Example: const response = await fetch(`/api/logs?page=${page}&limit=${itemsPerPage}`)
-      // const pageData = await response.json()
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      
-      // TODO: Replace this mock data with actual API response
-      const pageData: LogActivity[] = []
+      // Use the provided fetch function or fallback to empty array
+      const pageData = onFetchPage ? await onFetchPage(page) : []
       
       setAllPagesData(prev => ({
         ...prev,
@@ -80,6 +77,7 @@ export default function ActivityTable({
       
     } catch (error) {
       console.error("Error fetching data:", error)
+      setError("Failed to fetch data. Please try again.")
     } finally {
       setLoading(false)
     }
@@ -237,6 +235,12 @@ export default function ActivityTable({
           )}
         </TableBody>
       </Table>
+
+      {error && (
+        <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+          {error}
+        </div>
+      )}
 
       <div className="flex items-center justify-between px-2">
          {/* ... (no changes in pagination controls) ... */}

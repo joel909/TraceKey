@@ -12,7 +12,7 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
         throw new AuthenticationError('Invalid authentication key.');
     }
     else if(purpose === "VERIFY_USER_PROJECT_ACCESS" && result.rows.length === 0){
-        throw new AuthorizationError('User does not have access to the specified project.');
+        throw new AuthorizationError('User does not have access to the specified project or it might not exist.');
     }
     
 }

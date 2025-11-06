@@ -6,7 +6,7 @@ export default async function verifyUserProjectAccess(uuid: string, projectId: s
 
 const verificationQuery = query("VERIFY_USER_PROJECT_ACCESS",verifyUserProjectAccessQuery, [uuid, projectId]);
     const result = await verificationQuery;
-    console.log("Verification result:", result);
+    // console.log("Verification result:", result);
     return result;
 }
 

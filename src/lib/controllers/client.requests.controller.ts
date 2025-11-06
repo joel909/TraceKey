@@ -48,5 +48,9 @@ export default class userClientRequestsController{
             return "Unknown Location";
         }
     }
+
+    
         
 }
+
+// export const userClientRequestsControllerObject = new userClientRequestsController();

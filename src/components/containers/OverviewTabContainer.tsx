@@ -8,7 +8,7 @@ import ActivityTable from "../tables/ActivityTable";
 import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
 import { ProjectData } from "@/lib/interfaces/manage_project_interfaces";
 
-export default function OverviewTabContainer({ data } : { data:ProjectData  }) {
+export default function OverviewTabContainer({ data, onFetchPage } : { data: ProjectData, onFetchPage?: (page: number) => Promise<LogActivity[]> }) {
     let total_visits;
     try{
         total_visits = parseInt(data.totalVisits);
@@ -27,8 +27,8 @@ export default function OverviewTabContainer({ data } : { data:ProjectData  }) {
             </StatcardContainer>
             <RecentActivityCard>
                 {total_visits === 0 ? (
-                <ActivityTable data={data.recentActivity} />) : (
-                    <ActivityTable data={data.recentActivity} totalRecords={total_visits} />
+                <ActivityTable data={data.recentActivity} onFetchPage={onFetchPage} />) : (
+                    <ActivityTable data={data.recentActivity} totalRecords={total_visits} onFetchPage={onFetchPage} />
                 )}
             </RecentActivityCard>
         </TabsContent>

@@ -4,7 +4,7 @@ import { AuthenticationError } from "@/lib/errors/extended_errors/Authentication
 import { redirect } from 'next/navigation';
 import ManageProjectPage from "./manage";
 import{ProjectData} from "../../../../../lib/interfaces/manage_project_interfaces";
-import {projectController, ProjectController} from "@/lib/controllers/project.controller";
+import {projectController} from "@/lib/controllers/project.controller";
 import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
 import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
 import InvalidManageProjectPage from "./invalidPage";
@@ -14,7 +14,7 @@ import { QueryError } from "@/lib/errors/errors";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {
-  const ProjectControllerObject = new ProjectController();
+  // const ProjectControllerObject = new ProjectController();
   let projectDetails : SingleProjectDetails;
   let VistorIpLogs : LogActivity[];
   let VistorLogStatics : LogActivityStaticsInterface;
@@ -25,9 +25,9 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       if (!auth_key) {
           redirect('/logout');
       }
-      
-      projectDetails = await ProjectControllerObject.fetchSingleProjectDetailsByID(id,auth_key);
-      VistorIpLogs = await projectController.getIntialProjectIpLogs(id);
+
+      projectDetails = await projectController.fetchSingleProjectDetailsByID(id,auth_key);
+      VistorIpLogs = await projectController.getProjectIpLogs(id);
       VistorLogStatics = await projectController.getProjectLogStatistics(id);
       TopRegion = await projectController.getTopRegionOfProject(id);
     }

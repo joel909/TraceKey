@@ -2,7 +2,7 @@ import createUserProject from "../database/user/projects/createProject";
 import createUserClientRecord from "../database/user/projects/createUserClientipRecord";
 import fetchProjects from "../database/user/projects/fetchProjects";
 import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
-import getProjectLogs from "../database/user/projects/logs/getIntialProjectLogs";
+import getProjectLogs from "../database/user/projects/logs/getProjectLogs";
 import getLogStatics from "../database/user/projects/logs/getLogStatics";
 import getTopRegion from "../database/user/projects/logs/getTopRegion";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
@@ -47,8 +47,8 @@ export class ProjectController {
     project logs, this is been done as this runs as an internal
     function after it makes sure the user is valid and has access so do not use this as a standalone function Make sure to verify user access before using this function
     */
-    async getIntialProjectIpLogs(id: string) : Promise<LogActivity[]> {
-      const projectDetails = await getProjectLogs(id);
+    async getProjectIpLogs(id: string,page=1) : Promise<LogActivity[]> {
+      const projectDetails = await getProjectLogs(id,page);
       // console.log("Project details fetched in controller:", projectDetails);
       return projectDetails;
     }

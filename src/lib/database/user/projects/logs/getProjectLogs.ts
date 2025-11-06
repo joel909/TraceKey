@@ -2,8 +2,9 @@ import { query } from "@/lib/database/config/db";
 import { fetchSingleProjectNIpLogsQuery } from "@/lib/database/config/queries";
 import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
 
-export default async function getProjectLogs(projectId: string): Promise<LogActivity[]> {
-    const fetchedLogs = await query("FETCH_PROJECT_LOGS", fetchSingleProjectNIpLogsQuery, [projectId, 10]);
+export default async function getProjectLogs(projectId: string,page = 1): Promise<LogActivity[]> {
+    const offSet = (page - 1) * 10;
+    const fetchedLogs = await query("FETCH_PROJECT_LOGS", fetchSingleProjectNIpLogsQuery, [projectId, 10, offSet]);
 
     console.log("Fetched project logs for projectId:", projectId, "data received is:", fetchedLogs);
     const projectIntialLogs: LogActivity[] = [];

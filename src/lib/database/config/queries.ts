@@ -1,4 +1,3 @@
-import { count } from "console";
 
 //query to create new user 
 export const createUserQuery = `
@@ -56,15 +55,9 @@ VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9)
 
 export const fetchSingleProjectNIpLogsQuery =
 `
-SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2;
+SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
 `
-const countIpLogs = 
-`
-    SELECT COUNT(*) as total
-    FROM interactions i 
-    JOIN projects p ON i.api_key = p.api_key 
-    WHERE p.project_id = $1
-`;
+
 
 export const projectLogStatics = 
 `

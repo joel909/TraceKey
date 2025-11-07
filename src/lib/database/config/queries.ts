@@ -75,3 +75,8 @@ export const fetchTopRegion =
     projects p ON i.api_key = p.api_key 
     WHERE p.project_id = $1 GROUP BY i.region ORDER BY visit_count DESC LIMIT 1
 `
+
+export const verifyApiKeyQuery =
+`
+    SELECT project_id FROM projects WHERE api_key = $1
+`

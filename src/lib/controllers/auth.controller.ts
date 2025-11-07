@@ -7,6 +7,7 @@ import fetchUserInfo from "../database/user/user/fetchUserInfo";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
 import { projectController } from "./project.controller";
 import verifyUserProjectAccess from "../database/user/projects/verifyUserProjectAccess";
+import verifyApiKey from "../database/user/projects/verifyApiKey";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -40,6 +41,12 @@ export class AuthController {
     //this does not return anything yet, just verifies and if the user does not have access to the project then it throws an error so just deal with it then
     return await verifyUserProjectAccess(uuid, projectId);
 
+  }
+  async verifyApiKey(apiKey?: string): Promise<void> {
+    if (!apiKey) {
+      throw new AuthenticationError('API key is required');
+    }
+    await verifyApiKey(apiKey);
   }
 
   

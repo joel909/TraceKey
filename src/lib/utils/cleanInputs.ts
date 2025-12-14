@@ -1,9 +1,10 @@
-import createDOMPurify from 'isomorphic-dompurify';
+import DOMPurify from 'dompurify';
 import { JSDOM } from 'jsdom';
+
 export function cleanInputForServer(input: string): string {
-    const window = new JSDOM('').window;
-    const DOMPurify_Server = createDOMPurify(window);
+    const { window } = new JSDOM('<!DOCTYPE html><html><body></body></html>');
+    const DOMPurifyServer = DOMPurify(window as any);
     let result = input.trim()
-    result = DOMPurify_Server.sanitize(result);
+    result = DOMPurifyServer.sanitize(result);
     return result;
 }

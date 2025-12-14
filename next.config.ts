@@ -1,9 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  eslint: {
-    ignoreDuringBuilds: false, // ⛔ disables linting during build
-  },
+  serverExternalPackages: ['jsdom'],
   /* config options here */
 };
 

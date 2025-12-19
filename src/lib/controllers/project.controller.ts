@@ -9,6 +9,7 @@ import { AuthenticationError } from "../errors/extended_errors/AuthenticationErr
 import { DeviceInfo, LogActivity, LogActivityStaticsInterface } from "../interfaces/deviceInfoInterface";
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
+import verifyUserProjectOwnerShip from "../database/user/projects/verifyUserProjectOwnerShip";
 
 export class ProjectController {
     async createProject(uuid: string,project_name:string,api_key:string,password:string,description:string,site_url:string) : Promise<CreateUserProjectResponse> {
@@ -41,10 +42,11 @@ export class ProjectController {
         await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
     }
     //this adds a user to a project by their email address
-    async addUserToProject(){
+    async addUserToProject(uuid: string, projectId: string, newUserEmail: string): Promise<void> {
        // the general work flow will be
-       // 1. Verify that the user making the request has access to the project 
-       // 2. Check if the user is the owner of the project only then he can add other users
+       // 1. Verify that the user making the request has access to the project and is the OWNER
+          await verifyUserProjectOwnerShip(uuid, projectId);
+          
        // 3. Check if the email address belongs to a registered user
        // 4. If yes, add the user to the project with appropriate permissions
        // 5. BOOM DONE

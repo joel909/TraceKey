@@ -17,4 +17,7 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
     else if(purpose === "VERIFY_API_KEY" && result.rows.length === 0){
         throw new AuthorizationError('Invalid API key.');
     }
+    else if(purpose === "VERIFY_USER_PROJECT_OWNERSHIP" && result.rows.length === 0){
+        throw new AuthorizationError('User is not the owner of the specified project');
+    }
 }

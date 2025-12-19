@@ -83,5 +83,5 @@ export const verifyApiKeyQuery =
 
 export const fetchProjectOwnerQuery =
 `
-    SELECT created_by FROM projects WHERE project_id = $1
+    SELECT created_by FROM projects WHERE project_id = $1 and created_by = $2
 `

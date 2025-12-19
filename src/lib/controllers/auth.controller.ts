@@ -48,10 +48,10 @@ export class AuthController {
     await verifyApiKey(apiKey);
   }
   //the below function verifies if the particular user had created the project(by check created_by in projects table) making him the owner
-  async verifyUserProjectOwnerShip(uuid: string, projectId: string): Promise<boolean> {
-    
+  // async verifyUserProjectOwnerShip(uuid: string, projectId: string): Promise<boolean> {
 
-  }
+
+  // }
 
   
 }

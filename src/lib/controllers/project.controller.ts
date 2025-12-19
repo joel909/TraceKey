@@ -40,6 +40,16 @@ export class ProjectController {
     async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {}): Promise<void> {
         await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
     }
+    //this adds a user to a project by their email address
+    async addUserToProject(){
+       // the general work flow will be
+       // 1. Verify that the user making the request has access to the project 
+       // 2. Check if the user is the owner of the project only then he can add other users
+       // 3. Check if the email address belongs to a registered user
+       // 4. If yes, add the user to the project with appropriate permissions
+       // 5. BOOM DONE
+    }
+
 
     //     ****CRITICAL****
     /*

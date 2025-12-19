@@ -80,3 +80,8 @@ export const verifyApiKeyQuery =
 `
     SELECT project_id FROM projects WHERE api_key = $1
 `
+
+export const fetchProjectOwnerQuery =
+`
+    SELECT created_by FROM projects WHERE project_id = $1
+`

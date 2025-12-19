@@ -40,13 +40,17 @@ export class AuthController {
   async verifyUserProjectAccess(uuid: string, projectId: string){
     //this does not return anything yet, just verifies and if the user does not have access to the project then it throws an error so just deal with it then
     return await verifyUserProjectAccess(uuid, projectId);
-
   }
   async verifyApiKey(apiKey?: string): Promise<void> {
     if (!apiKey) {
       throw new AuthenticationError('API key is required');
     }
     await verifyApiKey(apiKey);
+  }
+  //the below function verifies if the particular user had created the project(by check created_by in projects table) making him the owner
+  async verifyUserProjectOwnerShip(uuid: string, projectId: string): Promise<boolean> {
+    
+
   }
 
   

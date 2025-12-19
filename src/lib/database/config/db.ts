@@ -5,10 +5,10 @@ import validateDatabaseResult from "./databaseResultValidator";
 
 
 dotenv.config();
-// console.log("Database URL:", process.env.POSTGRES_URL);
+//connection pooling insted of creating a new connection for every query
 export const pool = new Pool({
     ssl: {
-      rejectUnauthorized: false, // required for most cloud DBs
+      rejectUnauthorized: false, 
     },
     connectionString: process.env.POSTGRES_URL,
 });

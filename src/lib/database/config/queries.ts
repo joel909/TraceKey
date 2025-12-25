@@ -85,3 +85,16 @@ export const fetchProjectOwnerQuery =
 `
     SELECT created_by FROM projects WHERE project_id = $1 and created_by = $2
 `
+export const checkUserExistsByEmailQuery =
+`
+    SELECT 1 as exists FROM users WHERE email = $1 LIMIT 1;
+`
+export const addUserToProjectQuery =
+`
+    INSERT INTO user_projects (project_id, uuid) VALUES ($1, $2);
+`
+export const fetchUserFromEmailQuery =
+`
+    SELECT uuid FROM users where email=$1 LIMIT 1;
+`
+// export const fetchUsersAttachedWithProjectQuery =

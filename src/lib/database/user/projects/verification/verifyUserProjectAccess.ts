@@ -1,5 +1,5 @@
-import { query } from "../../config/db";
-import { verifyUserProjectAccessQuery } from "../../config/queries";
+import { query } from "../../../config/db";
+import { verifyUserProjectAccessQuery } from "../../../config/queries";
 
 export default async function verifyUserProjectAccess(uuid: string, projectId: string){
     // Implementation to verify if the user has access to the specified project\

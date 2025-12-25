@@ -105,6 +105,13 @@ export function ProjectSettingsModal({
     setSuccess(true);
     setTimeout(() => setSuccess(false), 3000);
   };
+  const handleAddUserr = async () => {
+    try {
+
+    }catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to add user');
+    }
+  }
 
   const handleRevokeAccess = async () => {
     setSuccess(true);

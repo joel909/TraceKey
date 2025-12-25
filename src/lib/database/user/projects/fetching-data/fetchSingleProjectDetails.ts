@@ -1,5 +1,5 @@
-import {query} from "../../config/db";
-import {  fetchSingleProjectDataByIDQuery } from "../../config/queries";
+import {query} from "../../../config/db";
+import {  fetchSingleProjectDataByIDQuery } from "../../../config/queries";
 export default async function fetchSingleProjectDataByID(id: string) {
     try{
         const requestDetails = await query("FETCH_PROJECT_DETAILS_BY_ID",fetchSingleProjectDataByIDQuery, [id]);

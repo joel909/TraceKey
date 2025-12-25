@@ -1,6 +1,6 @@
-import { query } from "../../config/db";
-import { fetchUserAssociatedProjects } from "../../config/queries";
-import  {Project}  from "../../../interfaces/project_interface";
+import { query } from "../../../config/db";
+import { fetchUserAssociatedProjects } from "../../../config/queries";
+import  {Project}  from "../../../../interfaces/project_interface";
 import { projectController } from "@/lib/controllers/project.controller";
 
 export default async function fetchProjects(uuid: string) : Promise<Project[]> {

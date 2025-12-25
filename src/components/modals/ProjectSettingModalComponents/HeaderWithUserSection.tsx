@@ -52,11 +52,9 @@ export function HeaderWithUserSection({
       setIsAddingUser(true);
       setError(null);
 
-      // Wait for 5 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
       if (onAddUser) {
         const result = await onAddUser(newUserEmail);
+        console.log('Add user result:', result);
         if (result && Array.isArray(result)) {
           setUsers(result);
           onUsersUpdate?.(result);
@@ -70,12 +68,13 @@ export function HeaderWithUserSection({
           setUsers(updatedUsers);
           onUsersUpdate?.(updatedUsers);
         }
-      }
 
-      setNewUserEmail('');
-      onSuccess?.();
+        setNewUserEmail('');
+        onSuccess?.();
+      }
       setTimeout(() => setError(null), 3000);
     } catch (err) {
+      console.error('Error adding user:', err);
       const errMsg = err instanceof Error ? err.message : 'Failed to add user';
       setError(errMsg);
       onError?.(errMsg);

@@ -1,7 +1,7 @@
-import createUserProject from "../database/user/projects/createProject";
-import createUserClientRecord from "../database/user/projects/createUserClientipRecord";
-import fetchProjects from "../database/user/projects/fetchProjects";
-import fetchSingleProjectDataByID from "../database/user/projects/fetchSingleProjectDetails";
+import createUserProject from "../database/user/projects/resource-creation/createProject";
+import createUserClientRecord from "../database/user/projects/resource-creation/createUserClientipRecord";
+import fetchProjects from "../database/user/projects/fetching-data/fetchProjects";
+import fetchSingleProjectDataByID from "../database/user/projects/fetching-data/fetchSingleProjectDetails";
 import getProjectLogs from "../database/user/projects/logs/getProjectLogs";
 import getLogStatics from "../database/user/projects/logs/getLogStatics";
 import getTopRegion from "../database/user/projects/logs/getTopRegion";
@@ -9,9 +9,17 @@ import { AuthenticationError } from "../errors/extended_errors/AuthenticationErr
 import { DeviceInfo, LogActivity, LogActivityStaticsInterface } from "../interfaces/deviceInfoInterface";
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
-import verifyUserProjectOwnerShip from "../database/user/projects/verifyUserProjectOwnerShip";
+import verifyUserProjectOwnerShip from "../database/user/user/verifyUserProjectOwnerShip";
+import checkUserExistsByEmail from "../database/user/user/checkUserExistsByEmail";
+import UserService from "../database/user/user.service";
+
 
 export class ProjectController {
+    private UserService: UserService;
+
+    constructor() {
+        this.UserService = new UserService();
+    }
     async createProject(uuid: string,project_name:string,api_key:string,password:string,description:string,site_url:string) : Promise<CreateUserProjectResponse> {
       const requestCreation = await createUserProject(uuid, project_name, api_key, password, description, site_url);
       return requestCreation;
@@ -41,16 +49,12 @@ export class ProjectController {
     async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {}): Promise<void> {
         await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
     }
-    //this adds a user to a project by their email address
-    async addUserToProject(uuid: string, projectId: string, newUserEmail: string): Promise<void> {
-       // the general work flow will be
-       // 1. Verify that the user making the request has access to the project and is the OWNER
-          await verifyUserProjectOwnerShip(uuid, projectId);
-          
-       // 3. Check if the email address belongs to a registered user
-       // 4. If yes, add the user to the project with appropriate permissions
-       // 5. BOOM DONE
+    async addUserToProject(projectId: string, newUserEmail: string,auth_key: string): Promise<void> {
+      const userData = await authController.verifyAuthKey(auth_key);
+      await this.UserService.addUserToProject(userData.uuid, newUserEmail, projectId);
     }
+    //this adds a user to a project by their email address
+    
 
 
     //     ****CRITICAL****
@@ -59,6 +63,9 @@ export class ProjectController {
     project logs, this is been done as this runs as an internal
     function after it makes sure the user is valid and has access so do not use this as a standalone function Make sure to verify user access before using this function
     */
+
+    
+
     async getProjectIpLogs(id: string,page=1) : Promise<LogActivity[]> {
       const projectDetails = await getProjectLogs(id,page);
       // console.log("Project details fetched in controller:", projectDetails);

@@ -5,6 +5,7 @@ import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProjectData } from "@/lib/interfaces/manage_project_interfaces"
 import { ProjectSettingsModal } from "@/components/modals/ProjectSettingsModal"
+import { UserRequest } from "@/lib/user-requests/UserRequest"
 
 export default function ManageProjectHeading({ project }: { project: ProjectData }) {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
@@ -24,6 +25,7 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
                     Project Settings
                 </Button>
             </div>
+            {/* Find shared users when project is opened + remove access when project is closed */}
             <ProjectSettingsModal
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
@@ -32,11 +34,18 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
                     { id: '1', name: 'john@example.com' }
                 ]}
                 onAddUser={async (email) => {
-                    console.log('Adding user:', email);
-                    return [
-                        { id: '1', name: 'john@example.com' },
-                        { id: '2', name: email }
-                    ];
+                    try {
+                        const userRequest = new UserRequest();
+                        await userRequest.addUserToProject(project.id, email);
+                        console.log('Adding user:', email);
+                        return [
+                            { id: '1', name: 'john@example.com' },
+                            { id: '2', name: email }
+                        ];
+                    } catch (error) {
+                        console.error('Error in onAddUser:', error);
+                        throw error instanceof Error ? error : new Error('Failed to add user');
+                    }
                 }}
                 onRevokeAccess={async (userId) => {
                     console.log('Revoking access for user:', userId);

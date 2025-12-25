@@ -6,8 +6,8 @@ import createUser from "../database/user/user/createUser";
 import fetchUserInfo from "../database/user/user/fetchUserInfo";
 import { AuthenticationError } from "../errors/extended_errors/AuthenticationError";
 import { projectController } from "./project.controller";
-import verifyUserProjectAccess from "../database/user/projects/verifyUserProjectAccess";
-import verifyApiKey from "../database/user/projects/verifyApiKey";
+import verifyUserProjectAccess from "../database/user/projects/verification/verifyUserProjectAccess";
+import verifyApiKey from "../database/user/projects/verification/verifyApiKey";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,

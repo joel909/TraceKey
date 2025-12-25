@@ -1,7 +1,7 @@
 import { CreateUserProjectResponse } from "@/lib/interfaces/project_interface";
-import { query } from "../../config/db";
-import { createProject } from "../../config/queries";
-import {AddUserToProjectQuery} from "../../config/queries";
+import { query } from "../../../config/db";
+import { createProject } from "../../../config/queries";
+import {AddUserToProjectQuery} from "../../../config/queries";
 export default async function createUserProject(uuid: string,project_name:string,api_key:string,password:string,description:string,site_url:string) : Promise<CreateUserProjectResponse> {
         const request = await query("CREATE_PROJECT",createProject, [uuid, project_name, api_key, password, description, site_url]);
         const project_id = request[0].project_id;

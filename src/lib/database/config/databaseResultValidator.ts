@@ -20,4 +20,10 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
     else if(purpose === "VERIFY_USER_PROJECT_OWNERSHIP" && result.rows.length === 0){
         throw new AuthorizationError('User is not the owner of the specified project');
     }
+    else if(purpose === "CHECK_USER_EXISTS_BY_EMAIL" && result.rows.length === 0){
+        throw new ResourceNotFoundError('No user found with the provided email address.');
+    }
+    else if(purpose === "FETCH_USER_BY_EMAIL" && result.rows.length == 0){
+        throw new ResourceNotFoundError('No user found with the provided email address.');
+    }
 }

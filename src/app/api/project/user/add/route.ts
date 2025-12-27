@@ -13,7 +13,7 @@ export async function POST(request: Request) {
             return new Response(JSON.stringify({ success: false, message: 'Missing required fields.' }), { status: 400 });
         }
         await projectController.addUserToProject(projectId, newUserEmail, auth_key);
-        return new Response(JSON.stringify({ success: true, message: 'User added to project successfully.' }), { status: 200 });
+        return new Response(JSON.stringify({ message: 'User added to project successfully.' }), { status: 200 });
     }
     catch (error) {
         if (error instanceof ResourceNotFoundError ||

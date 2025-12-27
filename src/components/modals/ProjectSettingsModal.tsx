@@ -21,6 +21,7 @@ interface ProjectSettingsModalProps {
   onClose: () => void;
   project: ProjectData;
   sharedUsers?: SharedUser[];
+  isLoadingUsers?: boolean;
   onSave?: (updatedProject: Partial<ProjectData>) => Promise<void>;
   onAddUser?: (email: string) => Promise<SharedUser[] | void>;
   onRevokeAccess?: (userId: string) => Promise<SharedUser[] | void>;
@@ -32,6 +33,7 @@ export function ProjectSettingsModal({
   onClose,
   project,
   sharedUsers = [],
+  isLoadingUsers = false,
   onSave,
   onAddUser,
   onRevokeAccess,
@@ -130,6 +132,7 @@ export function ProjectSettingsModal({
         <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-4">
           <HeaderWithUserSection
             sharedUsers={sharedUsers}
+            isLoadingUsers={isLoadingUsers}
             onAddUser={onAddUser}
             onRevokeAccess={onRevokeAccess}
             onUsersUpdate={onUsersUpdate}

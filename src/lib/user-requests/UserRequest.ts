@@ -1,15 +1,32 @@
 import { apiClient } from '@/lib/user-requests/api/client';
+
+interface SharedUser {
+    id: string;
+    name: string;
+}
+
 export class UserRequest {
     async addUserToProject(projectId: string, newUserEmail: string): Promise<void> {
         // Delegates the request to ProjectControlle
-            const result = await apiClient.post('/project/add_user', {
+            const result = await apiClient.post('/project/user/add', {
                 projectId,
                 newUserEmail
             });
-            if (!result.ok && result.message) {
-                throw new Error(`Failed to add user: ${result.message}`);
-            }
+            
             return result;
 
     }
+
+    async getProjectUsers(projectId: string): Promise<SharedUser[]> {
+        // Fetch users attached to a project
+        const result = await apiClient.get(`/project/user?projectId=${projectId}`);
+        if (result?.emails && Array.isArray(result.emails)) {
+            return result.emails.map((email: string, index: number) => ({
+                id: `user-${index}-${email}`,
+                name: email
+            }));
+        }
+        return [];
+    }
 }
+

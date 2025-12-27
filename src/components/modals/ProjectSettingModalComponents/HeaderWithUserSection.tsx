@@ -14,6 +14,7 @@ interface SharedUser {
 
 interface HeaderWithUserSectionProps {
   sharedUsers?: SharedUser[];
+  isLoadingUsers?: boolean;
   onAddUser?: (email: string) => Promise<SharedUser[] | void>;
   onRevokeAccess?: (userId: string) => Promise<SharedUser[] | void>;
   onUsersUpdate?: (users: SharedUser[]) => void;
@@ -23,6 +24,7 @@ interface HeaderWithUserSectionProps {
 
 export function HeaderWithUserSection({
   sharedUsers = [],
+  isLoadingUsers = false,
   onAddUser,
   onRevokeAccess,
   onUsersUpdate,
@@ -34,12 +36,12 @@ export function HeaderWithUserSection({
   const [revokingUserId, setRevokingUserId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [users, setUsers] = useState<SharedUser[]>(sharedUsers);
-  const [isLoading, setIsLoading] = useState(!sharedUsers || sharedUsers.length === 0);
+  const [isLoading, setIsLoading] = useState(isLoadingUsers);
 
   useEffect(() => {
     setUsers(sharedUsers);
-    setIsLoading(false);
-  }, [sharedUsers]);
+    setIsLoading(isLoadingUsers);
+  }, [sharedUsers, isLoadingUsers]);
 
   const handleAddUser = async () => {
     if (!newUserEmail.trim()) {

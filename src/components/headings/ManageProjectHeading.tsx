@@ -1,14 +1,44 @@
 'use client'
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProjectData } from "@/lib/interfaces/manage_project_interfaces"
 import { ProjectSettingsModal } from "@/components/modals/ProjectSettingsModal"
 import { UserRequest } from "@/lib/user-requests/UserRequest"
 
+interface SharedUser {
+    id: string;
+    name: string;
+}
+
 export default function ManageProjectHeading({ project }: { project: ProjectData }) {
     const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+    const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([])
+    const [isLoadingUsers, setIsLoadingUsers] = useState(false)
+
+    useEffect(() => {
+        if (isSettingsOpen) {
+            fetchProjectUsers()
+        }
+    }, [isSettingsOpen])
+
+    const fetchProjectUsers = async () => {
+        setIsLoadingUsers(true)
+        try {
+            // Simulate API call with 2 second delay
+            await new Promise(resolve => setTimeout(resolve, 2000))
+            
+            const userRequest = new UserRequest()
+            const users = await userRequest.getProjectUsers(project.id)
+            setSharedUsers(users)
+        } catch (error) {
+            console.error('Error fetching project users:', error)
+            setSharedUsers([])
+        } finally {
+            setIsLoadingUsers(false)
+        }
+    }
 
     return (
         <>
@@ -30,28 +60,35 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
                 isOpen={isSettingsOpen}
                 onClose={() => setIsSettingsOpen(false)}
                 project={project}
-                sharedUsers={[
-                    { id: '1', name: 'john@example.com' }
-                ]}
+                sharedUsers={sharedUsers}
+                isLoadingUsers={isLoadingUsers}
                 onAddUser={async (email) => {
                     try {
                         const userRequest = new UserRequest();
+                        // Simulate API call with 2 second delay
+                        await new Promise(resolve => setTimeout(resolve, 2000))
                         await userRequest.addUserToProject(project.id, email);
                         console.log('Adding user:', email);
-                        return [
-                            { id: '1', name: 'john@example.com' },
-                            { id: '2', name: email }
-                        ];
+                        // Refresh users list
+                        await fetchProjectUsers()
+                        return sharedUsers;
                     } catch (error) {
                         console.error('Error in onAddUser:', error);
                         throw error instanceof Error ? error : new Error('Failed to add user');
                     }
                 }}
                 onRevokeAccess={async (userId) => {
-                    console.log('Revoking access for user:', userId);
-                    return [
-                        { id: '1', name: 'john@example.com' }
-                    ].filter(u => u.id !== userId);
+                    try {
+                        // Simulate API call with 2 second delay
+                        await new Promise(resolve => setTimeout(resolve, 2000))
+                        console.log('Revoking access for user:', userId);
+                        // Refresh users list after revoke
+                        await fetchProjectUsers()
+                        return sharedUsers.filter(u => u.id !== userId);
+                    } catch (error) {
+                        console.error('Error revoking access:', error)
+                        throw error instanceof Error ? error : new Error('Failed to revoke access')
+                    }
                 }}
             />
         </>

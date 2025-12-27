@@ -53,6 +53,12 @@ export class ProjectController {
       const userData = await authController.verifyAuthKey(auth_key);
       await this.UserService.addUserToProject(userData.uuid, newUserEmail, projectId);
     }
+    async getUsersAttachedToProject(projectId: string, auth_key: string): Promise<string[]> {
+      const userData = await authController.verifyAuthKey(auth_key);
+      const emails = await this.UserService.getUsersAttachedToProject(projectId,userData.uuid);
+      return emails;
+      
+    }
     //this adds a user to a project by their email address
     
 

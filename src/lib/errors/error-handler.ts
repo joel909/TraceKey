@@ -55,6 +55,9 @@ export function createDatabaseError(
     else if(purpose === "ATTACH_PROJECT_TO_USER" && _err.code === '23505'){
       return new ValidationError('User is already associated with this project.', 'user_project');
     }
+    else if(purpose === "FETCH_USERS_ATTACHED_WITH_PROJECT" && _err.code === "22P02") {
+      return new ValidationError('The Project ID is invalid.', 'project_id');
+    }
   }
 
   // Map PostgreSQL errors based on error code

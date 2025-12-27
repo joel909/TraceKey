@@ -52,8 +52,13 @@ export class ApiClient {
       body: JSON.stringify(data),
     });
 
+    const json = await response.json();
 
-    return response.json();
+    if (!response.ok) {
+      throw new Error(json.message || `HTTP Error: ${response.status}`);
+    }
+
+    return json;
   }
 
   /**

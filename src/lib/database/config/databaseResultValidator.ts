@@ -26,4 +26,7 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
     else if(purpose === "FETCH_USER_BY_EMAIL" && result.rows.length == 0){
         throw new ResourceNotFoundError('No user found with the provided email address.');
     }
+    else if(purpose === "FETCH_USERS_ATTACHED_WITH_PROJECT" && result.rows.length === 0){
+        throw new ResourceNotFoundError('We could not find that project, or you do not have the permissions required to access it. Please check the URL or contact your admin');
+    }
 }

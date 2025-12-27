@@ -97,4 +97,24 @@ export const fetchUserFromEmailQuery =
 `
     SELECT uuid FROM users where email=$1 LIMIT 1;
 `
-// export const fetchUsersAttachedWithProjectQuery =
+export const fetchUsersAttachedWithProjectQuery =
+`
+WITH projectMembers AS (
+    SELECT 
+        u.email AS Email, 
+        p.uuid 
+    FROM user_projects AS p 
+    JOIN users AS u 
+        ON u.uuid = p.uuid 
+    WHERE p.project_id = $1
+    LIMIT 50
+)
+SELECT Email AS emails 
+FROM projectMembers 
+WHERE EXISTS (
+    SELECT 1 
+    FROM projectMembers 
+    WHERE uuid = $2
+);
+
+`

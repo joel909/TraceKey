@@ -118,3 +118,17 @@ WHERE EXISTS (
 );
 
 `
+
+export const removeUserFromProjectQuery =
+`
+DELETE FROM user_projects
+WHERE uuid = $1 
+  AND project_id = $2
+  AND EXISTS (
+    SELECT 1 
+    FROM projects 
+    WHERE project_id = $2 
+      AND created_by = $3 
+      AND created_by != $1
+  );
+`

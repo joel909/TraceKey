@@ -8,14 +8,20 @@ interface SharedUser {
 export class UserRequest {
     async addUserToProject(projectId: string, newUserEmail: string): Promise<void> {
         // Delegates the request to ProjectControlle
-            const result = await apiClient.post('/project/user/add', {
-                projectId,
-                newUserEmail
-            });
-            
-            return result;
-
-    }
+        const result = await apiClient.post('/project/user/add', {
+            projectId,
+            newUserEmail
+        });
+        return result;
+        }
+    async removeUserFromProject(projectId: string, removeUserEmail: string): Promise<void> {
+        // Delegates the request to ProjectController
+        const result = await apiClient.delete('/project/user/remove', {
+            projectId,
+            removeUserEmail
+        });
+        return result;
+        }
 
     async getProjectUsers(projectId: string): Promise<SharedUser[]> {
         // Fetch users attached to a project

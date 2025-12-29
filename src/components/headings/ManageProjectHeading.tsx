@@ -27,7 +27,7 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
         setIsLoadingUsers(true)
         try {
             // Simulate API call with 2 second delay
-            await new Promise(resolve => setTimeout(resolve, 2000))
+            
             
             const userRequest = new UserRequest()
             const users = await userRequest.getProjectUsers(project.id)
@@ -66,9 +66,8 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
                     try {
                         const userRequest = new UserRequest();
                         // Simulate API call with 2 second delay
-                        await new Promise(resolve => setTimeout(resolve, 2000))
                         await userRequest.addUserToProject(project.id, email);
-                        console.log('Adding user:', email);
+                        // console.log('Adding user:', email);
                         // Refresh users list
                         await fetchProjectUsers()
                         return sharedUsers;
@@ -77,14 +76,15 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
                         throw error instanceof Error ? error : new Error('Failed to add user');
                     }
                 }}
-                onRevokeAccess={async (userId) => {
+                onRevokeAccess={async (email) => {
                     try {
                         // Simulate API call with 2 second delay
-                        await new Promise(resolve => setTimeout(resolve, 2000))
-                        console.log('Revoking access for user:', userId);
+                        const userRequest = new UserRequest();
+                        await userRequest.removeUserFromProject(project.id, email);
+                        // console.log('Revoking access for user:', email);
                         // Refresh users list after revoke
                         await fetchProjectUsers()
-                        return sharedUsers.filter(u => u.id !== userId);
+                        return sharedUsers;
                     } catch (error) {
                         console.error('Error revoking access:', error)
                         throw error instanceof Error ? error : new Error('Failed to revoke access')

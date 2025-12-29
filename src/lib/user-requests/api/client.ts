@@ -86,13 +86,15 @@ export class ApiClient {
   /**
    * DELETE request
    */
-  async delete(endpoint: string) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async delete(endpoint: string,data: any) {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
       credentials: 'include', // ✨ This sends cookies automatically!
+      body: JSON.stringify(data),
     });
 
     if (!response.ok) {

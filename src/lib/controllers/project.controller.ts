@@ -53,11 +53,16 @@ export class ProjectController {
       const userData = await authController.verifyAuthKey(auth_key);
       await this.UserService.addUserToProject(userData.uuid, newUserEmail, projectId);
     }
+    async removeUserFromProject(projectId: string, removeUserEmail: string,auth_key: string): Promise<void> {
+      const userData = await authController.verifyAuthKey(auth_key);
+      await verifyUserProjectOwnerShip(userData.uuid, projectId);
+      await this.UserService.removeUserFromProject( projectId,userData.uuid,removeUserEmail);
+    }
     async getUsersAttachedToProject(projectId: string, auth_key: string): Promise<string[]> {
       const userData = await authController.verifyAuthKey(auth_key);
       const emails = await this.UserService.getUsersAttachedToProject(projectId,userData.uuid);
       return emails;
-      
+
     }
     //this adds a user to a project by their email address
     

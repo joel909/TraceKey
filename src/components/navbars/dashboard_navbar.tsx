@@ -34,8 +34,7 @@ export default function NavBar({ userName, userEmail }: NavBarProps){
                 </DropdownMenuTrigger>
                 <DropdownMenuContent 
                     className="w-56 bg-white border-2 border-gray-300 shadow-xl" 
-                    align="end" 
-                    forceMount
+                    align="end"
                 >
                     <DropdownMenuLabel className="font-normal bg-gray-50">
                     <div className="flex flex-col space-y-1">

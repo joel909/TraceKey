@@ -74,7 +74,7 @@ export function HeaderWithUserSection({
         setNewUserEmail('');
         onSuccess?.();
       }
-      setTimeout(() => setError(null), 3000);
+      
     } catch (err) {
       console.error('Error adding user:', err);
       const errMsg = err instanceof Error ? err.message : 'Failed to add user';
@@ -85,29 +85,28 @@ export function HeaderWithUserSection({
     }
   };
 
-  const handleRevokeAccess = async (userId: string) => {
+  const handleRevokeAccess = async (email: string) => {
     try {
-      setRevokingUserId(userId);
+      setRevokingUserId(email);
       setError(null);
 
       // Wait for 5 seconds
-      await new Promise((resolve) => setTimeout(resolve, 5000));
-
+      
       if (onRevokeAccess) {
-        const result = await onRevokeAccess(userId);
+        const result = await onRevokeAccess(email);
         if (result && Array.isArray(result)) {
           setUsers(result);
           onUsersUpdate?.(result);
         } else {
           // If no result returned, remove user optimistically
-          const updatedUsers = users.filter((u) => u.id !== userId);
+          const updatedUsers = users.filter((u) => u.name !== email);
           setUsers(updatedUsers);
           onUsersUpdate?.(updatedUsers);
         }
       }
 
       onSuccess?.();
-      setTimeout(() => setError(null), 3000);
+
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : 'Failed to revoke access';
       setError(errMsg);
@@ -135,11 +134,11 @@ export function HeaderWithUserSection({
                   <Button
                     size="sm"
                     variant="outline"
-                    onClick={() => handleRevokeAccess(user.id)}
-                    disabled={revokingUserId === user.id}
+                    onClick={() => handleRevokeAccess(user.name)}
+                    disabled={revokingUserId === user.name}
                     className="text-red-600 border-red-200 hover:bg-red-50 h-7 px-2"
                   >
-                    {revokingUserId === user.id ? (
+                    {revokingUserId === user.name ? (
                       <div className="animate-spin h-3 w-3 border-2 border-red-600 border-t-transparent rounded-full" />
                     ) : (
                       <Trash2 className="h-3 w-3" />

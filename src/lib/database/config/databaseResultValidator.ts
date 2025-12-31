@@ -1,6 +1,7 @@
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { AuthorizationError } from "@/lib/errors/extended_errors/AuthorizationError";
 import { ResourceNotFoundError } from "@/lib/errors/extended_errors/ResourceNotFoundError";
+import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
 import { QueryResult } from "pg";
 
 export default function validateDatabaseResult(result: QueryResult, purpose: string) {
@@ -31,5 +32,8 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
     }
     else if(purpose === "REMOVE_PROJECT_FROM_USER" && result.rowCount === 0){
         throw new AuthorizationError('Failed to remove user from project. Please ensure you have the necessary permissions and that the user is part of the project and user is not trying to remove themselves.');
+    }
+    else if(purpose === "UPDATE_PROJECT_DETAILS" && result.rowCount === 0){
+        throw new ValidationError('Failed to update project details. Please ensure the project exists.');
     }
 }

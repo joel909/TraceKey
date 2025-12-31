@@ -10,6 +10,7 @@ import { ProjectUrlField } from './ProjectSettingModalComponents/ProjectUrlField
 import { ErrorMessage } from './ProjectSettingModalComponents/ErrorMessage';
 import { SuccessMessage } from './ProjectSettingModalComponents/SuccessMessage';
 import { ModalFooter } from './ProjectSettingModalComponents/ModalFooter';
+import { UserRequest } from '@/lib/user-requests/UserRequest';
 
 interface SharedUser {
   id: string;
@@ -45,6 +46,7 @@ export function ProjectSettingsModal({
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [hasChanges, setHasChanges] = useState(false);
 
   // Initialize form fields when project changes or modal opens
   useEffect(() => {
@@ -54,10 +56,26 @@ export function ProjectSettingsModal({
       setDeployedUrl(project.url || '');
       setError(null);
       setSuccess(false);
+      setHasChanges(false);
     }
   }, [isOpen, project]);
 
+  // Track if any field has changed
+  useEffect(() => {
+    const changed =
+      projectName !== (project.name || '') ||
+      description !== (project.description || '') ||
+      deployedUrl !== (project.url || '');
+    setHasChanges(changed);
+  }, [projectName, description, deployedUrl, project]);
+
   const handleSave = async () => {
+    // Check if there are changes
+    if (!hasChanges) {
+      setError('No changes to save');
+      return;
+    }
+
     // Validation
     if (!projectName.trim()) {
       setError('Project name is required');
@@ -78,6 +96,21 @@ export function ProjectSettingsModal({
         description: description,
         url: deployedUrl,
       };
+      const userRequest = new UserRequest();
+      await userRequest.modifyProjectData(project.id, updatedProject.name, updatedProject.description, updatedProject.url);
+
+      // Dummy API call with timeout
+      // await new Promise((resolve, reject) => {
+      //   const timeout = setTimeout(() => {
+      //     // Randomly fail for testing (20% chance)
+      //     reject(new Error('Failed to save project settings. Please try again.'));
+      //     if (Math.random() < 0.2) {
+      //       reject(new Error('Failed to save project settings. Please try again.'));
+      //     } else {
+      //       resolve(null);
+      //     }
+      //   }, 2000); // 2 second timeout
+      // });
 
       if (onSave) {
         await onSave(updatedProject);
@@ -86,9 +119,10 @@ export function ProjectSettingsModal({
       setSuccess(true);
       setTimeout(() => {
         onClose();
-      }, 1000);
+      }, 1500);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to save project settings');
+      setSuccess(false);
     } finally {
       setIsSaving(false);
     }
@@ -118,6 +152,10 @@ export function ProjectSettingsModal({
           </DialogTitle>
         </DialogHeader>
 
+        {error && <ErrorMessage message={error} />}
+
+        {success && <SuccessMessage />}
+
         <div className="space-y-6 max-h-[60vh] overflow-y-auto pr-4">
           <HeaderWithUserSection
             sharedUsers={sharedUsers}
@@ -128,8 +166,6 @@ export function ProjectSettingsModal({
             onError={setError}
             onSuccess={handleAddUser}
           />
-
-          {success && <SuccessMessage />}
 
           <ProjectNameField value={projectName} onChange={setProjectName} />
 

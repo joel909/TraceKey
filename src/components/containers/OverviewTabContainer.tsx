@@ -6,9 +6,9 @@ import { TabsContent } from "../ui/tabs";
 import RecentActivityCard from "../cards/RecentActivityCard";
 import ActivityTable from "../tables/ActivityTable";
 import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
-import { ProjectData } from "@/lib/interfaces/manage_project_interfaces";
+import { DashboardData } from "@/lib/interfaces/manage_project_interfaces";
 
-export default function OverviewTabContainer({ data, onFetchPage } : { data: ProjectData, onFetchPage?: (page: number) => Promise<LogActivity[]> }) {
+export default function OverviewTabContainer({ data, onFetchPage } : { data: DashboardData, onFetchPage?: (page: number) => Promise<LogActivity[]> }) {
     let total_visits;
     try{
         total_visits = parseInt(data.totalVisits);

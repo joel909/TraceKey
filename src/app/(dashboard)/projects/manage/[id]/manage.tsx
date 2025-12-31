@@ -23,7 +23,7 @@ export default function ManageProjectPage({projectData,error, }: {projectData: P
 
           {/* Dashboard Content */}
           <TabContainer tabs={['Overview']}>
-            <ProjectsOverviewWrapper project_data={projectData}  />
+            <ProjectsOverviewWrapper project_data={projectData} isDashboard={false} />
             {/* <AnalyticsContainer /> */}
           </TabContainer>
         </main>

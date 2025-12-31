@@ -45,6 +45,7 @@ export default class userClientRequestsController{
             const data = await response.json();
             return data.country || "Unknown Location";
         }catch(error){
+            console.log("Error fetching device location:",error);
             return "Unknown Location";
         }
     }

@@ -7,6 +7,6 @@ export default async function removeProjectFromUser(project_id :string,requester
         throw new ValidationError("You cannot remove yourself from the project." );
     }
     // Implementation to remove a project from a user's list of projects in the database.
-    const result = await query("REMOVE_PROJECT_FROM_USER",removeUserFromProjectQuery, [remove_user_uuid, project_id, requester_uuid]);
+    await query("REMOVE_PROJECT_FROM_USER",removeUserFromProjectQuery, [remove_user_uuid, project_id, requester_uuid]);
 
 }

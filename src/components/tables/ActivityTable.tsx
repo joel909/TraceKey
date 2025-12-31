@@ -1,8 +1,6 @@
 'use client'
 import TableComponent from "./ActivityTableComponents/Table"
 import { useState, useEffect } from "react"
-import {  ChevronLeft,ChevronRight,Loader2,ChevronDown,ChevronUp } from "lucide-react"
-import { Button } from "../ui/button"
 import {LogActivity}  from "@/lib/interfaces/deviceInfoInterface"
 import DialogBox from "./ActivityTableComponents/DialogContent"
 import PaginationHandlingComponent from "./ActivityTableComponents/PaginationHandleingComponent"

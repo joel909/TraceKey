@@ -10,8 +10,9 @@ import { DeviceInfo, LogActivity, LogActivityStaticsInterface } from "../interfa
 import {CreateUserProjectResponse, Project, SingleProjectDetails} from "../interfaces/project_interface";
 import { authController } from "./auth.controller";
 import verifyUserProjectOwnerShip from "../database/user/user/verifyUserProjectOwnerShip";
-import checkUserExistsByEmail from "../database/user/user/checkUserExistsByEmail";
 import UserService from "../database/user/user.service";
+import modifyProjectData from "../database/user/projects/resource-modification/modifyProjectData";
+import fetchAllUsersProjectLogs from "../database/user/projects/logs/getAllProjectLogData";
 
 
 export class ProjectController {
@@ -32,6 +33,7 @@ export class ProjectController {
       const projectDetails = await fetchSingleProjectDataByID(id);
       return projectDetails;
     }
+    
 
     //  async fetchProjectIDByAPIKey(api_key: string) : Promise<string> {
 
@@ -62,7 +64,17 @@ export class ProjectController {
       const userData = await authController.verifyAuthKey(auth_key);
       const emails = await this.UserService.getUsersAttachedToProject(projectId,userData.uuid);
       return emails;
+    }
+    async modifyProjectData(projectId: string, name: string, description:string,deployed_url: string, auth_key: string): Promise<void> {
+      await authController.verifyAuthKey(auth_key);
+      await modifyProjectData( projectId, name, description,deployed_url);
+    }
 
+    async fetchAllUsersProjectLogs(auth_key:string,page=1) :Promise<[LogActivity[],LogActivityStaticsInterface,string]>{
+      const userData = await authController.verifyAuthKey(auth_key);
+      const uuid = userData.uuid;
+      const [projectDetails,logStatics,top_region] = await fetchAllUsersProjectLogs(uuid,page);
+      return [projectDetails,logStatics,top_region];
     }
     //this adds a user to a project by their email address
     

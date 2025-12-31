@@ -34,5 +34,15 @@ export class UserRequest {
         }
         return [];
     }
+    async modifyProjectData(projectId: string, name: string, description:string,deployed_url: string): Promise<void> {
+        // Delegates the request to ProjectController
+        const result = await apiClient.put('/project/update', {
+            projectId,
+            name,
+            description,
+            deployed_url
+        });
+        return result;
+        }
 }
 

@@ -11,6 +11,13 @@ export interface ProjectData {
   topRegion: string;
   recentActivity: LogActivity[];
 }
+export interface DashboardData {
+  uniqueVisitors: string;
+  totalVisits: string;
+  topRegion: string;
+  recentActivity: LogActivity[];
+
+}
 
 export interface ActivityItem {
   id: string;

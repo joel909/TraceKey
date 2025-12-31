@@ -132,3 +132,71 @@ WHERE uuid = $1
       AND created_by != $1
   );
 `
+
+export const modifyProjectDataQuery =
+`
+UPDATE projects
+SET
+  project_name = $1,
+  site_url = $2,
+  description = $3
+WHERE project_id = $4;
+
+`
+
+export const fetchAllProjectLogDataQuery =
+`
+    SELECT
+        i.ip_address,
+        i.timestamp,
+        i.device,
+        i.region,
+        i.interaction_id,
+        i.user_agent,
+        i.additional_device_info,
+        COUNT(*) OVER() AS full_count
+    FROM interactions i
+    JOIN projects p
+        ON i.api_key = p.api_key
+    JOIN user_projects up
+        ON p.project_id = up.project_id
+    WHERE up.uuid = $1
+    LIMIT $2 OFFSET $3;
+`
+//QUERY IS VERY INECFFICIENT, NEEDS OPTIMIZATION cuz its joining all rows so yea its a big ops
+export const fetchAllProjectLogDataQueryV2 = 
+`
+WITH dataset AS (
+    -- Define the filtered data once (virtual view)
+    SELECT 
+        i.ip_address,
+        i.timestamp,
+        i.device,
+        i.region,
+        i.interaction_id,
+        i.user_agent,
+        i.additional_device_info
+    FROM interactions i
+    JOIN projects p ON i.api_key = p.api_key
+    JOIN user_projects up ON p.project_id = up.project_id
+    WHERE up.uuid = $1
+),
+stats AS (
+    -- Calculate counts on the full dataset
+    SELECT 
+        MODE() WITHIN GROUP (ORDER BY region) as top_region,
+        COUNT(*) AS total_rows,
+        COUNT(DISTINCT ip_address) AS unique_visitors
+    FROM dataset
+)
+SELECT 
+    d.*,
+    s.top_region,
+    s.total_rows,
+    s.unique_visitors
+FROM dataset d
+CROSS JOIN stats s -- Attach the counts to every row
+ORDER BY d.timestamp DESC -- Recommended for pagination
+LIMIT $2 OFFSET $3;
+
+`

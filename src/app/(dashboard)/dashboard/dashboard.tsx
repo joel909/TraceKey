@@ -1,5 +1,4 @@
 import PageTitle1 from "@/components/headings/PageTitle1";
-import { LogActivity } from "@/lib/interfaces/deviceInfoInterface";
 import { DashboardData } from "@/lib/interfaces/manage_project_interfaces";
 import ProjectsOverviewWrapper from "@/components/containers/ProjectsOverviewWrapper";
 import TabContainer from "@/components/containers/TabContainer";

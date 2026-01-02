@@ -44,5 +44,13 @@ export class UserRequest {
         });
         return result;
         }
+    async createNewProject(name:string,description:string) {
+        const result = await apiClient.post('/project/create', {
+            name,
+            description
+        })
+        return result;
+        
+    }
 }
 

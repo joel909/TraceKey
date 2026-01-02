@@ -1,6 +1,5 @@
 import { query } from "../../config/db";
 import { addUserToProjectQuery } from "../../config/queries";
-import fetchUserByEmailQuery from "./fetchUserInfoFromEmail";
 export default async function attachProjectToUser(uuid:string, projectId:string) : Promise<void> {
     // Implementation to attach a project to a user by 
     // updating the user-project association in the database.

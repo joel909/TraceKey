@@ -9,7 +9,6 @@ import { DashboardData } from "@/lib/interfaces/manage_project_interfaces";
 // --- Main Dashboard Page ---
 export default async  function DashboardPage() {
   //HERE WIRITE THE FUNCTION TO GET THE COLLECTIVE DATA OF ALL THE USERS PROJECTS AND PASS IT ON AND MAY THE DATA DYNAMIC
-  let projectDetails : SingleProjectDetails;
   let VistorIpLogs : LogActivity[];
   let VistorLogStatics : LogActivityStaticsInterface;
   let TopRegion : string;

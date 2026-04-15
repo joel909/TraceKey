@@ -3,75 +3,19 @@ import { useEffect, use } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Code, PartyPopper, BarChartHorizontal } from "lucide-react";
-import { apiClient } from '@/lib/user-requests/api/client';
-import {DeviceInfo} from '@/lib/interfaces/deviceInfoInterface';
-
-// Define types for the data we're working with
-interface UaHighEntropyValues {
-  brands: { brand: string, version: string }[];
-  mobile: boolean;
-  platform: string;
-  model: string;
-  platformVersion: string;
-}
+import { TracekeyClient } from 'tracekey-sdk';
 
 
 
 export default function SampleAnalyticsPageThemed({ params }: { params: Promise<{ apikey: string }> }) {
   const { apikey } = use(params);
-
+  
   useEffect(() => {
-    const trackVisit = async () => {
-      if (!apikey) {
-        console.error("API key is missing.");
-        return;
-      }
-
-      // --- Start of New Device Info Logic ---
-      let deviceInfo: DeviceInfo = {}; // Default to an empty object
-
-      try {
-        // 1. Check if the modern API is available
-        if ((navigator as any).userAgentData) {
-          // 2. Request the detailed ("high entropy") values
-          const uaData = await (navigator as any).userAgentData.getHighEntropyValues([
-            "platform",
-            "platformVersion",
-            "model"
-          ]) as UaHighEntropyValues;
-
-          // 3. Find the real brand name, ignoring the junk value
-          const primaryBrand = uaData.brands.find(b => b.brand !== "Not;A=Brand");
-          
-          // 4. Populate our deviceInfo object with the clean data
-          deviceInfo = {
-            brand: primaryBrand?.brand,
-            model: uaData.model,
-            platform: uaData.platform,
-            platformVersion: uaData.platformVersion,
-          };
-        }
-      } catch (error) {
-        console.warn("Could not get detailed device info, proceeding with basic tracking.", error);
-        // If it fails, deviceInfo remains an empty object, and the visit is still tracked.
-      }
-      // --- End of New Device Info Logic ---
-
-      console.log("TraceKey: Tracking visit with API Key and Device Info:", { apikey, deviceInfo });
-
-      try {
-        // 5. Send the API key AND the collected device info in one request
-        await apiClient.post('/v1/visits', { 
-          api_key: apikey,
-          additionalDeviceInfo: deviceInfo // Nest the device info for clean data structure
-        });
-        console.log("TraceKey: Visit tracked successfully!");
-      } catch (error) {
-        console.error("TraceKey: Failed to track visit.", error);
-      }
-    };
-
-    trackVisit();
+    const TkClient = new TracekeyClient({
+      apiKey: apikey,
+      baseUrl: typeof window !== 'undefined' ? window.location.origin + "/" : "http://localhost:3000/"
+    })
+    TkClient.logLandingEvent();
   }, [apikey]);
 
   return (

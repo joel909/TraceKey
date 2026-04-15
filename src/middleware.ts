@@ -3,6 +3,7 @@ import { NextRequest } from 'next/server';
 import { AuthenticationError } from './lib/errors/extended_errors/AuthenticationError';
 // const auth_routes = ["/dashboard", "/settings", "/project"];
 const non_auth_routes = ["/login", "/signup", "/api/logout"];
+const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001'];
 
 export function middleware(request: NextRequest) {
     console.log("Middleware Executed");

@@ -36,14 +36,30 @@ export default function DialogBox({selectedActivity, setSelectedActivity,renderC
                   Activity Details
                 </DialogTitle>
                 <DialogDescription className="text-gray-500 pt-1">
-                  Detailed information for IP: 
-                  <span className="font-medium text-[#647FBC] pl-1">{selectedActivity.ip}</span>
+                  Detailed information for Device ID: 
+                  <span className="font-medium text-[#647FBC] pl-1">{selectedActivity.device_id || selectedActivity.ip}</span>
                 </DialogDescription>
               </DialogHeader>
               
               <div className="grid gap-5 py-4 max-h-[60vh] overflow-y-auto px-1 pr-3">
                 
                 {/* --- Modal Content --- */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-[#647FBC]">IP Address</label>
+                    <p className="p-3 border rounded-md bg-gray-50/80 text-sm text-gray-700 break-words font-mono">
+                      {selectedActivity.ip || "Not available"}
+                    </p>
+                  </div>
+                  
+                  <div className="space-y-1">
+                    <label className="text-sm font-semibold text-[#647FBC]">Region</label>
+                    <p className="p-3 border rounded-md bg-gray-50/80 text-sm text-gray-700 break-words font-mono">
+                      {selectedActivity.region || "Not available"}
+                    </p>
+                  </div>
+                </div>
+
                 <div className="space-y-1">
                   <label className="text-sm font-semibold text-[#647FBC]">Interaction ID</label>
                   <p className="p-3 border rounded-md bg-gray-50/80 text-sm text-gray-700 break-words font-mono">

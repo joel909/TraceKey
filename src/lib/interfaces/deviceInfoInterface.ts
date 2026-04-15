@@ -35,6 +35,9 @@ export interface LogActivity {
   userAgent: string;
   referrerUrl: string;
   cookies: string;
+  device_id : string;
+  page_route : string;
+  event_name : string;
 }
 export interface LogActivityStaticsInterface {
   uniqueVisitors: string;

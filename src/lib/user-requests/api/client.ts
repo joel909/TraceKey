@@ -11,7 +11,7 @@ export class ApiClient {
   private baseURL: string;
 
   constructor() {
-    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+    this.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://192.168.1.12:3000/api';
   }
 
   /**

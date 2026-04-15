@@ -2,9 +2,9 @@ import { query } from "@/lib/database/config/db";
 import { fetchAllProjectLogDataQueryV2 } from "@/lib/database/config/queries";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
 
-export default async function fetchAllUsersProjectLogs(uuid:string,page:number) : Promise<[LogActivity[],LogActivityStaticsInterface,string]> {
+export default async function fetchAllUsersProjectLogs(uuid:string,page:number,duration:string) : Promise<[LogActivity[],LogActivityStaticsInterface,string]> {
     const offSet = (page - 1) * 10;
-    const logData = await query("FETCH_USERS_ALL_PROJECT_LOGS",fetchAllProjectLogDataQueryV2,[uuid,10,offSet]);
+    const logData = await query("FETCH_USERS_ALL_PROJECT_LOGS",fetchAllProjectLogDataQueryV2,[uuid,10,offSet,duration]);
     console.log("Fetched Project Details:", logData);
     const logStatics :LogActivityStaticsInterface = {
         uniqueVisitors: String(logData[0]?.unique_visitors) || String(logData.length),
@@ -23,7 +23,10 @@ export default async function fetchAllUsersProjectLogs(uuid:string,page:number) 
                 userAgent: log.user_agent || "Unknown",
                 referrerUrl: log.referrer_url || "Direct Visit",
                 cookies: log.cookies || "No cookies",
-                additionalDeviceInfo: log.additional_device_info ? JSON.stringify(log.additional_device_info) : "No data"
+                additionalDeviceInfo: log.additional_device_info ? JSON.stringify(log.additional_device_info) : "No data",
+                device_id : log.device_id || "Unknown Device ID",
+                page_route : log.page_route || "Unknown Page",
+                event_name : log.action_name || "Unknown Event"
             }
             projectIntialLogs.push(logEntry);
         }

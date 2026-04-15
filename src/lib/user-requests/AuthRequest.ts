@@ -19,13 +19,17 @@ export class AuthRequest {
         }
         // console.log("Result from server:", result);
         return result;
-    } catch(error) {
-        // console.error("Error occurred while creating user:", result);
-        throw error;
+        } catch(error) {
+            // console.error("Error occurred while creating user:", result);
+            throw error;
+        }
+    }
+
+    async loginUser(data : {email:string,password:string}) {
+            const result = await apiClient.post('/login', data);
     }
 
 
-}
 }
 
 export const authRequests = new AuthRequest();

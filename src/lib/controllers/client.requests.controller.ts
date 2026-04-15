@@ -19,6 +19,7 @@ export default class userClientRequestsController{
         }
         return detectDevice(userAgent);
     }
+    
     async getDeviceType(): Promise<string> {
         let device_type : string = "Desktop";
         const deviceInfo = await this.getDeviceInfo();

@@ -6,9 +6,19 @@ import { authController } from "@/lib/controllers/auth.controller";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { cleanDeviceInfo } from "@/lib/utils/cleanDeviceInfo";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-version, x-requested-with",
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
+
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { api_key, additionalDeviceInfo = {} } = body;
+    const { api_key, additionalDeviceInfo, device_id = "Unknown Device ID",page_route = "",event_name ="" } = body;
     if (!api_key) {return NextResponse.json({ message: "API key is missing" }, { status: 400 });}
     
     // Validate additionalDeviceInfo type
@@ -30,21 +40,19 @@ export async function POST(req: NextRequest) {
         const device_type = await userClientController.getDeviceType();
         const cookies =  req.cookies.getAll();
         const location = await userClientController.getDeviceLocation(ip_address);
-        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, cookies, device_type, location, cleanedDeviceInfo);
-        return NextResponse.json({ message: "Visit logged successfully", ip_address, device_information, user_agent, refferer_url, cookies }, { status: 200 });
+
+        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, cookies, device_type, location, cleanedDeviceInfo,device_id,page_route,event_name);
+        return NextResponse.json({ message: "Visit logged successfully", ip_address, device_information, user_agent, refferer_url, cookies }, { status: 200, headers: corsHeaders });
     }
     catch (error) {
         if(error instanceof ValidationError){
-            return NextResponse.json({ message: error.message, field: error.field }, { status: 400 });
+            return NextResponse.json({ message: error.message, field: error.field }, { status: 400, headers: corsHeaders });
         }
         else if (error instanceof AuthenticationError){
-            return NextResponse.json({ message: error.message }, { status: 401 });
+            return NextResponse.json({ message: error.message }, { status: 401, headers: corsHeaders });
         }
         console.error("Error logging visit:", error);
-        return NextResponse.json({ message: "Error logging visit" }, { status: 500 });
+        return NextResponse.json({ message: "Error logging visit" }, { status: 500, headers: corsHeaders });
     }
-    
-
-    
     
 }

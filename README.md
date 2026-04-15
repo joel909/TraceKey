@@ -23,7 +23,20 @@ To ensure robust error handling and clean debugging, several custom error classe
 
 ---
 
-## 🗃️ Database Connection and Handling
+## � Database Schema
+
+The TraceKey database consists of four main tables:
+
+* **`users`** — Stores user account information including email, name, password, and authentication keys
+* **`projects`** — Stores project configuration created by users, including API keys and site URLs
+* **`user_projects`** — Junction table linking users to projects (many-to-many relationship)
+* **`interactions`** — Stores client-side interaction data and analytics for each project
+
+To initialize your database, run the SQL schema located at [`src/lib/database/config/schema.sql`](src/lib/database/config/schema.sql) on your PostgreSQL instance.
+
+---
+
+## �🗃️ Database Connection and Handling
 
 We use the **`pg`** module to establish a **pooled connection** to the PostgreSQL database. This logic is implemented in [`db.ts`](https://github.com/joel909/TraceKey/blob/master/src/lib/database/config/db.ts).
 

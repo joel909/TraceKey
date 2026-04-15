@@ -14,10 +14,10 @@ export default function TableComponent({loading, itemsPerPage, currentPageData, 
         <Table>
         <TableHeader>
           <TableRow className="border-b border-gray-200/60">
-            <TableHead className="text-[#647FBC] font-semibold py-4 px-6">IP Address</TableHead>
+            <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Device ID</TableHead>
             <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Time</TableHead>
             <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Device</TableHead>
-            <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Region</TableHead>
+            <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Action Name</TableHead>
             <TableHead className="text-[#647FBC] font-semibold py-4 px-6">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -45,12 +45,12 @@ export default function TableComponent({loading, itemsPerPage, currentPageData, 
           ) : currentPageData.length > 0 ? (
             currentPageData.map((activity, index) => (
               <TableRow 
-                key={`${activity.ip}-${index}`}
+                key={`${activity.device_id || activity.ip}-${index}`}
                 className={`border-b border-gray-100/60 hover:bg-gray-50/50 transition-colors ${
                   index % 2 === 0 ? 'bg-transparent' : 'bg-gray-50/30'
                 }`}
               >
-                <TableCell className="font-medium text-[#647FBC] py-4 px-6">{activity.ip}</TableCell>
+                <TableCell className="font-medium text-[#647FBC] py-4 px-6">{activity.device_id || "-"}</TableCell>
                 <TableCell className="text-[#647FBC] py-4 px-6">{activity.time}</TableCell>
                 <TableCell className="flex items-center gap-2 text-[#647FBC] py-4 px-6">
                   {activity.device === "Desktop" ? 
@@ -59,7 +59,7 @@ export default function TableComponent({loading, itemsPerPage, currentPageData, 
                   }
                   {activity.device}
                 </TableCell>
-                <TableCell className="text-[#647FBC] py-4 px-6">{activity.region}</TableCell>
+                <TableCell className="text-[#647FBC] py-4 px-6">{activity.event_name || "-"}</TableCell>
                 <TableCell className="py-4 px-6">
                   <Button
                     variant="outline"

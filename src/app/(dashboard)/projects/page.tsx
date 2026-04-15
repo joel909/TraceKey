@@ -35,6 +35,7 @@ export default async  function Projects() {
                 />
               );
             }
+            console.error("Error fetching user projects in dashboard page:", e);
     
             return (
                 <InvalidManageProjectPage

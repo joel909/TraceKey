@@ -8,6 +8,7 @@ import { AuthenticationError } from "../errors/extended_errors/AuthenticationErr
 import { projectController } from "./project.controller";
 import verifyUserProjectAccess from "../database/user/projects/verification/verifyUserProjectAccess";
 import verifyApiKey from "../database/user/projects/verification/verifyApiKey";
+import UserService from "../database/user/user.service";
 
 const COOKIE_OPTIONS = {
   httpOnly: true,
@@ -18,6 +19,10 @@ const COOKIE_OPTIONS = {
 };
 
 export class AuthController {
+  private UserService : UserService
+  constructor() {
+    this.UserService = new UserService(); 
+  }
   async verifyAuthKey(authKey?: string): Promise<UserInfoInterface> {
     if (!authKey) {
       throw new AuthenticationError('Authentication key is required');
@@ -36,7 +41,6 @@ export class AuthController {
     await setCookie('email', email, COOKIE_OPTIONS);
     return requestUserCreation;
   }
-
   async verifyUserProjectAccess(uuid: string, projectId: string){
     //this does not return anything yet, just verifies and if the user does not have access to the project then it throws an error so just deal with it then
     return await verifyUserProjectAccess(uuid, projectId);
@@ -47,9 +51,14 @@ export class AuthController {
     }
     await verifyApiKey(apiKey);
   }
-  //the below function verifies if the particular user had created the project(by check created_by in projects table) making him the owner
-  // async verifyUserProjectOwnerShip(uuid: string, projectId: string): Promise<boolean> {
 
+  async loginUserWithEmailPassword(email: string, password: string): Promise<AccountCreationResponse> {
+    const userData = await this.UserService.loginUserWithEmailPassword(email, password);
+    await setCookie('auth_key', userData.auth_key, COOKIE_OPTIONS);
+    await setCookie('username', userData.name, COOKIE_OPTIONS);
+    await setCookie('email', userData.email, COOKIE_OPTIONS);
+    return userData;
+  }
 
   // }
 

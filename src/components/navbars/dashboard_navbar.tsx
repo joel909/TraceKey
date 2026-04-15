@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,13 +12,20 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, LogOut } from "lucide-react";
-
+import { logoutAction } from "@/app/logout/logout";
 
 interface NavBarProps {
     userName: string;
     userEmail: string;
 }
+
 export default function NavBar({ userName, userEmail }: NavBarProps){
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
+
+    const handleLogout = async () => {
+        setIsLoggingOut(true);
+        await logoutAction();
+    };
     return (
         <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -48,9 +56,13 @@ export default function NavBar({ userName, userEmail }: NavBarProps){
                         <span>Settings</span>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator className="bg-gray-300" />
-                    <DropdownMenuItem className="text-gray-800 hover:bg-gray-100 font-medium focus:bg-gray-100">
+                    <DropdownMenuItem 
+                        onClick={handleLogout}
+                        disabled={isLoggingOut}
+                        className="text-gray-800 hover:bg-gray-100 font-medium focus:bg-gray-100 cursor-pointer"
+                    >
                         <LogOut className="mr-2 h-4 w-4 text-gray-700" />
-                        <span>Log out</span>
+                        <span>{isLoggingOut ? 'Logging out...' : 'Log out'}</span>
                     </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

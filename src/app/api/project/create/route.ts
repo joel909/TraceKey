@@ -5,9 +5,19 @@ import gen_auth_key from "@/lib/utils/auth_key";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { AuthorizationError } from "@/lib/errors/extended_errors/AuthorizationError";
 
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, x-api-version, x-requested-with",
+  credentials: "include"
+};
+
 export async function POST(request: Request) {
     try{
         const { name, description } = await request.json();
+        if (!name || !description || name.length < 5) {
+            return new Response(JSON.stringify({ message: 'Invalid project name (min 5 characters)' }), { status: 400 });
+        }
         const cookie = await cookies()
         const auth_key = cookie.get('auth_key')?.value;
         if (!auth_key || !name || !description) {

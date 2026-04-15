@@ -49,31 +49,42 @@ export const fetchProjectIDByAPIKeyQuery =
 
 export const createUserClientIPRecordQuery =
 `
-INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region,additional_device_info)
-VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9)
+INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region,additional_device_info,page_route,action_name,device_id)
+VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9,$10,$11,$12)
 `
 
 export const fetchSingleProjectNIpLogsQuery =
 `
-SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
+SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info ,i.device_id ,i.action_name,i.page_route FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
+`
+export const fetchSingleProjectNIpLogsQueryV2 =
+`
+SELECT 
+  i.ip_address, i.timestamp, i.device, i.region,
+  i.interaction_id, i.user_agent, i.additional_device_info,
+  i.device_id, i.action_name, i.page_route
+FROM interactions i
+WHERE i.api_key = (
+  SELECT api_key FROM projects 
+  WHERE project_id = $1
+)
+AND i.timestamp >= NOW() - $4::interval
+ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
 `
 
 
 export const projectLogStatics = 
-`
-    SELECT COUNT(DISTINCT i.ip_address) as unique_visitors,
-    COUNT(*) as total_visits
-    FROM interactions i
-    JOIN projects p ON i.api_key = p.api_key
-    WHERE p.project_id = $1
-`;
+`SELECT  COUNT(DISTINCT i.ip_address) as unique_visitors,COUNT(*) as total_visits FROM interactions i WHERE i.api_key = (SELECT api_key FROM projects WHERE project_id = $1) AND i.timestamp >= NOW() - $2::interval;`
 
 
 export const fetchTopRegion = 
 `
-    SELECT i.region, COUNT(*) as visit_count FROM interactions i JOIN 
-    projects p ON i.api_key = p.api_key 
-    WHERE p.project_id = $1 GROUP BY i.region ORDER BY visit_count DESC LIMIT 1
+SELECT i.region, COUNT(*) AS visit_count FROM interactions i
+WHERE i.api_key = (
+    SELECT api_key 
+    FROM projects 
+    WHERE project_id = $1
+) AND i.timestamp >= NOW() - $2::interval GROUP BY i.region ORDER BY visit_count DESC LIMIT 1;
 `
 
 export const verifyApiKeyQuery =
@@ -166,37 +177,10 @@ export const fetchAllProjectLogDataQuery =
 //QUERY IS VERY INECFFICIENT, NEEDS OPTIMIZATION cuz its joining all rows so yea its a big ops
 export const fetchAllProjectLogDataQueryV2 = 
 `
-WITH dataset AS (
-    -- Define the filtered data once (virtual view)
-    SELECT 
-        i.ip_address,
-        i.timestamp,
-        i.device,
-        i.region,
-        i.interaction_id,
-        i.user_agent,
-        i.additional_device_info
-    FROM interactions i
-    JOIN projects p ON i.api_key = p.api_key
-    JOIN user_projects up ON p.project_id = up.project_id
-    WHERE up.uuid = $1
-),
-stats AS (
-    -- Calculate counts on the full dataset
-    SELECT 
-        MODE() WITHIN GROUP (ORDER BY region) as top_region,
-        COUNT(*) AS total_rows,
-        COUNT(DISTINCT ip_address) AS unique_visitors
-    FROM dataset
-)
-SELECT 
-    d.*,
-    s.top_region,
-    s.total_rows,
-    s.unique_visitors
-FROM dataset d
-CROSS JOIN stats s -- Attach the counts to every row
-ORDER BY d.timestamp DESC -- Recommended for pagination
-LIMIT $2 OFFSET $3;
+WITH dataset AS (SELECT i.ip_address,i.timestamp,i.device,i.region,i.interaction_id,i.user_agent,i.additional_device_info,i.device_id,i.action_name,i.page_route FROM interactions i WHERE i.api_key IN (SELECT p.api_key FROM projects p JOIN user_projects up ON p.project_id = up.project_id WHERE up.uuid = $1) AND i.timestamp >= NOW() - $4::interval), stats AS (SELECT MODE() WITHIN GROUP (ORDER BY region) AS top_region,COUNT(*) AS total_rows,COUNT(DISTINCT ip_address) AS unique_visitors FROM dataset) SELECT d.*,s.top_region,s.total_rows,s.unique_visitors FROM dataset d CROSS JOIN stats s ORDER BY d.timestamp DESC LIMIT $2 OFFSET $3;
+`
 
+export const verifyEmailPasswordQuery = 
+`
+SELECT uuid,auth_key,name,email FROM users WHERE email=$1 AND  password=$2;
 `

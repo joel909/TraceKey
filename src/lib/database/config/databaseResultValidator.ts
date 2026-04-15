@@ -9,6 +9,9 @@ export default function validateDatabaseResult(result: QueryResult, purpose: str
     if (purpose === "FETCH_PROJECT_DETAILS_BY_ID" && result.rows.length === 0) {
         throw new ResourceNotFoundError('No project found with the given ID.');
     }
+    else if(purpose === "LOGIN" && result.rowCount === 0){
+        throw new AuthenticationError('Invalid email or password.');
+    }
     else if(purpose === "FETCH_USER" && result.rows.length === 0){
         throw new AuthenticationError('Invalid authentication key.');
     }

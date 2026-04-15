@@ -17,7 +17,6 @@ import fetchAllUsersProjectLogs from "../database/user/projects/logs/getAllProje
 
 export class ProjectController {
     private UserService: UserService;
-
     constructor() {
         this.UserService = new UserService();
     }
@@ -34,10 +33,6 @@ export class ProjectController {
       return projectDetails;
     }
     
-
-    //  async fetchProjectIDByAPIKey(api_key: string) : Promise<string> {
-
-    //  }
     async fetchUserProjects(auth_key: string) : Promise<Project[]> {
         if (!auth_key) {
           throw new AuthenticationError('Authentication key is required');
@@ -48,8 +43,8 @@ export class ProjectController {
         return fetchUserProjects;
       }
 
-    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {}): Promise<void> {
-        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo);
+    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {},device_id: string = "Unknown Device ID",page_route: string = "",event_name: string = ""): Promise<void> {
+        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo,device_id,page_route,event_name);
     }
     async addUserToProject(projectId: string, newUserEmail: string,auth_key: string): Promise<void> {
       const userData = await authController.verifyAuthKey(auth_key);
@@ -70,10 +65,10 @@ export class ProjectController {
       await modifyProjectData( projectId, name, description,deployed_url);
     }
 
-    async fetchAllUsersProjectLogs(auth_key:string,page=1) :Promise<[LogActivity[],LogActivityStaticsInterface,string]>{
+    async fetchAllUsersProjectLogs(auth_key:string,page=1,duration="24 hours") :Promise<[LogActivity[],LogActivityStaticsInterface,string]>{
       const userData = await authController.verifyAuthKey(auth_key);
       const uuid = userData.uuid;
-      const [projectDetails,logStatics,top_region] = await fetchAllUsersProjectLogs(uuid,page);
+      const [projectDetails,logStatics,top_region] = await fetchAllUsersProjectLogs(uuid,page,duration);
       return [projectDetails,logStatics,top_region];
     }
     //this adds a user to a project by their email address
@@ -89,18 +84,18 @@ export class ProjectController {
 
     
 
-    async getProjectIpLogs(id: string,page=1) : Promise<LogActivity[]> {
-      const projectDetails = await getProjectLogs(id,page);
+    async getProjectIpLogs(id: string,page=1,duration="24 hours") : Promise<LogActivity[]> {
+      const projectDetails = await getProjectLogs(id,page,duration);
       // console.log("Project details fetched in controller:", projectDetails);
       return projectDetails;
     }
 
-    async getProjectLogStatistics(id: string): Promise<LogActivityStaticsInterface> {
-      const projectLogStatistics = await getLogStatics(id);
+    async getProjectLogStatistics(id: string, duration="24 hours"): Promise<LogActivityStaticsInterface> {
+      const projectLogStatistics = await getLogStatics(id,duration);
       return projectLogStatistics;
     }
-    async getTopRegionOfProject(id: string): Promise<string> {
-      const topRegion = await getTopRegion(id);
+    async getTopRegionOfProject(id: string, duration="24 hours"): Promise<string> {
+      const topRegion = await getTopRegion(id,duration);
       return topRegion;
     }
 }

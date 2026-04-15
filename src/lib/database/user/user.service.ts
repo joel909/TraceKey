@@ -7,6 +7,8 @@ import fetchUserByEmailQuery from "./user/fetchUserInfoFromEmail";
 import fetchUsersAttachedWithProject from "./user/fetchUsersAttachedWithProject";
 import verifyUserProjectOwnerShip from "./user/verifyUserProjectOwnerShip";
 import removeProjectFromUser from "./user/removeProjectFromUser";
+import { verifyEmailPassword } from "./user/veryifyUserEmailPassword";
+import { AccountCreationResponse } from "@/lib/interfaces/UserInterfaces";
 export default class UserService {
     async createUser(email: string, name: string, hashedPassword: string, authKey: string) {
         return await createUser(email, name, hashedPassword, authKey);
@@ -34,6 +36,10 @@ export default class UserService {
         //fetch users attached to project from user_projects table by joining with users table to get email addresses
         const emails = await fetchUsersAttachedWithProject(projectId, uuid);                  
         return emails;
+    }
+    async loginUserWithEmailPassword(email: string, password: string): Promise<AccountCreationResponse> {
+        const userData = await verifyEmailPassword(email, password);
+        return userData;
     }
     
 

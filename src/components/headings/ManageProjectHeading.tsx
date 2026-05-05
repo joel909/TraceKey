@@ -27,8 +27,6 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
         setIsLoadingUsers(true)
         try {
             // Simulate API call with 2 second delay
-            
-            
             const userRequest = new UserRequest()
             const users = await userRequest.getProjectUsers(project.id)
             setSharedUsers(users)

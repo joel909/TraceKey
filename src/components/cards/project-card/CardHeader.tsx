@@ -1,7 +1,13 @@
 import { CardHeader, CardTitle } from "@/components/ui/card"
 import { ExternalLink } from "lucide-react"
 import { UserProjectCardContainerProps } from "../../../lib/interfaces/project_card_interface"
+import {  useEffect, useState } from "react";
 export default function UserProjectCardHeader({ project }: UserProjectCardContainerProps) {
+    const [baseUrl, setBaseUrl] = useState("");
+    useEffect(() => {
+        setBaseUrl(window.location.origin);
+    }, []);
+  
     return (
         <CardHeader className="pb-3">
             <div className="flex items-start justify-between">
@@ -13,12 +19,12 @@ export default function UserProjectCardHeader({ project }: UserProjectCardContai
                     <div className="flex items-center gap-2 text-[#647FBC]/60 max-w-[250px]"> {/* adjust max-w as needed */}
                     <ExternalLink className="h-4 w-4 flex-shrink-0" />
                     <a
-                        href={project.site_link}
+                        href={`${baseUrl}/${project.site_link}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-sm hover:text-[#647FBC] hover:underline transition-colors truncate overflow-hidden"
                     >
-                        {project.site_link}
+                        {`${baseUrl}/${project.site_link}`}
                     </a>
                     </div>
 

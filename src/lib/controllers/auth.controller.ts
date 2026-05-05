@@ -20,7 +20,9 @@ const COOKIE_OPTIONS = {
 
 export class AuthController {
   private UserService : UserService
+  // private url: string;
   constructor() {
+    // this.url = process.env.NEXT_PUBLIC_DOMIAN || "http://localhost:3000";
     this.UserService = new UserService(); 
   }
   async verifyAuthKey(authKey?: string): Promise<UserInfoInterface> {
@@ -35,7 +37,7 @@ export class AuthController {
     const { email, username: name, password } = data;
     const requestUserCreation = await createUser(email, name, password, authKey);
     const projectApiKey = gen_auth_key();
-    await projectController.createProject(requestUserCreation.uuid,"Default Project",projectApiKey,"default_password","This is your default project",`https://tracekey.joeljoby.com/project/sample/${projectApiKey}`);
+    await projectController.createProject(requestUserCreation.uuid,"Default Project",projectApiKey,"default_password","This is your default project",`project/sample/${projectApiKey}`);
     await setCookie('auth_key', authKey, COOKIE_OPTIONS);
     await setCookie('username', name, COOKIE_OPTIONS);
     await setCookie('email', email, COOKIE_OPTIONS);

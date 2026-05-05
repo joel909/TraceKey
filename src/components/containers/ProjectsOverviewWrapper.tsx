@@ -6,7 +6,9 @@ import OverviewTabContainer from "./OverviewTabContainer"
 
 export default function ProjectsOverviewWrapper({ project_data,isDashboard } : { project_data: ProjectData, isDashboard: boolean }) {
     const handleFetchLogs = async (page: number): Promise<LogActivity[]> => {
+      
       if (!isDashboard) {
+
         const response = await fetch(
           `/api/v1/get/project/logs?id=${project_data.id}&&page=${page}`
         )

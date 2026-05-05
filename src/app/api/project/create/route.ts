@@ -25,7 +25,8 @@ export async function POST(request: Request) {
         }
         const userData = await authController.verifyAuthKey(auth_key);
         const projectApiKey = gen_auth_key();
-        const createProjectResponse = await projectController.createProject(userData.uuid, name, projectApiKey, "default_password", description, `https://tracekey.joeljoby.com/project/sample/${projectApiKey}`);
+        // const url = process.env.NEXT_PUBLIC_DOMIAN || "http://localhost:3000";
+        const createProjectResponse = await projectController.createProject(userData.uuid, name, projectApiKey, "default_password", description, `project/sample/${projectApiKey}`);
         return new Response(JSON.stringify({ message: 'Project created successfully.', project: createProjectResponse }), { status: 201 });
     }
     catch (error) {

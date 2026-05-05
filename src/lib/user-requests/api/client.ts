@@ -11,8 +11,10 @@ export class ApiClient {
   private baseURL: string;
 
   constructor() {
-    const configuredBaseUrl = process.env.NEXT_PUBLIC_API_URL?.trim();
-    this.baseURL = configuredBaseUrl ? configuredBaseUrl.replace(/\/$/, '') : '/api';
+    const configuredBaseUrl = typeof window !== 'undefined' 
+      ? window.location.origin 
+      : 'http://locadddddddlhost:3000';
+    this.baseURL = `${configuredBaseUrl}/api`;
   }
 
   /**

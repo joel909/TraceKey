@@ -4,12 +4,15 @@ import CopyButton from "@/components/buttons/CopyButton";
 import { Button } from "@/components/ui/button";
 import { CardContent } from "@/components/ui/card";
 import {  ExternalLink, Settings } from "lucide-react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ApiSetupModal } from '@/components/modals/SetupProjectApiKeyModal';
 
 export default function ManageProjectContent({ project }: { project: ProjectData }) {
     const [isApiModalOpen, setIsApiModalOpen] = useState(false);
-
+    const [baseUrl, setBaseUrl] = useState("");
+    useEffect(() => {
+        setBaseUrl(window.location.origin);
+    }, []);
     return (
         <CardContent className="space-y-6">
             {/* Deployed URL & API Key Section */}
@@ -19,13 +22,13 @@ export default function ManageProjectContent({ project }: { project: ProjectData
                     <label className="text-sm font-medium text-[#647FBC]/70">Deployed URL</label>
                     <div className="flex items-center gap-2">
                         <div className="flex-1 p-2 bg-gray-50 rounded-md text-sm text-[#647FBC] truncate">
-                            {project.url}
+                            {baseUrl}/{project.url}
                         </div>
-                        <CopyButton textToCopy={project.url} label="URL" />
+                        <CopyButton textToCopy={`${baseUrl}/${project.url}`} label="URL" />
                         <Button
                             size="sm"
                             variant="outline"
-                            onClick={() => window.open(project.url, "_blank")}
+                            onClick={() => window.open(`${baseUrl}/${project.url}`, "_blank")}
                             className="border-[#647FBC]/20 cursor-pointer text-[#647FBC] hover:bg-[#647FBC]/10"
                             aria-label="Open URL"
                         >

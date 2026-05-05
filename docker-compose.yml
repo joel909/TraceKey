@@ -1,26 +1,22 @@
 services:
     db:
-      image: postgres:18
-      restart: unless-stopped
+      image: postgres:16
       environment:
         POSTGRES_USER: tracekey_db_client
         POSTGRES_PASSWORD: 9708
         POSTGRES_DB: tracekey
       ports:
-        - "5432:5432"
+        - "5433:5432"
       volumes:
         - pgdata:/var/lib/postgresql/data
         - ./db/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql
 
     app:
       build: .
-      restart: unless-stopped
       depends_on:
         - db
       ports:
-        - "3000:3000"
-      env_file:
-        - .env
+        - "3101:3000"
       environment:
         DATABASE_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
 

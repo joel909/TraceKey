@@ -23,7 +23,7 @@ services:
     networks:
       - app-network
     environment:
-      DATABASE_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
+      POSTGRES_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
 
   cloudflared:
     image: cloudflare/cloudflared:latest

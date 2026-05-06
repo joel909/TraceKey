@@ -74,7 +74,7 @@ ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
 
 
 export const projectLogStatics = 
-`SELECT  COUNT(DISTINCT i.ip_address) as unique_visitors,COUNT(*) as total_visits FROM interactions i WHERE i.api_key = (SELECT api_key FROM projects WHERE project_id = $1) AND i.timestamp >= NOW() - $2::interval;`
+`SELECT  COUNT(DISTINCT i.device_id) as unique_visitors,COUNT(*) as total_visits FROM interactions i WHERE i.api_key = (SELECT api_key FROM projects WHERE project_id = $1) AND i.timestamp >= NOW() - $2::interval;`
 
 
 export const fetchTopRegion = 

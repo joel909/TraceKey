@@ -40,6 +40,10 @@ export default function DialogBox({selectedActivity, setSelectedActivity,renderC
                   <span className="font-medium text-[#647FBC] pl-1">{selectedActivity.device_id || selectedActivity.ip}</span>
                 </DialogDescription>
               </DialogHeader>
+
+              <div className="rounded-md border border-[#647FBC]/20 bg-white/70 px-4 py-3 text-sm text-gray-700 shadow-sm">
+                Below is your device info
+              </div>
               
               <div className="grid gap-5 py-4 max-h-[60vh] overflow-y-auto px-1 pr-3">
                 

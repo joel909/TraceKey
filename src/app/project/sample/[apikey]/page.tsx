@@ -1,13 +1,14 @@
 "use client";
-import { useEffect, use } from "react";
+import { useEffect, use, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Code, PartyPopper, BarChartHorizontal } from "lucide-react";
-import { TracekeyClient } from 'tracekey-sdk';
-
-
+import { TracekeyClient } from "tracekey-sdk";
+import type { DeviceInfo } from "tracekey-sdk";
 
 export default function SampleAnalyticsPageThemed({ params }: { params: Promise<{ apikey: string }> }) {
+  const [deviceInfo, setDeviceInfo] = useState<DeviceInfo | null>(null);
+  const [deviceInfoError, setDeviceInfoError] = useState<string | null>(null);
   const { apikey } = use(params);
   
   useEffect(() => {
@@ -15,7 +16,18 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
       apiKey: apikey,
       baseUrl: typeof window !== 'undefined' ? window.location.origin + "/" : "http://localhost:3000/"
     })
-    TkClient.logLandingEvent();
+    TkClient.logLandingEvent().catch(() => {
+      // Landing events should not block the page.
+    });
+
+    TkClient.getClientAdditionalInfo()
+      .then((info) => {
+        setDeviceInfo(info ?? null);
+      })
+      .catch((error) => {
+        console.error("Failed to fetch device info:", error);
+        setDeviceInfoError("Unable to load device info right now.");
+      });
   }, [apikey]);
 
   return (
@@ -56,6 +68,36 @@ export default function SampleAnalyticsPageThemed({ params }: { params: Promise<
             <p className="mt-4 text-tracekey-primary font-semibold">
               YAY! Your first visitor (you!) is now logged with correct device data.
             </p>
+          </div>
+
+          <div className="my-6 rounded-lg border border-tracekey-primary/20 bg-white/80 p-5 shadow-sm">
+            <h3 className="text-lg font-bold text-gray-800">
+              Below is your device info
+            </h3>
+            {deviceInfoError ? (
+              <p className="mt-3 text-sm text-red-600">{deviceInfoError}</p>
+            ) : deviceInfo ? (
+              <dl className="mt-3 grid gap-3 sm:grid-cols-2 text-sm">
+                <div>
+                  <dt className="font-semibold text-gray-500">Brand</dt>
+                  <dd className="text-gray-800">{deviceInfo.brand || "Unknown"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-gray-500">Platform</dt>
+                  <dd className="text-gray-800">{deviceInfo.platform || "Unknown"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-gray-500">OS Version</dt>
+                  <dd className="text-gray-800">{deviceInfo.platformVersion || "Unknown"}</dd>
+                </div>
+                <div>
+                  <dt className="font-semibold text-gray-500">Model</dt>
+                  <dd className="text-gray-800">{deviceInfo.model || "Unknown"}</dd>
+                </div>
+              </dl>
+            ) : (
+              <p className="mt-3 text-sm text-gray-500">Loading device info...</p>
+            )}
           </div>
           
           <div className="text-center">

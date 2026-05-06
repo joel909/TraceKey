@@ -11,6 +11,8 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql
       - ./db/schema.sql:/docker-entrypoint-initdb.d/001_schema.sql
+    networks:
+      - app-network
 
   app:
     build: .

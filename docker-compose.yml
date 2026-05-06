@@ -24,6 +24,7 @@ services:
       - app-network
     environment:
       POSTGRES_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,https://staging.customer.zapnow.tech,http://localhost:3001
 
   cloudflared:
     image: cloudflare/cloudflared:latest

@@ -17,26 +17,27 @@ export async function POST(req: NextRequest) {
         return corsError;
     }
 
-    const body = await req.json();
-    const { api_key, additionalDeviceInfo, device_id = "Unknown Device ID", page_route = "", event_name = "" } = body;
-    if (!api_key) {
-        return withCorsHeaders(req, NextResponse.json({ message: "API key is missing" }, { status: 400 }));
-    }
-
-    if (additionalDeviceInfo !== null && typeof additionalDeviceInfo !== "object") {
-        return withCorsHeaders(
-            req,
-            NextResponse.json(
-                { message: "additionalDeviceInfo must be an object, array, or null", field: "additionalDeviceInfo" },
-                { status: 400 },
-            ),
-        );
-    }
-
-    const cleanedDeviceInfo = cleanDeviceInfo(additionalDeviceInfo);
-    const userClientController = new userClientRequestsController(req);
-
     try{
+        const body = await req.json();
+        const { api_key, additionalDeviceInfo, device_id = "Unknown Device ID", page_route = "", event_name = "" } = body;
+
+        if (!api_key) {
+            return withCorsHeaders(req, NextResponse.json({ message: "API key is missing" }, { status: 400 }));
+        }
+
+        if (additionalDeviceInfo !== null && typeof additionalDeviceInfo !== "object") {
+            return withCorsHeaders(
+                req,
+                NextResponse.json(
+                    { message: "additionalDeviceInfo must be an object, array, or null", field: "additionalDeviceInfo" },
+                    { status: 400 },
+                ),
+            );
+        }
+
+        const cleanedDeviceInfo = cleanDeviceInfo(additionalDeviceInfo);
+        const userClientController = new userClientRequestsController(req);
+
         await authController.verifyApiKey(api_key);
         const ip_address = await userClientController.getClientIP();
         const user_agent = req.headers.get("user-agent") || "Unknown User Agent";
@@ -64,6 +65,9 @@ export async function POST(req: NextRequest) {
         }
         else if (error instanceof AuthenticationError){
             return withCorsHeaders(req, NextResponse.json({ message: error.message }, { status: 401 }));
+        }
+        if (error instanceof SyntaxError) {
+            return withCorsHeaders(req, NextResponse.json({ message: "Invalid JSON body" }, { status: 400 }));
         }
         console.error("Error logging visit:", error);
         return withCorsHeaders(req, NextResponse.json({ message: "Error logging visit" }, { status: 500 }));

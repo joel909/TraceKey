@@ -177,7 +177,7 @@ export const fetchAllProjectLogDataQuery =
 //QUERY IS VERY INECFFICIENT, NEEDS OPTIMIZATION cuz its joining all rows so yea its a big ops
 export const fetchAllProjectLogDataQueryV2 = 
 `
-WITH dataset AS (SELECT i.ip_address,i.timestamp,i.device,i.region,i.interaction_id,i.user_agent,i.additional_device_info,i.device_id,i.action_name,i.page_route FROM interactions i WHERE i.api_key IN (SELECT p.api_key FROM projects p JOIN user_projects up ON p.project_id = up.project_id WHERE up.uuid = $1) AND i.timestamp >= NOW() - $4::interval), stats AS (SELECT MODE() WITHIN GROUP (ORDER BY region) AS top_region,COUNT(*) AS total_rows,COUNT(DISTINCT ip_address) AS unique_visitors FROM dataset) SELECT d.*,s.top_region,s.total_rows,s.unique_visitors FROM dataset d CROSS JOIN stats s ORDER BY d.timestamp DESC LIMIT $2 OFFSET $3;
+WITH dataset AS (SELECT i.ip_address,i.timestamp,i.device,i.region,i.interaction_id,i.user_agent,i.additional_device_info,i.device_id,i.action_name,i.page_route FROM interactions i WHERE i.api_key IN (SELECT p.api_key FROM projects p JOIN user_projects up ON p.project_id = up.project_id WHERE up.uuid = $1) AND i.timestamp >= NOW() - $4::interval), stats AS (SELECT MODE() WITHIN GROUP (ORDER BY region) AS top_region,COUNT(*) AS total_rows,COUNT(DISTINCT device_id) AS unique_visitors FROM dataset) SELECT d.*,s.top_region,s.total_rows,s.unique_visitors FROM dataset d CROSS JOIN stats s ORDER BY d.timestamp DESC LIMIT $2 OFFSET $3;
 `
 
 export const verifyEmailPasswordQuery = 

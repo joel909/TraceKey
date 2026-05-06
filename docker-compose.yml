@@ -19,6 +19,7 @@ services:
       - "3101:3000"
     environment:
       DATABASE_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
+
   cloudflared:
     image: cloudflare/cloudflared:latest
     container_name: cloudflared-tracekey
@@ -29,4 +30,6 @@ services:
 
 volumes:
   pgdata:
+  app-network:
+    driver: bridge
   

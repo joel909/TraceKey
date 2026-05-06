@@ -4,12 +4,38 @@ import { AuthenticationError } from './lib/errors/extended_errors/Authentication
 // const auth_routes = ["/dashboard", "/settings", "/project"];
 const non_auth_routes = ["/login", "/signup", "/api/logout"];
 
+function buildOpenCorsHeaders(request: NextRequest) {
+    return {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+        "Access-Control-Allow-Headers": request.headers.get("access-control-request-headers") || "*",
+    };
+}
+
 export function middleware(request: NextRequest) {
     console.log("Middleware Executed");
     const redirectTo = NextResponse.redirect;
+    const requestedPath = request.nextUrl.pathname;
+
+    if (requestedPath.startsWith("/api/")) {
+        const corsHeaders = buildOpenCorsHeaders(request);
+
+        if (request.method === "OPTIONS") {
+            return new NextResponse(null, {
+                status: 204,
+                headers: corsHeaders,
+            });
+        }
+
+        const response = NextResponse.next();
+        Object.entries(corsHeaders).forEach(([key, value]) => {
+            response.headers.set(key, value);
+        });
+        return response;
+    }
+
     try{
         const auth_key = request.cookies.get('auth_key')?.value;
-        const requestedPath = request.nextUrl.pathname;
         if (!auth_key && !non_auth_routes.includes(requestedPath)) {
             return redirectTo(new URL('/signup', request.url));
         } else if (auth_key && (requestedPath === '/login' || requestedPath === '/signup')) {
@@ -31,6 +57,7 @@ export function middleware(request: NextRequest) {
 }
 export const config = {
   matcher: [
-    '/((?!api/logout|api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|project/sample).*)',
+    '/api/:path*',
+    '/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|project/sample).*)',
   ],
 };

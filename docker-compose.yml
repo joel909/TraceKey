@@ -19,6 +19,14 @@ services:
       - "3101:3000"
     environment:
       DATABASE_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-tracekey
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token eyJhIjoiMGY4YWE5MGMyZDQ3NGQwM2FkOWU4MzExOWE5ZTJhZjgiLCJ0IjoiOThiMTM3OWItZTk2Ni00M2YxLTg1MzEtOGMzODcyMTQzYzk3IiwicyI6Ik5ETmtNRFJqTjJFdFpEY3lNUzAwTXpCbExUa3hOR0V0WkRKbU1XSm1aalkwTkdSbSJ9
+    networks:
+      - app-network
 
 volumes:
   pgdata:
+  

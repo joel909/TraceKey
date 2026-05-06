@@ -1,3 +1,4 @@
+name: zap-tracekey
 services:
   db:
     image: postgres:18
@@ -17,6 +18,8 @@ services:
       - db
     ports:
       - "3101:3000"
+    networks:
+      - app-network
     environment:
       DATABASE_URL: postgresql://tracekey_db_client:9708@db:5432/tracekey
 
@@ -30,6 +33,8 @@ services:
 
 volumes:
   pgdata:
+  
+networks:
   app-network:
     driver: bridge
   

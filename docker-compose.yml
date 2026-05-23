@@ -2,6 +2,7 @@ name: zap-tracekey
 services:
   db:
     image: postgres:18
+    restart: unless-stopped
     environment:
       POSTGRES_USER: tracekey_db_client
       POSTGRES_PASSWORD: 9708
@@ -15,6 +16,7 @@ services:
       - app-network
 
   app:
+    restart: unless-stopped
     build: .
     depends_on:
       - db

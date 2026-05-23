@@ -6,6 +6,6 @@ export const metadata = {
 };
 
 
-export default function SignupPage() {
+export default function Login() {
     return <LoginPage />;
 }

@@ -1,7 +1,7 @@
 // src/lib/user/request.ts
 
 import { apiClient } from '@/lib/user-requests/api/client';
-import {UserCreationRequestInterface} from '@/lib/interfaces/UserInterfaces';
+import {AccountCreationResponse, UserCreationRequestInterface} from '@/lib/interfaces/UserInterfaces';
 import { ValidationError } from '../errors/extended_errors/ValidationError';
 
 
@@ -25,8 +25,9 @@ export class AuthRequest {
         }
     }
 
-    async loginUser(data : {email:string,password:string}) {
+    async loginUser(data : {email:string,password:string}) : Promise<AccountCreationResponse> {
             const result = await apiClient.post('/login', data);
+            return result.data as AccountCreationResponse;
     }
 
 

@@ -2,7 +2,7 @@ import { AccountCreationResponse } from "@/lib/interfaces/UserInterfaces";
 import { query } from "../../config/db";
 import {verifyEmailPasswordQuery} from "../../config/queries";
 export async function verifyEmailPassword(email:string,password:string):Promise<AccountCreationResponse> {
-    const request = await query(verifyEmailPasswordQuery,"LOGIN",[email,password]);
+    const request = await query("LOGIN",verifyEmailPasswordQuery,[email,password]);
     const data = 
     {
         uuid: request[0].uuid,

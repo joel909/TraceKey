@@ -61,7 +61,8 @@ export class ProjectController {
       return emails;
     }
     async modifyProjectData(projectId: string, name: string, description:string,deployed_url: string, auth_key: string): Promise<void> {
-      await authController.verifyAuthKey(auth_key);
+      const userData = await authController.verifyAuthKey(auth_key);
+      await verifyUserProjectOwnerShip(userData.uuid, projectId);
       await modifyProjectData( projectId, name, description,deployed_url);
     }
 

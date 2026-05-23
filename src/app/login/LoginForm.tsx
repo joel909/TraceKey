@@ -57,7 +57,7 @@ export default function LoginForm() {
             
             console.log("Login request data:", loginRequestData);
             const result = await authRequests.loginUser(loginRequestData);
-            
+            alert("Login successful! Welcome back, " + result.name);
             console.log("Login successful:", result);
             router.push("/dashboard");
             

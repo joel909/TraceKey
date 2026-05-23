@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 // app/dashboard/page.tsx
 import {AuthorizationError} from "@/lib/errors/extended_errors/AuthorizationError";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
@@ -12,6 +13,20 @@ import { cookies } from "next/headers";
 import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
 import { QueryError } from "@/lib/errors/errors";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+
+  return {
+    title: "Manage Project",
+    description: `Manage settings and analytics for project ${id}.`,
+  };
+}
+
 // --- Main Dashboard Page ---
 export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {
   // const ProjectControllerObject = new ProjectController();
@@ -72,4 +87,3 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       }
       return ManageProjectPage({projectData});
 }
-

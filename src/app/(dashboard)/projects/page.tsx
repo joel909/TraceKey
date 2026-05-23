@@ -1,4 +1,5 @@
 // app/dashboard/page.tsx
+import type { Metadata } from "next";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { redirect } from 'next/navigation';
 import ProjectsPage from "@/app/(dashboard)/projects/projects_main";
@@ -7,6 +8,12 @@ import InvalidManageProjectPage from "./manage/[id]/invalidPage";
 import { cookies } from "next/headers";
 import { projectController } from "@/lib/controllers/project.controller";
 import { Project } from "@/lib/interfaces/project_interface";
+
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Browse and manage your TraceKey projects.",
+};
+
 // --- Main Dashboard Page ---
 export default async  function Projects() {
           let projects :  Project []= [];

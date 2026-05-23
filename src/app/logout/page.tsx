@@ -1,4 +1,10 @@
 import { logoutAction } from './logout';
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Logout",
+  description: "Clear your TraceKey session and return to the login page.",
+};
 
 
 export default function LogoutPage() {

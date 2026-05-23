@@ -1,8 +1,9 @@
+import type { Metadata } from "next";
 import LoginPage from "./LoginForm";
 
-export const metadata = {
-  title: "Login - TraceKey",
-  description: "Create your TraceKey account to track and manage your website events",
+export const metadata: Metadata = {
+  title: "Login",
+  description: "Log in to your TraceKey account to manage projects and analytics.",
 };
 
 

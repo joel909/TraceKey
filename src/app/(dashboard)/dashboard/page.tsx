@@ -1,4 +1,5 @@
 // app/dashboard/page.tsx
+import type { Metadata } from "next";
 import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
 import dashboard from "./dashboard";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
@@ -6,6 +7,12 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { projectController } from "@/lib/controllers/project.controller";
 import { DashboardData } from "@/lib/interfaces/manage_project_interfaces";
+
+export const metadata: Metadata = {
+  title: "Dashboard",
+  description: "View TraceKey analytics across all of your projects.",
+};
+
 // --- Main Dashboard Page ---
 export default async  function DashboardPage() {
   //HERE WIRITE THE FUNCTION TO GET THE COLLECTIVE DATA OF ALL THE USERS PROJECTS AND PASS IT ON AND MAY THE DATA DYNAMIC

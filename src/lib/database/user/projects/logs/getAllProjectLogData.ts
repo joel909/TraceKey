@@ -2,7 +2,7 @@ import { query } from "@/lib/database/config/db";
 import { fetchAllProjectLogDataQueryV2 } from "@/lib/database/config/queries";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
 
-export default async function fetchAllUsersProjectLogs(uuid:string,page:number,duration:string) : Promise<[LogActivity[],LogActivityStaticsInterface,string]> {
+export default async function fetchAllUsersProjectLogs(uuid:string,page:number,duration:string | null) : Promise<[LogActivity[],LogActivityStaticsInterface,string]> {
     const offSet = (page - 1) * 10;
     const logData = await query("FETCH_USERS_ALL_PROJECT_LOGS",fetchAllProjectLogDataQueryV2,[uuid,10,offSet,duration]);
     console.log("Fetched Project Details:", logData);

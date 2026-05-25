@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 // app/dashboard/page.tsx
 import {AuthorizationError} from "@/lib/errors/extended_errors/AuthorizationError";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
@@ -13,28 +12,24 @@ import { cookies } from "next/headers";
 import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
 import { QueryError } from "@/lib/errors/errors";
 import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
-
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}): Promise<Metadata> {
-  const { id } = await params;
-
-  return {
-    title: "Manage Project",
-    description: `Manage settings and analytics for project ${id}.`,
-  };
-}
+import { getDurationInterval } from "@/lib/utils/client/durationMaps";
+export { generateMetadata } from "./utils";
 
 // --- Main Dashboard Page ---
-export default async  function DashboardPage({params}:{params:Promise<{id:string}>}) {
+export default async  function DashboardPage({
+  params,
+  searchParams,
+}:{
+  params:Promise<{id:string}>;
+  searchParams: Promise<{ duration?: string }>;
+}) {
   // const ProjectControllerObject = new ProjectController();
   let projectDetails : SingleProjectDetails;
   let VistorIpLogs : LogActivity[];
   let VistorLogStatics : LogActivityStaticsInterface;
   let TopRegion : string;
   const { id } = await params;
+  const duration = getDurationInterval((await searchParams).duration);
     try{
       const auth_key = (await cookies()).get('auth_key')?.value
       if (!auth_key) {
@@ -42,9 +37,9 @@ export default async  function DashboardPage({params}:{params:Promise<{id:string
       }
 
       projectDetails = await projectController.fetchSingleProjectDetailsByID(id,auth_key);
-      VistorIpLogs = await projectController.getProjectIpLogs(id);
-      VistorLogStatics = await projectController.getProjectLogStatistics(id);
-      TopRegion = await projectController.getTopRegionOfProject(id);
+      VistorIpLogs = await projectController.getProjectIpLogs(id, 1, duration);
+      VistorLogStatics = await projectController.getProjectLogStatistics(id, duration);
+      TopRegion = await projectController.getTopRegionOfProject(id, duration);
     }
     catch(e){
       if (e instanceof AuthenticationError) {

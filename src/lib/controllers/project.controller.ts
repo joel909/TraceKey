@@ -13,6 +13,7 @@ import verifyUserProjectOwnerShip from "../database/user/user/verifyUserProjectO
 import UserService from "../database/user/user.service";
 import modifyProjectData from "../database/user/projects/resource-modification/modifyProjectData";
 import fetchAllUsersProjectLogs from "../database/user/projects/logs/getAllProjectLogData";
+import { DEFAULT_DURATION_INTERVAL } from "../utils/client/durationMaps";
 
 
 export class ProjectController {
@@ -66,7 +67,7 @@ export class ProjectController {
       await modifyProjectData( projectId, name, description,deployed_url);
     }
 
-    async fetchAllUsersProjectLogs(auth_key:string,page=1,duration="24 hours") :Promise<[LogActivity[],LogActivityStaticsInterface,string]>{
+    async fetchAllUsersProjectLogs(auth_key:string,page=1,duration: string | null = DEFAULT_DURATION_INTERVAL) :Promise<[LogActivity[],LogActivityStaticsInterface,string]>{
       const userData = await authController.verifyAuthKey(auth_key);
       const uuid = userData.uuid;
       const [projectDetails,logStatics,top_region] = await fetchAllUsersProjectLogs(uuid,page,duration);
@@ -85,21 +86,20 @@ export class ProjectController {
 
     
 
-    async getProjectIpLogs(id: string,page=1,duration="24 hours") : Promise<LogActivity[]> {
+    async getProjectIpLogs(id: string,page=1,duration: string | null = DEFAULT_DURATION_INTERVAL) : Promise<LogActivity[]> {
       const projectDetails = await getProjectLogs(id,page,duration);
       // console.log("Project details fetched in controller:", projectDetails);
       return projectDetails;
     }
 
-    async getProjectLogStatistics(id: string, duration="24 hours"): Promise<LogActivityStaticsInterface> {
+    async getProjectLogStatistics(id: string, duration: string | null = DEFAULT_DURATION_INTERVAL): Promise<LogActivityStaticsInterface> {
       const projectLogStatistics = await getLogStatics(id,duration);
       return projectLogStatistics;
     }
-    async getTopRegionOfProject(id: string, duration="24 hours"): Promise<string> {
+    async getTopRegionOfProject(id: string, duration: string | null = DEFAULT_DURATION_INTERVAL): Promise<string> {
       const topRegion = await getTopRegion(id,duration);
       return topRegion;
     }
 }
 export const projectController = new ProjectController();
-
 

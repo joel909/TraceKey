@@ -2,6 +2,7 @@ import { authController } from "@/lib/controllers/auth.controller";
 import { projectController } from "@/lib/controllers/project.controller";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { AuthorizationError } from "@/lib/errors/extended_errors/AuthorizationError";
+import { getDurationInterval } from "@/lib/utils/client/durationMaps";
 import { cookies } from "next/headers";
 export async function GET(req: Request) {
     const url = new URL(req.url);
@@ -9,6 +10,7 @@ export async function GET(req: Request) {
     const auth_key = cookiesStore.get('auth_key')?.value;
     const project_uuid = url.searchParams.get('id');
     const page = url.searchParams.get('page');
+    const duration = getDurationInterval(url.searchParams.get('duration'));
     // 1. Check if params exist
     if (!auth_key || !project_uuid || !page) {
         return new Response(JSON.stringify({ error: "Missing required parameters" }), { status: 400 });
@@ -23,7 +25,7 @@ export async function GET(req: Request) {
         const userData =  await authController.verifyAuthKey(auth_key);
         const uuid = userData.uuid;
         await authController.verifyUserProjectAccess(uuid, project_uuid);
-        const projectLogs = await projectController.getProjectIpLogs(project_uuid, pageNumber);
+        const projectLogs = await projectController.getProjectIpLogs(project_uuid, pageNumber, duration);
         return new Response(JSON.stringify({ logs: projectLogs }), { status: 200 });
     } catch (error) {
         console.error("Error fetching project logs:", error);

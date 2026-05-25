@@ -13,7 +13,7 @@ export default async function getProjectLogs(projectId: string,page = 1,duration
     for(const log of fetchedLogs){
         const logEntry: LogActivity = {
             ip: log.ip_address || "Unknown",
-            time: log.timestamp ? new Date(log.timestamp).toLocaleString() : "Unknown",
+            time: log.timestamp ? new Date(log.timestamp).toISOString() : "Unknown",
             device: log.device || "Unknown",
             region: log.region || "Unknown",
             interactionID: log.interaction_id || "Unknown",

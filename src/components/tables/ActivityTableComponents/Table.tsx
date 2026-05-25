@@ -1,7 +1,11 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { LogActivity } from "@/lib/interfaces/deviceInfoInterface"
 import { Monitor, Smartphone } from "lucide-react"
 import { Table, TableBody, TableHead, TableRow, TableHeader, TableCell } from "../../ui/table"
+import LocalizedTime from "./LocalizedTime"
+
 interface TableComponentProps {
   loading: boolean;
   itemsPerPage: number;
@@ -51,7 +55,9 @@ export default function TableComponent({loading, itemsPerPage, currentPageData, 
                 }`}
               >
                 <TableCell className="font-medium text-[#647FBC] py-4 px-6">{activity.device_id || "-"}</TableCell>
-                <TableCell className="text-[#647FBC] py-4 px-6">{activity.time}</TableCell>
+                <TableCell className="text-[#647FBC] py-4 px-6">
+                  <LocalizedTime value={activity.time} />
+                </TableCell>
                 <TableCell className="flex items-center gap-2 text-[#647FBC] py-4 px-6">
                   {activity.device === "Desktop" ? 
                     <Monitor className="h-4 w-4 text-[#647FBC]" /> : 

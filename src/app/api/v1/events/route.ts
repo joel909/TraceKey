@@ -18,12 +18,22 @@ export async function OPTIONS() {
 
 export async function POST(req: NextRequest) {
     const body = await req.json();
-    const { api_key, additionalDeviceInfo, device_id = "Unknown Device ID",page_route = "",event_name ="" } = body;
+    const {
+        api_key,
+        additionalDeviceInfo,
+        additionalInfo = null,
+        device_id = "Unknown Device ID",
+        page_route = "",
+        event_name =""
+    } = body;
     if (!api_key) {return NextResponse.json({ message: "API key is missing" }, { status: 400 });}
     
     // Validate additionalDeviceInfo type
     if (additionalDeviceInfo !== null && typeof additionalDeviceInfo !== 'object') {
         throw new ValidationError("additionalDeviceInfo must be an object, array, or null", "additionalDeviceInfo");
+    }
+    if (additionalInfo !== null && typeof additionalInfo !== 'object') {
+        throw new ValidationError("additionalInfo must be an object, array, or null", "additionalInfo");
     }
     
     // Validate and clean the additionalDeviceInfo
@@ -38,7 +48,6 @@ export async function POST(req: NextRequest) {
         const refferer_url = req.headers.get("referer") || "";
         const device_information = await userClientController.getDeviceInfo();
         const device_type = await userClientController.getDeviceType();
-        const additionalInfo = req.cookies.getAll();
         const location = await userClientController.getDeviceLocation(ip_address);
 
         await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, additionalInfo, device_type, location, cleanedDeviceInfo,device_id,page_route,event_name);

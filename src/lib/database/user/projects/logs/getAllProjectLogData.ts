@@ -22,7 +22,7 @@ export default async function fetchAllUsersProjectLogs(uuid:string,page:number,d
                 interactionID: log.interaction_id || "Unknown",
                 userAgent: log.user_agent || "Unknown",
                 referrerUrl: log.referrer_url || "Direct Visit",
-                cookies: log.cookies || "No cookies",
+                additionalInfo: log.additional_info ? JSON.stringify(log.additional_info) : "No additional info",
                 additionalDeviceInfo: log.additional_device_info ? JSON.stringify(log.additional_device_info) : "No data",
                 device_id : log.device_id || "Unknown Device ID",
                 page_route : log.page_route || "Unknown Page",

@@ -88,7 +88,7 @@ export default function ActivityTable({
     setExpandedSections({}); // Reset expanded sections when opening new modal
   }
   // --- New: Helper function to toggle collapsible sections ---
-  const toggleSection = (key: 'userAgent' | 'referrerUrl' | 'cookies') => {
+  const toggleSection = (key: 'userAgent' | 'referrerUrl' | 'additionalInfo') => {
     setExpandedSections(prev => ({
       ...prev,
       [key]: !prev[key]

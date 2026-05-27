@@ -33,7 +33,7 @@ CREATE TABLE public.interactions (
     referrer_url character varying,
     "timestamp" timestamp with time zone DEFAULT now() NOT NULL,
     device_information jsonb,
-    cookies jsonb,
+    additional_info jsonb,
     interaction_id uuid DEFAULT gen_random_uuid() NOT NULL,
     region character varying,
     device character varying,
@@ -195,4 +195,3 @@ ALTER TABLE ONLY public.user_projects
 --
 
 \unrestrict RE4j7q2LE59Gu9q6enowj3LpCGN0Rws7hz9oXELM7E7ay7DBdpbtXsOdnysDu0F
-

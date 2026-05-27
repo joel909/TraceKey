@@ -38,11 +38,11 @@ export async function POST(req: NextRequest) {
         const refferer_url = req.headers.get("referer") || "";
         const device_information = await userClientController.getDeviceInfo();
         const device_type = await userClientController.getDeviceType();
-        const cookies =  req.cookies.getAll();
+        const additionalInfo = req.cookies.getAll();
         const location = await userClientController.getDeviceLocation(ip_address);
 
-        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, cookies, device_type, location, cleanedDeviceInfo,device_id,page_route,event_name);
-        return NextResponse.json({ message: "Visit logged successfully", ip_address, device_information, user_agent, refferer_url, cookies }, { status: 200, headers: corsHeaders });
+        await projectController.createUserClientIpRecord(api_key, ip_address, user_agent, refferer_url, device_information, additionalInfo, device_type, location, cleanedDeviceInfo,device_id,page_route,event_name);
+        return NextResponse.json({ message: "Visit logged successfully", ip_address, device_information, user_agent, refferer_url, additionalInfo }, { status: 200, headers: corsHeaders });
     }
     catch (error) {
         if(error instanceof ValidationError){

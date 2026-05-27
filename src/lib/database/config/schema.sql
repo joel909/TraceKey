@@ -10,7 +10,7 @@ CREATE TABLE IF NOT EXISTS public.interactions
     referrer_url character varying COLLATE pg_catalog."default",
     "timestamp" timestamp without time zone NOT NULL,
     device_information jsonb,
-    cookies jsonb,
+    additional_info jsonb,
     interaction_id uuid NOT NULL,
     region character(1) COLLATE pg_catalog."default",
     device character(1) COLLATE pg_catalog."default",

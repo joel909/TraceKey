@@ -15,8 +15,8 @@ interface DialogBoxProps {
     selectedActivity: LogActivity | null;
     setSelectedActivity: () => void;
     expandedSections : Record<string, boolean>,
-    toggleSection : (key: 'userAgent' | 'referrerUrl' | 'cookies') => void,
-    renderCollapsibleSection : (label: string,content: string,key: 'userAgent' | 'referrerUrl' | 'cookies', expandedSections : Record<string, boolean>, toggleSection : (key: 'userAgent' | 'referrerUrl' | 'cookies') => void) => JSX.Element;
+    toggleSection : (key: 'userAgent' | 'referrerUrl' | 'additionalInfo') => void,
+    renderCollapsibleSection : (label: string,content: string,key: 'userAgent' | 'referrerUrl' | 'additionalInfo', expandedSections : Record<string, boolean>, toggleSection : (key: 'userAgent' | 'referrerUrl' | 'additionalInfo') => void) => JSX.Element;
 }
 export default function DialogBox({selectedActivity, setSelectedActivity,renderCollapsibleSection,expandedSections,toggleSection}: DialogBoxProps) {
     return(
@@ -81,7 +81,7 @@ export default function DialogBox({selectedActivity, setSelectedActivity,renderC
                 
                 {renderCollapsibleSection("User Agent", selectedActivity.userAgent, 'userAgent', expandedSections, toggleSection)}
                 {renderCollapsibleSection("Referrer URL", selectedActivity.referrerUrl, 'referrerUrl', expandedSections, toggleSection)}
-                {renderCollapsibleSection("Cookies", selectedActivity.cookies, 'cookies', expandedSections, toggleSection)}
+                {renderCollapsibleSection("Additional Info", selectedActivity.additionalInfo, 'additionalInfo', expandedSections, toggleSection)}
 
               </div>
 

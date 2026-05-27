@@ -49,19 +49,19 @@ export const fetchProjectIDByAPIKeyQuery =
 
 export const createUserClientIPRecordQuery =
 `
-INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, cookies,device,region,additional_device_info,page_route,action_name,device_id)
+INSERT INTO interactions(api_key, ip_address, user_agent, referrer_url, device_information, additional_info,device,region,additional_device_info,page_route,action_name,device_id)
 VALUES ($1, $2, $3, $4, $5, $6,$7,$8,$9,$10,$11,$12)
 `
 
 export const fetchSingleProjectNIpLogsQuery =
 `
-SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info ,i.device_id ,i.action_name,i.page_route FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
+SELECT i.ip_address, i.timestamp, i.device, i.region , i.interaction_id, i.user_agent,i.additional_device_info ,i.additional_info,i.device_id ,i.action_name,i.page_route FROM interactions i JOIN projects p ON i.api_key = p.api_key WHERE p.project_id = $1 ORDER BY i.timestamp DESC LIMIT $2 OFFSET $3;
 `
 export const fetchSingleProjectNIpLogsQueryV2 =
 `
 SELECT 
   i.ip_address, i.timestamp, i.device, i.region,
-  i.interaction_id, i.user_agent, i.additional_device_info,
+  i.interaction_id, i.user_agent, i.additional_device_info, i.additional_info,
   i.device_id, i.action_name, i.page_route
 FROM interactions i
 WHERE i.api_key = (
@@ -177,7 +177,7 @@ export const fetchAllProjectLogDataQuery =
 //QUERY IS VERY INECFFICIENT, NEEDS OPTIMIZATION cuz its joining all rows so yea its a big ops
 export const fetchAllProjectLogDataQueryV2 = 
 `
-WITH dataset AS (SELECT i.ip_address,i.timestamp,i.device,i.region,i.interaction_id,i.user_agent,i.additional_device_info,i.device_id,i.action_name,i.page_route FROM interactions i WHERE i.api_key IN (SELECT p.api_key FROM projects p JOIN user_projects up ON p.project_id = up.project_id WHERE up.uuid = $1) AND ($4::interval IS NULL OR i.timestamp >= NOW() - $4::interval)), stats AS (SELECT MODE() WITHIN GROUP (ORDER BY region) AS top_region,COUNT(*) AS total_rows,COUNT(DISTINCT device_id) AS unique_visitors FROM dataset) SELECT d.*,s.top_region,s.total_rows,s.unique_visitors FROM dataset d CROSS JOIN stats s ORDER BY d.timestamp DESC LIMIT $2 OFFSET $3;
+WITH dataset AS (SELECT i.ip_address,i.timestamp,i.device,i.region,i.interaction_id,i.user_agent,i.additional_device_info,i.additional_info,i.device_id,i.action_name,i.page_route FROM interactions i WHERE i.api_key IN (SELECT p.api_key FROM projects p JOIN user_projects up ON p.project_id = up.project_id WHERE up.uuid = $1) AND ($4::interval IS NULL OR i.timestamp >= NOW() - $4::interval)), stats AS (SELECT MODE() WITHIN GROUP (ORDER BY region) AS top_region,COUNT(*) AS total_rows,COUNT(DISTINCT device_id) AS unique_visitors FROM dataset) SELECT d.*,s.top_region,s.total_rows,s.unique_visitors FROM dataset d CROSS JOIN stats s ORDER BY d.timestamp DESC LIMIT $2 OFFSET $3;
 `
 
 export const verifyEmailPasswordQuery = 

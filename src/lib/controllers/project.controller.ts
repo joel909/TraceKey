@@ -44,8 +44,8 @@ export class ProjectController {
         return fetchUserProjects;
       }
 
-    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,_cookies : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {},device_id: string = "Unknown Device ID",page_route: string = "",event_name: string = ""): Promise<void> {
-        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,_cookies,device,location,additionalDeviceInfo,device_id,page_route,event_name);
+    async createUserClientIpRecord(api_key: string, ip_address: string, user_agent: string, refferer_url: string, _device_information: any,additionalInfo : any,device:string,location:string,additionalDeviceInfo: DeviceInfo = {},device_id: string = "Unknown Device ID",page_route: string = "",event_name: string = ""): Promise<void> {
+        await createUserClientRecord(api_key, ip_address, user_agent, refferer_url,_device_information,additionalInfo,device,location,additionalDeviceInfo,device_id,page_route,event_name);
     }
     async addUserToProject(projectId: string, newUserEmail: string,auth_key: string): Promise<void> {
       const userData = await authController.verifyAuthKey(auth_key);
@@ -102,4 +102,3 @@ export class ProjectController {
     }
 }
 export const projectController = new ProjectController();
-

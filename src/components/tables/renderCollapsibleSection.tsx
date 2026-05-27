@@ -3,9 +3,9 @@ import { Button } from "../ui/button";
 export const renderCollapsibleSection = (
     label: string, 
     content: string, 
-    key: 'userAgent' | 'referrerUrl' | 'cookies',
+    key: 'userAgent' | 'referrerUrl' | 'additionalInfo',
     expandedSections : Record<string, boolean>,
-    toggleSection : (key: 'userAgent' | 'referrerUrl' | 'cookies') => void
+    toggleSection : (key: 'userAgent' | 'referrerUrl' | 'additionalInfo') => void
   ) => {
     const isExpanded = !!expandedSections[key];
     return (

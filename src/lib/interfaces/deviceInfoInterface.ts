@@ -34,7 +34,7 @@ export interface LogActivity {
   additionalDeviceInfo?: string;
   userAgent: string;
   referrerUrl: string;
-  cookies: string;
+  additionalInfo: string;
   device_id : string;
   page_route : string;
   event_name : string;

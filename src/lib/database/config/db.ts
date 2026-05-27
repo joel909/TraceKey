@@ -13,7 +13,6 @@ export const pool = new Pool({
     // },
     connectionString: process.env.POSTGRES_URL,
 });
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function query(purpose:string,query: string, params?: any[]) {
   try {
     const result = await pool.query(query, params);
@@ -21,11 +20,9 @@ export async function query(purpose:string,query: string, params?: any[]) {
     validateDatabaseResult(result, purpose);
     return result.rows;
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
    catch (err:any) {
     throw createDatabaseError(err, query, purpose);
     // Re-throw the error after handling
 }
   
 }
-

@@ -17,7 +17,6 @@ import { cleanInputForServer } from "./cleanInputs";
  * const clean = cleanDeviceInfo(dirty);
  * // Result: { brand: "&lt;img onerror='alert(1)'&gt;", model: "" }
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function cleanDeviceInfo(deviceInfo: any): any {
     // If it's null or a primitive, return as-is
     if (deviceInfo === null || typeof deviceInfo !== 'object') {
@@ -34,7 +33,6 @@ export function cleanDeviceInfo(deviceInfo: any): any {
         });
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const cleanedInfo: Record<string, any> = {};
 
     // Iterate through the object properties and clean string values

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ProjectData } from "@/lib/interfaces/manage_project_interfaces"
@@ -17,13 +17,7 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
     const [sharedUsers, setSharedUsers] = useState<SharedUser[]>([])
     const [isLoadingUsers, setIsLoadingUsers] = useState(false)
 
-    useEffect(() => {
-        if (isSettingsOpen) {
-            fetchProjectUsers()
-        }
-    }, [isSettingsOpen])
-
-    const fetchProjectUsers = async () => {
+    const fetchProjectUsers = useCallback(async () => {
         setIsLoadingUsers(true)
         try {
             // Simulate API call with 2 second delay
@@ -36,7 +30,13 @@ export default function ManageProjectHeading({ project }: { project: ProjectData
         } finally {
             setIsLoadingUsers(false)
         }
-    }
+    }, [project.id])
+
+    useEffect(() => {
+        if (isSettingsOpen) {
+            fetchProjectUsers()
+        }
+    }, [isSettingsOpen, fetchProjectUsers])
 
     return (
         <>

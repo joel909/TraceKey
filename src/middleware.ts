@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { NextRequest } from 'next/server';
 import { AuthenticationError } from './lib/errors/extended_errors/AuthenticationError';
 // const auth_routes = ["/dashboard", "/settings", "/project"];
-const non_auth_routes = ["/login", "/signup", "/api/logout"];
+const non_auth_routes = ["/login", "/api/logout"];
 
 function buildOpenCorsHeaders(request: NextRequest) {
     return {
@@ -37,7 +37,7 @@ export function middleware(request: NextRequest) {
     try{
         const auth_key = request.cookies.get('auth_key')?.value;
         if (!auth_key && !non_auth_routes.includes(requestedPath)) {
-            return redirectTo(new URL('/signup', request.url));
+            return redirectTo(new URL('/login', request.url));
         } else if (auth_key && (requestedPath === '/login' || requestedPath === '/signup')) {
             return redirectTo(new URL('/dashboard', request.url));
         }

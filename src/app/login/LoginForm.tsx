@@ -4,9 +4,7 @@ import { useRouter } from "next/navigation";
 import InputField from "@/components/form/InputField";
 import EnvelopeIcon from "@/components/icons/EnvelopeIcon";
 import FormContainer from "@/components/form/FormContainer";
-import FormFooter from "@/components/form/FormFooter";
 import FormSubmitButton from "@/components/form/SubmitButton";
-import validateAuthInput from "@/lib/utils/validateAuthInput";
 import { cleanInput } from "@/lib/utils/client/cleanInput";
 import { authRequests } from "@/lib/user-requests/AuthRequest";
 import { ValidationError } from "@/lib/errors/extended_errors/ValidationError";
@@ -111,11 +109,9 @@ export default function LoginForm() {
                     errorMessage={passwordError}
                 />
             </form>
-            <FormFooter 
-                message="Don't have an account?" 
-                redirectText="Sign up" 
-                redirectLink="/signup" 
-            />
+            <p className="text-center text-sm text-gray-500">
+                Need access? Contact your account admin.
+            </p>
             <FormSubmitButton text="Log In" handleSubmit={handleSubmit} isLoading={isLoading} />
         </FormContainer>
     )

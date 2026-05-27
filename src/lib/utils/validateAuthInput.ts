@@ -41,15 +41,14 @@ export default function validateAuthInput(email: string, password: string, usern
 
   // username validation
   const isValidUsername = (username: string): [boolean, string] => {
-    let reason = ""
     // Check if the input is a non-empty string
     if (!username || typeof username !== 'string') {
-        return [false,reason="Username must be a non-empty string"];
+        return [false,"Username must be a non-empty string"];
     }
 
     // Check the length of the username
     if (username.length < 3 || username.length > 30) {
-        return [false,reason="Username must be between 3 and 30 characters long"];
+        return [false,"Username must be between 3 and 30 characters long"];
     }
 
     if (hasInternalWhitespace(username)) {

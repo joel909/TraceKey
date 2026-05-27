@@ -1,43 +1,28 @@
-// app/dashboard/page.tsx
 import type { Metadata } from "next";
-import { SingleProjectDetails } from "@/lib/interfaces/project_interface";
-import dashboard from "./dashboard";
-import { LogActivity, LogActivityStaticsInterface } from "@/lib/interfaces/deviceInfoInterface";
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
-import { projectController } from "@/lib/controllers/project.controller";
-import { DashboardData } from "@/lib/interfaces/manage_project_interfaces";
 
 export const metadata: Metadata = {
   title: "Dashboard",
-  description: "View TraceKey analytics across all of your projects.",
+  description: "Dashboard workspace.",
 };
 
-// --- Main Dashboard Page ---
-export default async  function DashboardPage() {
-  //HERE WIRITE THE FUNCTION TO GET THE COLLECTIVE DATA OF ALL THE USERS PROJECTS AND PASS IT ON AND MAY THE DATA DYNAMIC
-  let VistorIpLogs : LogActivity[];
-  let VistorLogStatics : LogActivityStaticsInterface;
-  let TopRegion : string;
-  try{
-    const auth_key = (await cookies()).get('auth_key')?.value
-    if (!auth_key) {
-        redirect('/logout');
-    }
-    [VistorIpLogs, VistorLogStatics,TopRegion] = await projectController.fetchAllUsersProjectLogs(auth_key);
-    }catch(e:any){
-        console.log("Authentication Error:",e.message);
-        console.log("Logging out user due to authentication error.");
-        redirect('/logout');
-    }
-    const projectData: DashboardData = {
-            uniqueVisitors: VistorLogStatics.uniqueVisitors,
-            totalVisits: VistorLogStatics.totalVisits,
-            topRegion: TopRegion,
-            recentActivity: VistorIpLogs || []
-          }
-
-  return dashboard(projectData);
-  
-  
+export default function DashboardPage() {
+  return (
+    <main className="flex-1 p-6">
+      <section className="rounded-3xl border border-dashed border-[#647FBC]/30 bg-white/60 p-10 shadow-sm backdrop-blur-sm">
+        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#647FBC]/70">
+          Dashboard reset
+        </p>
+        <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#647FBC]">
+          Fresh start
+        </h2>
+        <p className="mt-3 max-w-2xl text-base text-slate-600">
+          The previous dashboard widgets and data view have been cleared.
+          This space is now a blank shell for whatever should come next.
+        </p>
+        <div className="mt-8 rounded-2xl border border-[#647FBC]/15 bg-[#FAFDD6]/70 p-6 text-sm text-slate-600">
+          No metrics, tables, or charts are mounted here yet.
+        </div>
+      </section>
+    </main>
+  );
 }

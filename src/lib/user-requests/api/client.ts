@@ -43,7 +43,6 @@ export class ApiClient {
    */
   //frequiently used in the project
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async post(endpoint: string, data: any) {
     //TODO Add you centralized error handling here
     const response = await fetch(`${this.baseURL}${endpoint}`, {
@@ -67,7 +66,6 @@ export class ApiClient {
   /**
    * PUT request
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async put(endpoint: string, data: any) {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'PUT',
@@ -89,7 +87,6 @@ export class ApiClient {
   /**
    * DELETE request
    */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   async delete(endpoint: string,data: any) {
     const response = await fetch(`${this.baseURL}${endpoint}`, {
       method: 'DELETE',

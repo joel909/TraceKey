@@ -184,3 +184,17 @@ export const verifyEmailPasswordQuery =
 `
 SELECT uuid,auth_key,name,email FROM users WHERE email=$1 AND  password=$2;
 `
+//TODO
+//try to use joins for this instead of subquery
+export const fetchProjectCustomerStatsQuery =
+`
+SELECT 
+COUNT(DISTINCT device_id) AS unique_visitors,
+COUNT(*) FILTER (WHERE action_name = 'button_click_signup') AS total_signups,
+SUM((additional_info->>'memberCount')::int) FILTER (WHERE action_name = 'join_queue') AS total_members_joined,
+SUM((additional_info->>'memberCount')::int) FILTER (WHERE action_name = 'boardedRide') AS total_members_boarded
+FROM interactions 
+WHERE api_key = (SELECT api_key FROM projects WHERE project_id = $1)
+AND timestamp >= $2::timestamptz
+AND timestamp <= $3::timestamptz;
+`

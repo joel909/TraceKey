@@ -1,42 +1,39 @@
-import type { Metadata } from "next";
-import DashboardDateSelector from "@/components/cards/DashboardDateSelector";
-import StatsBox from "@/components/cards/StatsBox";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
+import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
+import { AuthorizationError } from "@/lib/errors/extended_errors/AuthorizationError";
+import CustomerDashboard, { metadata } from "./customerDashboard";
+import InvalidDashboardPage from "./invalidPage";
+import { DashboardController } from "@/lib/controllers/dashboard.controller";
+import { getTodayDashboardDateRange } from "@/lib/database/dashboard/utils";
+import { DashboardStatsInterface } from "@/lib/interfaces/customerDashboardStatsInterface";
+export { metadata };
 
-export const metadata: Metadata = {
-  title: "Customer Frontend Dashboard",
-  description: "Customer-facing dashboard for TraceKey.",
-};
+export default async function CustomerDashboardPage() {
+  const { startingDate, endingDate } = getTodayDashboardDateRange();
+  const dashboardController = new DashboardController();
 
-type StatItem = { label: string; value: number | string };
+  try {
+    const auth_key = (await cookies()).get("auth_key")?.value;
+    if (!auth_key) {
+      throw new AuthenticationError("Authentication key is required");
+    }
+    const dashboardStats: DashboardStatsInterface | null =
+      await dashboardController.getCustomerFrontendDashboardData(
+        auth_key,
+        startingDate,
+        endingDate
+      );
 
-const stats: StatItem[] = [
-  { label: "Total users", value: 0 },
-  { label: "Total signups", value: 0 },
-  { label: "Total people who joined rides", value: 0 },
-  { label: "Ride show-up rate", value: "0%" },
-  { label: "Present while boarding", value: 0 },
-  { label: "Signup conversion rate", value: "0%" },
-];
-
-export default function CustomerDashboardPage() {
-  return (
-    <main className="flex-1 p-6">
-      <section className="relative z-10 mb-6 rounded-3xl border border-dashed border-[#647FBC]/30 bg-white/60 p-10 shadow-sm backdrop-blur-sm">
-        <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#647FBC]/70">
-          Customer frontend dashboard
-        </p>
-        <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#647FBC]">
-          Customer dashboard metrics
-        </h2>
-        <div className="mt-6">
-          <DashboardDateSelector />
-        </div>
-      </section>
-      <div className="relative z-0 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {stats.map(({ label, value }) => (
-          <StatsBox key={label} label={label} value={value} />
-        ))}
-      </div>
-    </main>
-  );
+    return <CustomerDashboard dashboardStats={dashboardStats} />;
+  } catch (error) {
+    if (error instanceof AuthenticationError) {
+      redirect("/logout");
+    }
+    if (error instanceof AuthorizationError) {
+      return <InvalidDashboardPage caseType="authorization" />;
+    }
+    console.error("Error loading dashboard data:", error);
+    return <InvalidDashboardPage caseType="load_failed" />;
+  }
 }

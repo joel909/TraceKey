@@ -100,5 +100,6 @@ export class ProjectController {
       const topRegion = await getTopRegion(id,duration);
       return topRegion;
     }
+
 }
 export const projectController = new ProjectController();

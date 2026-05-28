@@ -6,12 +6,14 @@ import { Button } from "@/components/ui/button"
 import { FileX, ArrowLeft, Flag } from "lucide-react"
 
 export default  function ErrorCard({error,messageLine1,messageLine2,reason,projectId,callback}: {error:string,messageLine1:string,messageLine2:string,reason:string,projectId:string,callback?:()=>void})   {
+  const backHref = "/projects";
+  const backLabel = "Back to Projects";
   console.log("just to use call back ",callback)
   const isProjectID = projectId !== "";
   // const [isProjectID, setIsProjectID] = useState(projectId !== "");
   const [isReporting, setIsReporting] = useState(false);
   const handleReturnToProjects = () => {
-    window.location.href = '/projects';
+    window.location.href = backHref;
   }
   const handleReport = async () => {
   setIsReporting(true);
@@ -59,7 +61,7 @@ export default  function ErrorCard({error,messageLine1,messageLine2,reason,proje
                 className="border-[#647FBC]/20 text-[#647FBC] hover:bg-[#647FBC]/10"
               >
                 <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Projects
+                {backLabel}
               </Button>
               <Button
                 onClick={handleReport}

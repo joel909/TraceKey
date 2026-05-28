@@ -7,6 +7,7 @@ import StatsBox from "@/components/cards/StatsBox";
 import type { DashboardStatsInterface } from "@/lib/interfaces/customerDashboardStatsInterface";
 import { formatPercent, getTodayDashboardDateRange, toNumber } from "@/lib/database/dashboard/utils";
 import InvalidDashboardPage from "./invalidPage";
+import CustomerDashboardMobile from "./customerDashboardMobile";
 
 type StatItem = { label: string; value: number | string };
 
@@ -130,7 +131,13 @@ export default function CustomerDashboard({
 
   return (
     <main className="flex-1 p-6">
-      <section className="relative z-10 mb-6 rounded-3xl border border-dashed border-[#647FBC]/30 bg-white/60 p-10 shadow-sm backdrop-blur-sm">
+      <CustomerDashboardMobile
+        stats={stats}
+        isLoading={isLoading}
+        selectedRange={selectedRange}
+        onChange={setSelectedRange}
+      />
+      <section className="relative z-10 mb-6 hidden rounded-3xl border border-dashed border-[#647FBC]/30 bg-white/60 p-10 shadow-sm backdrop-blur-sm md:block">
         <p className="text-sm font-semibold uppercase tracking-[0.2em] text-[#647FBC]/70">
           Customer frontend dashboard
         </p>
@@ -159,7 +166,7 @@ export default function CustomerDashboard({
           </p>
         ) : null}
       </section>
-      <div className="relative z-0 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="relative z-0 hidden gap-4 md:grid md:grid-cols-2 xl:grid-cols-3">
         {stats.map(({ label, value }) => (
           <StatsBox key={label} label={label} value={value} loading={isLoading} />
         ))}

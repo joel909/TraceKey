@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { getTodayISODate, shiftISODate } from "@/lib/database/dashboard/utils";
 
 type Mode = "day" | "range";
 type QuickPreset = {
@@ -54,10 +55,14 @@ export default function DashboardDateSelector({
 
   const presets: QuickPreset[] = [
     { label: "Today", start: todayValue, end: todayValue },
-    { label: "Last 24 H", start: shiftDays(todayValue, -1), end: todayValue },
-    { label: "Yesterday", start: shiftDays(todayValue, -1), end: shiftDays(todayValue, -1) },
-    { label: "Last 7 days", start: shiftDays(todayValue, -6), end: todayValue },
-    { label: "Last 30 days", start: shiftDays(todayValue, -29), end: todayValue },
+    { label: "Last 24 H", start: shiftISODate(todayValue, -1), end: todayValue },
+    {
+      label: "Yesterday",
+      start: shiftISODate(todayValue, -1),
+      end: shiftISODate(todayValue, -1),
+    },
+    { label: "Last 7 days", start: shiftISODate(todayValue, -6), end: todayValue },
+    { label: "Last 30 days", start: shiftISODate(todayValue, -29), end: todayValue },
   ];
 
   const updateSingleDay = (value: string) => {
@@ -188,42 +193,6 @@ export default function DashboardDateSelector({
       </div>
     </div>
   );
-}
-
-function getTodayISODate(): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(new Date());
-
-  const year = parts.find((part) => part.type === "year")?.value ?? "";
-  const month = parts.find((part) => part.type === "month")?.value ?? "";
-  const day = parts.find((part) => part.type === "day")?.value ?? "";
-
-  return `${year}-${month}-${day}`;
-}
-
-function shiftDays(value: string, days: number): string {
-  const date = new Date(`${value}T12:00:00+05:30`);
-  date.setDate(date.getDate() + days);
-  return getTodayISODateFromDate(date);
-}
-
-function getTodayISODateFromDate(date: Date): string {
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    timeZone: "Asia/Kolkata",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).formatToParts(date);
-
-  const year = parts.find((part) => part.type === "year")?.value ?? "";
-  const month = parts.find((part) => part.type === "month")?.value ?? "";
-  const day = parts.find((part) => part.type === "day")?.value ?? "";
-
-  return `${year}-${month}-${day}`;
 }
 
 const active =

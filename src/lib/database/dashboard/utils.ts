@@ -23,6 +23,24 @@ export function getTodayDashboardDateRange(): { startingDate: string; endingDate
     };
 }
 
+export function shiftISODate(value: string, days: number): string {
+    const date = new Date(`${value}T12:00:00+05:30`);
+    date.setDate(date.getDate() + days);
+
+    const parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Asia/Kolkata",
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+    }).formatToParts(date);
+
+    const year = parts.find((part) => part.type === "year")?.value ?? "";
+    const month = parts.find((part) => part.type === "month")?.value ?? "";
+    const day = parts.find((part) => part.type === "day")?.value ?? "";
+
+    return `${year}-${month}-${day}`;
+}
+
 export function parseDateOnly(value: string, fieldName: string): Date {
     const normalized = value?.trim();
     if (!normalized) {

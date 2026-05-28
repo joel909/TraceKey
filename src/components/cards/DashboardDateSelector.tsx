@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type Mode = "day" | "range";
 type QuickPreset = {
@@ -11,13 +11,30 @@ type QuickPreset = {
 
 const MIN_DATE = "2026-05-28";
 
-export default function DashboardDateSelector() {
+export default function DashboardDateSelector({
+  startingDate,
+  endingDate,
+  onChange,
+}: {
+  startingDate: string;
+  endingDate: string;
+  onChange: (value: { startingDate: string; endingDate: string }) => void;
+}) {
   const todayValue = getTodayISODate();
   const [open, setOpen] = useState(false);
-  const [mode, setMode] = useState<Mode>("day");
-  const [day, setDay] = useState(todayValue);
-  const [start, setStart] = useState(day);
-  const [end, setEnd] = useState(day);
+  const [mode, setMode] = useState<Mode>(
+    startingDate === endingDate ? "day" : "range"
+  );
+  const [day, setDay] = useState(endingDate);
+  const [start, setStart] = useState(startingDate);
+  const [end, setEnd] = useState(endingDate);
+
+  useEffect(() => {
+    setMode(startingDate === endingDate ? "day" : "range");
+    setDay(endingDate);
+    setStart(startingDate);
+    setEnd(endingDate);
+  }, [startingDate, endingDate]);
 
   const isBeforeMinDate = (value: string) => value < MIN_DATE;
   const selectedBeforeMin =
@@ -43,8 +60,25 @@ export default function DashboardDateSelector() {
     { label: "Last 30 days", start: shiftDays(todayValue, -29), end: todayValue },
   ];
 
+  const updateSingleDay = (value: string) => {
+    setDay(value);
+    setStart(value);
+    setEnd(value);
+    onChange({ startingDate: value, endingDate: value });
+  };
+
+  const updateRangeStart = (value: string) => {
+    setStart(value);
+    onChange({ startingDate: value, endingDate: end });
+  };
+
+  const updateRangeEnd = (value: string) => {
+    setEnd(value);
+    onChange({ startingDate: start, endingDate: value });
+  };
+
   return (
-    <div className="relative z-[60] max-w-md">
+    <div className="relative z-[60] w-full">
       <button
         type="button"
         onClick={() => setOpen((value) => !value)}
@@ -81,7 +115,7 @@ export default function DashboardDateSelector() {
                 <input
                   type="date"
                   value={day}
-                  onChange={(e) => setDay(e.target.value)}
+                  onChange={(e) => updateSingleDay(e.target.value)}
                   min={MIN_DATE}
                   className="w-full rounded-xl border border-[#647FBC]/20 px-4 py-3 text-sm text-[#647FBC] outline-none [color-scheme:light] focus:border-[#647FBC]"
                 />
@@ -90,14 +124,14 @@ export default function DashboardDateSelector() {
                 <input
                   type="date"
                   value={start}
-                  onChange={(e) => setStart(e.target.value)}
+                  onChange={(e) => updateRangeStart(e.target.value)}
                   min={MIN_DATE}
                   className="w-full rounded-xl border border-[#647FBC]/20 px-4 py-3 text-sm text-[#647FBC] outline-none [color-scheme:light] focus:border-[#647FBC]"
                 />
                 <input
                   type="date"
                   value={end}
-                  onChange={(e) => setEnd(e.target.value)}
+                  onChange={(e) => updateRangeEnd(e.target.value)}
                   min={MIN_DATE}
                   className="w-full rounded-xl border border-[#647FBC]/20 px-4 py-3 text-sm text-[#647FBC] outline-none [color-scheme:light] focus:border-[#647FBC]"
                 />
@@ -118,7 +152,7 @@ export default function DashboardDateSelector() {
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#647FBC]/60">
           Quick ranges
         </p>
-        <div className="mt-2 flex gap-2 overflow-x-auto pb-1">
+        <div className="mt-2 flex flex-wrap gap-2">
           {presets.map((preset) => {
             const activePreset =
               mode === "day"
@@ -134,9 +168,10 @@ export default function DashboardDateSelector() {
                   setDay(preset.end);
                   setStart(preset.start);
                   setEnd(preset.end);
+                  onChange({ startingDate: preset.start, endingDate: preset.end });
                 }}
                 className={[
-                  "shrink-0 rounded-full border px-3 py-2 text-xs font-medium whitespace-nowrap transition",
+                  "min-w-[120px] flex-1 rounded-full border px-3 py-2 text-xs font-medium whitespace-nowrap transition",
                   activePreset
                     ? "border-[#647FBC] bg-[#647FBC] text-white"
                     : "border-[#647FBC]/20 bg-[#647FBC]/5 text-[#647FBC] hover:bg-[#647FBC]/10",
@@ -148,7 +183,7 @@ export default function DashboardDateSelector() {
           })}
         </div>
         <p className="mt-2 text-[11px] text-[#647FBC]/60">
-          Presets before May 28, 2026 are disabled.
+          Data before May 28, 2026 may not be available.
         </p>
       </div>
     </div>

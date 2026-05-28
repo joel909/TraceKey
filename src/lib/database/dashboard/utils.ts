@@ -60,3 +60,20 @@ export function toKolkataDayBounds(dateValue: string): { start: string; end: str
         end: `${normalized}T23:59:59.999+05:30`,
     };
 }
+
+export function toNumber(value: string | null): number {
+    if (value === null) {
+        return 0;
+    }
+
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+}
+
+export function formatPercent(numerator: number, denominator: number): string {
+    if (denominator <= 0) {
+        return "0%";
+    }
+
+    return `${((numerator / denominator) * 100).toFixed(1)}%`;
+}

@@ -1,13 +1,18 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { AuthenticationError } from "@/lib/errors/extended_errors/AuthenticationError";
 import { AuthorizationError } from "@/lib/errors/extended_errors/AuthorizationError";
-import CustomerDashboard, { metadata } from "./customerDashboard";
+import CustomerDashboard from "./customerDashboard";
 import InvalidDashboardPage from "./invalidPage";
 import { DashboardController } from "@/lib/controllers/dashboard.controller";
 import { getTodayDashboardDateRange } from "@/lib/database/dashboard/utils";
-import { DashboardStatsInterface } from "@/lib/interfaces/customerDashboardStatsInterface";
-export { metadata };
+import type { DashboardStatsInterface } from "@/lib/interfaces/customerDashboardStatsInterface";
+
+export const metadata: Metadata = {
+  title: "Customer Frontend Dashboard",
+  description: "Customer-facing dashboard for TraceKey.",
+};
 
 export default async function CustomerDashboardPage() {
   const { startingDate, endingDate } = getTodayDashboardDateRange();
@@ -25,7 +30,13 @@ export default async function CustomerDashboardPage() {
         endingDate
       );
 
-    return <CustomerDashboard dashboardStats={dashboardStats} />;
+    return (
+      <CustomerDashboard
+        dashboardStats={dashboardStats}
+        initialStartingDate={startingDate}
+        initialEndingDate={endingDate}
+      />
+    );
   } catch (error) {
     if (error instanceof AuthenticationError) {
       redirect("/logout");

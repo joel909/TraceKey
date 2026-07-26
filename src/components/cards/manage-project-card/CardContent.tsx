@@ -58,7 +58,6 @@ export default function ManageProjectContent({ project }: { project: ProjectData
                 isOpen={isApiModalOpen}
                 onClose={() => setIsApiModalOpen(false)}
                 apiKey={project?.apiKey || ''}
-                projectUrl={project?.url || ''}
             />
         </CardContent>
     );

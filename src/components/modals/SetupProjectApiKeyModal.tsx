@@ -1,290 +1,210 @@
-// components/ApiSetupModal.tsx
 "use client";
-import { useState } from 'react';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import CopyButton  from '@/components/buttons/CopyButton';
-import { Button } from '@/components/ui/button';
-import { Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from '@/components/ui/select';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Check, Info } from 'lucide-react';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import vscDarkPlus from 'react-syntax-highlighter/dist/cjs/styles/prism/vsc-dark-plus';
+
+import { useMemo } from "react";
+import {
+  Activity,
+  CheckCircle2,
+  ExternalLink,
+  KeyRound,
+  PackagePlus,
+  Terminal,
+} from "lucide-react";
+
+import CopyButton from "@/components/buttons/CopyButton";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface ApiSetupModalProps {
   isOpen: boolean;
   onClose: () => void;
   apiKey: string;
-  projectUrl: string;
 }
 
-type Language = 'javascript' | 'typescript' | 'python' | 'curl';
-
-const codeExamples = {
-  javascript: (apiKey: string, projectUrl: string) => `// Install axios (optional)
-// npm install axios
-
-const axios = require('axios');
-
-async function trackVisitor() {
-  try {
-    const response = await axios.post(
-      '${projectUrl}/api/track',
-      {
-        page: window.location.pathname,
-        referrer: document.referrer,
-        userAgent: navigator.userAgent,
-      },
-      {
-        headers: {
-          'Authorization': 'Bearer ${apiKey}',
-          'Content-Type': 'application/json'
-        }
-      }
-    );
-    
-    console.log('Visitor tracked:', response.data);
-  } catch (error) {
-    console.error('Error tracking:', error);
-  }
+interface SetupStepProps {
+  number: string;
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+  children: React.ReactNode;
 }
 
-trackVisitor();`,
-
-  typescript: (apiKey: string, projectUrl: string) => `// npm install axios
-
-import axios, { AxiosResponse } from 'axios';
-
-interface TrackingData {
-  page: string;
-  referrer: string;
-  userAgent: string;
+function SetupStep({
+  number,
+  title,
+  description,
+  icon,
+  children,
+}: SetupStepProps) {
+  return (
+    <section className="relative grid gap-4 border-b border-slate-800 px-5 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:px-7">
+      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-300">
+        {icon}
+      </div>
+      <div className="min-w-0">
+        <div className="mb-4 flex items-start gap-3">
+          <span className="pt-0.5 font-mono text-xs font-semibold tracking-widest text-slate-500">
+            {number}
+          </span>
+          <div>
+            <h3 className="font-semibold text-slate-100">{title}</h3>
+            <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>
+          </div>
+        </div>
+        {children}
+      </div>
+    </section>
+  );
 }
 
-interface TrackingResponse {
-  success: boolean;
-  visitorId: string;
+function CodeBlock({ code, label }: { code: string; label: string }) {
+  return (
+    <div className="overflow-hidden rounded-xl border border-slate-700/80 bg-[#090f1c]">
+      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/80 px-3 py-2">
+        <span className="font-mono text-[11px] text-slate-500">{label}</span>
+        <CopyButton
+          textToCopy={code}
+          label={label}
+          variant="ghost"
+          displayText="Copy"
+          className="h-7 border-0 px-2 text-xs text-slate-400 hover:bg-slate-800 hover:text-cyan-300"
+        />
+      </div>
+      <pre className="overflow-x-auto p-4 font-mono text-xs leading-6 text-slate-300 sm:text-[13px]">
+        <code>{code}</code>
+      </pre>
+    </div>
+  );
 }
 
-async function trackVisitor(): Promise<void> {
-  try {
-    const data: TrackingData = {
-      page: window.location.pathname,
-      referrer: document.referrer,
-      userAgent: navigator.userAgent,
-    };
+export function ApiSetupModal({ isOpen, onClose, apiKey }: ApiSetupModalProps) {
+  const snippets = useMemo(() => {
+    const environment = `NEXT_PUBLIC_TRACEKEY_API_KEY=${apiKey}`;
+    const client = `// src/lib/tracekey.ts
+import { TracekeyClient } from 'tracekey-sdk';
 
-    const response: AxiosResponse<TrackingResponse> = 
-      await axios.post(
-        '${projectUrl}/api/track',
-        data,
-        {
-          headers: {
-            'Authorization': 'Bearer ${apiKey}',
-            'Content-Type': 'application/json'
-          }
-        }
-      );
-    
-    console.log('Visitor tracked:', response.data);
-  } catch (error) {
-    console.error('Error tracking:', error);
-  }
-}
+export const tracekey = new TracekeyClient({
+  apiKey: process.env.NEXT_PUBLIC_TRACEKEY_API_KEY!,
+});`;
+    const tracking = `'use client';
 
-trackVisitor();`,
+import { useEffect } from 'react';
+import { tracekey } from '@/lib/tracekey';
 
-  python: (apiKey: string, projectUrl: string) => `# pip install requests
-
-import requests
-
-def track_visitor():
-    url = "${projectUrl}/api/track"
-    
-    headers = {
-        "Authorization": f"Bearer ${apiKey}",
-        "Content-Type": "application/json"
-    }
-    
-    data = {
-        "page": "/home",
-        "referrer": "https://google.com",
-        "userAgent": "Mozilla/5.0..."
-    }
-    
-    try:
-        response = requests.post(
-            url, 
-            headers=headers, 
-            json=data
-        )
-        response.raise_for_status()
-        
-        result = response.json()
-        print("Visitor tracked:", result)
-        
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
-
-track_visitor()`,
-
-  curl: (apiKey: string, projectUrl: string) => `curl -X POST "${projectUrl}/api/track" \\
-  -H "Authorization: Bearer ${apiKey}" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "page": "/home",
-    "referrer": "https://google.com",
-    "userAgent": "Mozilla/5.0"
-  }'`
-};
-
-export function ApiSetupModal({ 
-  isOpen, 
-  onClose, 
-  apiKey, 
-  projectUrl 
-}: ApiSetupModalProps) {
-  const [selectedLanguage, setSelectedLanguage] = useState<Language>('javascript');
+export function TrackedPage() {
+  useEffect(() => {
+    void tracekey.logLandingEvent();
+  }, []);
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col">
-        <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="text-2xl font-bold text-[#647FBC]">
-            Setup API Key
+    <button onClick={() => tracekey.logButtonClickEvent('checkout')}>
+      Checkout
+    </button>
+  );
+}`;
+
+    return { environment, client, tracking };
+  }, [apiKey]);
+
+  const fullSetup = `npm install tracekey-sdk\n\n# .env.local\n${snippets.environment}\n\n${snippets.client}\n\n${snippets.tracking}`;
+
+  return (
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="max-h-[90vh] gap-0 overflow-hidden border-slate-700 bg-slate-950 p-0 text-slate-100 shadow-2xl sm:max-w-4xl"
+        aria-describedby="api-setup-description"
+      >
+        <DialogHeader className="border-b border-slate-800 bg-[#0b1220] px-5 py-4 pr-14 text-left sm:px-7">
+          <div className="mb-2 flex items-center gap-2" aria-hidden="true">
+            <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+            <span className="ml-2 font-mono text-[11px] text-slate-600">
+              tracekey / setup
+            </span>
+          </div>
+          <DialogTitle className="flex items-center gap-2 text-xl font-semibold text-white">
+            <Terminal className="h-5 w-5 text-cyan-300" />
+            Connect your project
           </DialogTitle>
-          <DialogDescription className="text-[#647FBC]/70">
-            Integrate TraceKey into your application
+          <DialogDescription
+            id="api-setup-description"
+            className="text-sm text-slate-400"
+          >
+            Install the official Tracekey SDK and start tracking events in three steps.
           </DialogDescription>
         </DialogHeader>
 
-        {/* Scrollable content area */}
-        <div className="space-y-6 overflow-y-auto flex-1 pr-2">
-          {/* API Key Display */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-[#647FBC]">
-                Your API Key
-              </label>
-              <a 
-                href="/docs/getting-started" 
+        <div className="overflow-y-auto">
+          <div className="border-b border-slate-800 bg-gradient-to-r from-cyan-400/5 to-transparent px-5 py-3 sm:px-7">
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-2 text-sm text-emerald-300">
+                <CheckCircle2 className="h-4 w-4" />
+                Your public project key is ready
+              </div>
+              <a
+                href="https://github.com/joel909/tracekey-sdk"
                 target="_blank"
-                className="text-xs text-[#647FBC] hover:text-[#5a6fb0] flex items-center gap-1 hover:underline"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-cyan-300"
               >
-                <Info className="h-3 w-3" />
-                Learn how this works
+                View SDK documentation
+                <ExternalLink className="h-3 w-3" />
               </a>
             </div>
-            <div className="flex items-center gap-2">
-              <div className="flex-1 p-2.5 bg-gray-100 rounded-md text-xs text-[#647FBC] font-mono break-all border border-gray-200 overflow-hidden">
-                {apiKey}
-              </div>
-              <CopyButton 
-                textToCopy={apiKey} 
-                label="API Key"
-                size="sm"
-              />
-            </div>
-            <Alert className="border-blue-200 bg-blue-50/50">
-              <Info className="h-4 w-4 text-green-600" style={{ color: '#16a34a' }}  />
-              <AlertDescription className="text-xs text-blue-800">
-                This is your Public API key used as identifier to track visitors. You can Expose this
-              </AlertDescription>
-            </Alert>
           </div>
 
-          {/* Instructions */}
-          <div className="space-y-2">
-            <h3 className="text-base font-semibold text-[#647FBC]">
-              How to integrate
-            </h3>
-            <p className="text-sm text-[#647FBC]/70">
-              Copy the API call to track visitors in your app. Choose your language:
+          <SetupStep
+            number="01"
+            title="Install the SDK"
+            description="Add the official browser SDK to your JavaScript or TypeScript project."
+            icon={<PackagePlus className="h-5 w-5" />}
+          >
+            <CodeBlock code="npm install tracekey-sdk" label="Terminal" />
+          </SetupStep>
+
+          <SetupStep
+            number="02"
+            title="Configure your API key"
+            description="Add the public key to .env.local, then create one shared Tracekey client."
+            icon={<KeyRound className="h-5 w-5" />}
+          >
+            <div className="space-y-3">
+              <CodeBlock code={snippets.environment} label=".env.local" />
+              <CodeBlock code={snippets.client} label="src/lib/tracekey.ts" />
+            </div>
+          </SetupStep>
+
+          <SetupStep
+            number="03"
+            title="Track your first events"
+            description="Call logging methods from client components, effects, or browser event handlers."
+            icon={<Activity className="h-5 w-5" />}
+          >
+            <CodeBlock code={snippets.tracking} label="TrackedPage.tsx" />
+            <p className="mt-3 text-xs leading-5 text-slate-500">
+              The SDK automatically attaches the current route, device ID, and device details.
+              It also supports heartbeat, quit, custom, join-queue, and boarded events.
             </p>
-          </div>
-
-          {/* Language Selector */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <label className="text-sm font-medium text-[#647FBC]">
-                Choose Language
-              </label>
-                          <Select
-                value={selectedLanguage} 
-                onValueChange={(value) => setSelectedLanguage(value as Language)}
-              >
-                <SelectTrigger className="w-[180px] border-[#647FBC] bg-[#FAFDD6] text-[#647FBC] hover:bg-[#647FBC]/10">
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent className="bg-[#FAFDD6]">
-                  <SelectItem value="javascript" className="text-[#647FBC] hover:bg-[#647FBC]/10 focus:bg-[#647FBC]/10">JavaScript</SelectItem>
-                  <SelectItem value="typescript" className="text-[#647FBC] hover:bg-[#647FBC]/10 focus:bg-[#647FBC]/10">TypeScript</SelectItem>
-                  <SelectItem value="python" className="text-[#647FBC] hover:bg-[#647FBC]/10 focus:bg-[#647FBC]/10">Python</SelectItem>
-                  <SelectItem value="curl" className="text-[#647FBC] hover:bg-[#647FBC]/10 focus:bg-[#647FBC]/10">cURL</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            {/* Code Display - with proper overflow handling */}
-            <div className="relative rounded-lg overflow-hidden border border-gray-200">
-              <div className="absolute top-2 right-6 z-10">
-                <CopyButton 
-                  textToCopy={codeExamples[selectedLanguage](apiKey, projectUrl)}
-                  label="Code"
-                  variant="secondary"
-                  size="sm"
-                  displayText='Copy Code'
-                />
-        
-              </div>
-              <div className="overflow-x-auto">
-                <SyntaxHighlighter
-                  language={selectedLanguage === 'curl' ? 'bash' : selectedLanguage}
-                  style={vscDarkPlus}
-                  customStyle={{
-                    margin: 0,
-                    borderRadius: '0.5rem',
-                    fontSize: '0.75rem',
-                    padding: '1rem',
-                    maxHeight: '400px',
-                    overflow: 'auto',
-                  }}
-                  showLineNumbers
-                  wrapLines={true}
-                  wrapLongLines={true}
-                >
-                  {codeExamples[selectedLanguage](apiKey, projectUrl)}
-                </SyntaxHighlighter>
-              </div>
-            </div>
-          </div>
-
-          {/* Additional Instructions */}
-          <div className="space-y-2 bg-[#647FBC]/5 p-3 rounded-lg border border-[#647FBC]/20">
-            <h4 className="text-sm font-semibold text-[#647FBC] flex items-center gap-2">
-              <Check className="h-4 w-4" />
-              Next Steps
-            </h4>
-            <ul className="space-y-1.5 text-xs text-[#647FBC]/80">
-              <li className="flex items-start gap-2">
-                <span className="text-[#647FBC] mt-0.5 font-medium">1.</span>
-                <span>Copy the code snippet and integrate it into your application</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#647FBC] mt-0.5 font-medium">2.</span>
-                <span>Replace placeholder values with your actual data</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-[#647FBC] mt-0.5 font-medium">3.</span>
-                <span>Test the integration and monitor visitor data in your dashboard</span>
-              </li>
-            </ul>
-          </div>
+          </SetupStep>
         </div>
 
-        <DialogFooter className="flex-shrink-0 border-t pt-4 mt-4">
-          <Button 
+        <DialogFooter className="flex-row items-center justify-between border-t border-slate-800 bg-[#0b1220] px-5 py-4 sm:px-7">
+          <CopyButton
+            textToCopy={fullSetup}
+            label="Full setup"
+            displayText="Copy all steps"
+            className="border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-cyan-300"
+          />
+          <Button
             onClick={onClose}
-            className="bg-[#647FBC] hover:bg-[#5a6fb0] text-white w-full sm:w-auto"
+            className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"
           >
             Done
           </Button>

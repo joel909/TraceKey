@@ -3,11 +3,9 @@
 import { useMemo } from "react";
 import {
   Activity,
-  CheckCircle2,
   ExternalLink,
   KeyRound,
   PackagePlus,
-  Terminal,
 } from "lucide-react";
 
 import CopyButton from "@/components/buttons/CopyButton";
@@ -43,19 +41,19 @@ function SetupStep({
   children,
 }: SetupStepProps) {
   return (
-    <section className="relative grid gap-4 border-b border-slate-800 px-5 py-6 last:border-b-0 sm:grid-cols-[48px_1fr] sm:px-7">
-      <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-cyan-400/20 bg-cyan-400/10 text-cyan-300">
+    <section className="grid gap-4 rounded-xl border border-gray-200/80 bg-white p-4 sm:grid-cols-[44px_1fr] sm:p-5">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#647FBC]/10 text-[#647FBC]">
         {icon}
       </div>
       <div className="min-w-0">
-        <div className="mb-4 flex items-start gap-3">
-          <span className="pt-0.5 font-mono text-xs font-semibold tracking-widest text-slate-500">
-            {number}
-          </span>
-          <div>
-            <h3 className="font-semibold text-slate-100">{title}</h3>
-            <p className="mt-1 text-sm leading-6 text-slate-400">{description}</p>
+        <div className="mb-3">
+          <div className="flex items-center gap-2">
+            <span className="rounded-full bg-[#647FBC]/10 px-2 py-0.5 text-[10px] font-semibold tracking-wider text-[#647FBC]">
+              STEP {number}
+            </span>
+            <h3 className="font-semibold text-[#405A94]">{title}</h3>
           </div>
+          <p className="mt-1.5 text-sm leading-5 text-[#647FBC]/70">{description}</p>
         </div>
         {children}
       </div>
@@ -65,18 +63,18 @@ function SetupStep({
 
 function CodeBlock({ code, label }: { code: string; label: string }) {
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-700/80 bg-[#090f1c]">
-      <div className="flex items-center justify-between border-b border-slate-800 bg-slate-900/80 px-3 py-2">
-        <span className="font-mono text-[11px] text-slate-500">{label}</span>
+    <div className="overflow-hidden rounded-lg border border-gray-200 bg-gray-50">
+      <div className="flex items-center justify-between border-b border-gray-200 bg-gray-100/70 px-3 py-1.5">
+        <span className="font-mono text-[11px] text-gray-500">{label}</span>
         <CopyButton
           textToCopy={code}
           label={label}
           variant="ghost"
           displayText="Copy"
-          className="h-7 border-0 px-2 text-xs text-slate-400 hover:bg-slate-800 hover:text-cyan-300"
+          className="h-7 border-0 px-2 text-xs text-[#647FBC] hover:bg-[#647FBC]/10"
         />
       </div>
-      <pre className="overflow-x-auto p-4 font-mono text-xs leading-6 text-slate-300 sm:text-[13px]">
+      <pre className="overflow-x-auto p-3.5 font-mono text-xs leading-6 text-slate-700 sm:text-[13px]">
         <code>{code}</code>
       </pre>
     </div>
@@ -117,46 +115,45 @@ export function TrackedPage() {
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
-        className="max-h-[90vh] gap-0 overflow-hidden border-slate-700 bg-slate-950 p-0 text-slate-100 shadow-2xl sm:max-w-4xl"
+        className="flex max-h-[85vh] flex-col gap-0 overflow-hidden rounded-xl border border-gray-200/60 bg-white p-0 text-[#647FBC] shadow-xl sm:max-w-3xl"
         aria-describedby="api-setup-description"
       >
-        <DialogHeader className="border-b border-slate-800 bg-[#0b1220] px-5 py-4 pr-14 text-left sm:px-7">
-          <div className="mb-2 flex items-center gap-2" aria-hidden="true">
-            <span className="h-2.5 w-2.5 rounded-full bg-rose-400" />
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-            <span className="ml-2 font-mono text-[11px] text-slate-600">
-              tracekey / setup
-            </span>
-          </div>
-          <DialogTitle className="flex items-center gap-2 text-xl font-semibold text-white">
-            <Terminal className="h-5 w-5 text-cyan-300" />
-            Connect your project
+        <DialogHeader className="border-b border-gray-200/80 px-5 py-5 pr-14 text-left sm:px-6">
+          <DialogTitle className="text-2xl font-bold text-[#647FBC]">
+            Setup API Key
           </DialogTitle>
           <DialogDescription
             id="api-setup-description"
-            className="text-sm text-slate-400"
+            className="text-sm text-[#647FBC]/70"
           >
-            Install the official Tracekey SDK and start tracking events in three steps.
+            Connect this project to your application with the official Tracekey SDK.
           </DialogDescription>
         </DialogHeader>
 
-        <div className="overflow-y-auto">
-          <div className="border-b border-slate-800 bg-gradient-to-r from-cyan-400/5 to-transparent px-5 py-3 sm:px-7">
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2 text-sm text-emerald-300">
-                <CheckCircle2 className="h-4 w-4" />
-                Your public project key is ready
+        <div className="flex-1 space-y-4 overflow-y-auto bg-gray-50/40 p-5 sm:p-6">
+          <div className="rounded-xl border border-[#647FBC]/20 bg-[#FAFDD6]/45 p-4">
+            <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+              <div>
+                <p className="text-sm font-semibold text-[#405A94]">Your project API key</p>
+                <p className="mt-0.5 text-xs text-[#647FBC]/65">
+                  This public key identifies events sent to this project.
+                </p>
               </div>
               <a
                 href="https://github.com/joel909/tracekey-sdk"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center gap-1.5 text-xs text-slate-400 transition-colors hover:text-cyan-300"
+                className="inline-flex items-center gap-1.5 text-xs text-[#647FBC] hover:text-[#405A94] hover:underline"
               >
-                View SDK documentation
+                SDK documentation
                 <ExternalLink className="h-3 w-3" />
               </a>
+            </div>
+            <div className="flex min-w-0 items-center gap-2">
+              <code className="min-w-0 flex-1 truncate rounded-md border border-gray-200 bg-white px-3 py-2 font-mono text-xs text-slate-700">
+                {apiKey}
+              </code>
+              <CopyButton textToCopy={apiKey} label="API key" />
             </div>
           </div>
 
@@ -188,23 +185,23 @@ export function TrackedPage() {
             icon={<Activity className="h-5 w-5" />}
           >
             <CodeBlock code={snippets.tracking} label="TrackedPage.tsx" />
-            <p className="mt-3 text-xs leading-5 text-slate-500">
+            <p className="mt-3 text-xs leading-5 text-[#647FBC]/65">
               The SDK automatically attaches the current route, device ID, and device details.
               It also supports heartbeat, quit, custom, join-queue, and boarded events.
             </p>
           </SetupStep>
         </div>
 
-        <DialogFooter className="flex-row items-center justify-between border-t border-slate-800 bg-[#0b1220] px-5 py-4 sm:px-7">
+        <DialogFooter className="flex-row items-center justify-between border-t border-gray-200/80 bg-white px-5 py-4 sm:px-6">
           <CopyButton
             textToCopy={fullSetup}
             label="Full setup"
             displayText="Copy all steps"
-            className="border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-cyan-300"
+            className="border-[#647FBC]/25 bg-white text-[#647FBC] hover:bg-[#647FBC]/10 hover:text-[#405A94]"
           />
           <Button
             onClick={onClose}
-            className="bg-cyan-300 text-slate-950 hover:bg-cyan-200"
+            className="bg-[#647FBC] text-white hover:bg-[#5a6fb0]"
           >
             Done
           </Button>

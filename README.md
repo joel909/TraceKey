@@ -97,14 +97,36 @@ git clone https://github.com/joel909/TraceKey.git
 cd TraceKey
 ```
 
-### 2. Configure deployment values
+### 2. Configure the Cloudflare tunnel
+
+The `cloudflared` service is optional, but when you want a public HTTPS address its tunnel token should be configured before the application stack is started. Do not add the published-application route yet; that comes after Docker is running.
+
+1. Open the [Cloudflare dashboard](https://dash.cloudflare.com/).
+2. Go to **Networking → Tunnels**, select **Create Tunnel**, and create a Cloudflared tunnel.
+3. Choose the Docker setup option and copy the generated tunnel token from the installation command.
+4. Put that token in the `cloudflared` service in `docker-compose.yml`.
+
+The relevant Compose configuration should resemble:
+
+```yaml
+cloudflared:
+  image: cloudflare/cloudflared:latest
+  restart: unless-stopped
+  command: tunnel --no-autoupdate run --token YOUR_CLOUDFLARE_TUNNEL_TOKEN
+  networks:
+    - app-network
+```
+
+If you only need local or private-network access, remove or comment out the entire `cloudflared` service before continuing.
+
+Do not commit a real tunnel token to a public repository. If a token has already been exposed, rotate it in Cloudflare before deploying.
+
+### 3. Configure the database and application
 
 Before starting the stack, open `docker-compose.yml` and replace the deployment-specific values:
 
 - Change `POSTGRES_PASSWORD` to a strong database password.
 - Put the same password in the `POSTGRES_URL` used by the `app` service.
-- Replace the Cloudflare tunnel token with your own token.
-- If you do not need public access through Cloudflare, remove or comment out the entire `cloudflared` service.
 
 The database values must continue to match. A typical configuration looks like this:
 
@@ -120,9 +142,9 @@ app:
     POSTGRES_URL: postgresql://tracekey_db_client:replace-with-a-strong-password@db:5432/tracekey
 ```
 
-Do not commit real production passwords or tunnel tokens to a public repository. If a token has already been exposed, rotate it in the provider dashboard before deploying.
+Do not commit real production database credentials to a public repository.
 
-### 3. Build and start TraceKey
+### 4. Build and start TraceKey
 
 ```bash
 docker compose up -d --build
@@ -139,14 +161,41 @@ docker compose ps
 Follow the logs if anything fails:
 
 ```bash
-docker compose logs -f app db
+docker compose logs -f cloudflared app db
 ```
 
-### 4. Open the application
+### 5. Wait for Cloudflare to connect
 
-Visit [http://localhost:3101](http://localhost:3101), create an account, and create or open a project. TraceKey creates an API key for each project. From the project page, select **Setup with API Key** for SDK installation and integration examples.
+After the Docker build finishes, check the tunnel container:
 
-### 5. Stop or restart the stack
+```bash
+docker compose logs -f cloudflared
+```
+
+Wait until the logs show that the tunnel is registered and connected. Then press `Ctrl+C` to stop following the logs; this does not stop the container.
+
+You can also return to **Networking → Tunnels** in Cloudflare and confirm that the tunnel status is **Healthy**. If you removed the optional `cloudflared` service, skip this and the next step.
+
+### 6. Add the published application route
+
+Once `cloudflared` is connected and the `app` container is running:
+
+1. Open **Networking → Tunnels** in the Cloudflare dashboard and select your tunnel.
+2. Select **Routes → Add route → Published application**.
+3. Enter the subdomain and domain you want to use, such as `tracekey.example.com`.
+4. Leave **Path** empty to route every TraceKey page and API endpoint through the tunnel.
+5. Set **Service URL** to `http://app:3000` exactly.
+6. Select **Add route** and wait for Cloudflare to configure the hostname.
+
+![Cloudflare Add published application form showing the TraceKey hostname and http://app:3000 service URL](documentation/assets/cloudflare-published-application.png)
+
+Use `app:3000` because containers communicate through the Compose service name and internal application port. Do not use `localhost:3101` here: port `3101` is only the host-side mapping and `localhost` inside the tunnel container would refer to the tunnel container itself.
+
+### 7. Open the application
+
+Open the HTTPS hostname configured in Cloudflare. For a local check, you can also visit [http://localhost:3101](http://localhost:3101). Create an account, then create or open a project. TraceKey creates an API key for each project. From the project page, select **Setup with API Key** for SDK installation and integration examples.
+
+### 8. Stop or restart the stack
 
 ```bash
 docker compose stop
@@ -177,20 +226,6 @@ The main tables are:
 | `projects` | Project settings and API keys |
 | `user_projects` | Many-to-many project membership |
 | `interactions` | Event, visitor, device, route, region, and custom JSON data |
-
-## Optional Cloudflare Tunnel
-
-The Compose file can run `cloudflared` beside the application. This is useful when TraceKey is hosted behind NAT or when you do not want to expose an inbound application port directly.
-
-To use it:
-
-1. Create a tunnel in the Cloudflare Zero Trust dashboard.
-2. Add a public hostname whose service points to `http://app:3000`.
-3. Copy the tunnel token into the `cloudflared` service.
-4. Restart it with `docker compose up -d cloudflared`.
-5. Confirm that HTTPS requests reach TraceKey through the configured hostname.
-
-The hostname routes to port `3000` because containers communicate using the Compose service name and internal port. Port `3101` is only the host-side mapping.
 
 ## Local development without Docker
 
